@@ -26,12 +26,12 @@
       "static_hand_alpha_sha256": "be8a575a946ec20e50103cb505a10c3961032cd1da805a7ef94d3989a1f38c84",
       "input_sha256": {
         "control_1024.png": "80e58a3d628047dd380fa9a97215b10380f2f9f6443117db030aae7df5f28531",
-        "desk_mask.png": "62b379cc633eb37357d33aa30509b8a6bebddbcceb40e48ba62359a3213f1f73",
-        "desk_weight.png": "589612ab7b02338118c3fa25d5b377dd53635a95271f7ad26d7caba24de0dee8",
+        "desk_mask.png": "44578bb12581f4082fed9b86744e4c3fb3f166ec6c099e703d1cab10e24441cd",
+        "desk_weight.png": "d96013de24e30b10a1ec4221f94b5b0ae5e94ccd238452368ed5cca3afeb4c9b",
         "image_1024.png": "5281d8fb92507ad5568f9c89517453033ff7c682ff7193bffc12096cd327693b",
-        "mask_review.jpg": "91d7e98dde3e11fd2afa6e75d40b609cbf326e17fbc1786cf953e33c44017d00"
+        "mask_review.jpg": "0bc46c0612ffa670c046c39199a8a9b547696f6bbd67e0e8570c28bc02111e3e"
       },
-      "editable_desk_pixels": 1251987,
+      "editable_desk_pixels": 1665093,
       "source_action_pixels": 37031,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -39,7 +39,24 @@
         1258.1999999999985
       ],
       "source_lineage_group": "reference_01",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          346,
+          198,
+          865,
+          717
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "62b379cc633eb37357d33aa30509b8a6bebddbcceb40e48ba62359a3213f1f73",
+          "desk_weight.png": "589612ab7b02338118c3fa25d5b377dd53635a95271f7ad26d7caba24de0dee8",
+          "mask_review.jpg": "91d7e98dde3e11fd2afa6e75d40b609cbf326e17fbc1786cf953e33c44017d00"
+        }
+      }
     },
     {
       "id": "p02_seed9_detailed",
@@ -65,12 +82,12 @@
       "static_hand_alpha_sha256": "45ab1aec45e5bb6fc3b017034e2472d274aa095d96cb1a51e1510b932106ea49",
       "input_sha256": {
         "control_1024.png": "7b665ecff38bc4405c601da317594af91f3982298d5e8c6b272908da12ae0b36",
-        "desk_mask.png": "fcf7c1be6e9dc1b5561775c1d053f96047f5aee9b0522b43adb0d4015af32d7a",
-        "desk_weight.png": "3076dba44d6535db17bcffab7975b31ac514fec7a860d87ad02bde435031c274",
+        "desk_mask.png": "5cc8193254c99e9ab6082c8ea9c7d85080f0e91666c56cb971560bbb22476b84",
+        "desk_weight.png": "c0fa6f76cf1f8d936fb0e9268f771f13ee2361c809bf3d63ac67a79a278832c5",
         "image_1024.png": "fced5992a63a8bc3b41aac187dd9f63a3b797b91153b027deb1a8ff1cd963c25",
-        "mask_review.jpg": "7e03c154be97164202378508c4aea5c5f76d56f310b2239bc40a3bcb066374d8"
+        "mask_review.jpg": "565ff9c9dd18ad9c5c93f09587d006234f8e6117e1ecd4b18591949fcbe82ce7"
       },
-      "editable_desk_pixels": 1280862,
+      "editable_desk_pixels": 1635700,
       "source_action_pixels": 38690,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -78,7 +95,24 @@
         1309.6666666666677
       ],
       "source_lineage_group": "reference_02",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          359,
+          215,
+          918,
+          774
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "fcf7c1be6e9dc1b5561775c1d053f96047f5aee9b0522b43adb0d4015af32d7a",
+          "desk_weight.png": "3076dba44d6535db17bcffab7975b31ac514fec7a860d87ad02bde435031c274",
+          "mask_review.jpg": "7e03c154be97164202378508c4aea5c5f76d56f310b2239bc40a3bcb066374d8"
+        }
+      }
     },
     {
       "id": "p03_seed9_detailed",
@@ -104,12 +138,12 @@
       "static_hand_alpha_sha256": "c81b73fcb7116e130f50c36e617dd9a058bf873ac072abcf6b5d9a7b2637db3c",
       "input_sha256": {
         "control_1024.png": "92ae120f81d47c21f05bc7141e567f015d29a3e3654ffa65ee3c174211e9ebcb",
-        "desk_mask.png": "d4d581f5f5cdb0f52aa06e4df3c8d636c6f894acd2450438b915b73c539022ec",
-        "desk_weight.png": "14ad326538bf14f05322be7124687b0cf0aa14553bad15c350ff9722f6a62260",
+        "desk_mask.png": "ef23cb5d700b5103031eae34da856d291cf6a78fdc757c0a7dbbee105ec7d93c",
+        "desk_weight.png": "3e4e54028d66c2c8e5a03b375491821c222197476c8e29cb6890c1ab545cbcb1",
         "image_1024.png": "245687d60d3401a7543b6ceb7c58c3f07b00d53a83901eb382436745c58c12f9",
-        "mask_review.jpg": "1c783bd08f2e08d3ae276b76da27b14aa8f985a1cbbf0ace0e1fb832d2a04e4e"
+        "mask_review.jpg": "cd50cd9a0a2474cf3762e88bba7f66f97ac9be9a03902026d19b1d3cbbd3173d"
       },
-      "editable_desk_pixels": 1333230,
+      "editable_desk_pixels": 1621060,
       "source_action_pixels": 41316,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -117,7 +151,24 @@
         1240.199999999999
       ],
       "source_lineage_group": "reference_03",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          434,
+          170,
+          994,
+          730
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "d4d581f5f5cdb0f52aa06e4df3c8d636c6f894acd2450438b915b73c539022ec",
+          "desk_weight.png": "14ad326538bf14f05322be7124687b0cf0aa14553bad15c350ff9722f6a62260",
+          "mask_review.jpg": "1c783bd08f2e08d3ae276b76da27b14aa8f985a1cbbf0ace0e1fb832d2a04e4e"
+        }
+      }
     },
     {
       "id": "p04_seed9_detailed",
@@ -143,12 +194,12 @@
       "static_hand_alpha_sha256": "7c473250d8c7d59461d1000f8911ac9e9c1c1467d195668703faaee691e5338a",
       "input_sha256": {
         "control_1024.png": "1a1b1e317125540030aaa51f57bcc48734057fb98f91302844575f65e6950c08",
-        "desk_mask.png": "c9ecaf0db9c64482beb519c94c310da02f02e72f96300672faf47b12a3fd2e44",
-        "desk_weight.png": "8abaebaf7f842b32f1a462dced3ab58b44465a1d3502a96508ba411644bf6efa",
+        "desk_mask.png": "d140cf75301a44074a627824b786b78d4ac023abfd716f4db4cf8273d9931937",
+        "desk_weight.png": "fefa92f0424b765dab1a7b5062b270b3a798fa27e6ce8a74b81df4e2a37231b6",
         "image_1024.png": "1626d76d0fc6874e9045d3bc6d1a0127583bf09f30dd38573d05b927b9498346",
-        "mask_review.jpg": "238fa8a7298fbcf71a2547dbbd732e20d5b0fa28a008b00ae69b53b5ddff6b56"
+        "mask_review.jpg": "1fa23bf96dd1a221ee7c81c4021f82c1c2875c44cd6c09929788604f0a5331c6"
       },
-      "editable_desk_pixels": 1225894,
+      "editable_desk_pixels": 1656155,
       "source_action_pixels": 39544,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -156,7 +207,24 @@
         1254.5999999999985
       ],
       "source_lineage_group": "reference_04",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          328,
+          193,
+          865,
+          730
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "c9ecaf0db9c64482beb519c94c310da02f02e72f96300672faf47b12a3fd2e44",
+          "desk_weight.png": "8abaebaf7f842b32f1a462dced3ab58b44465a1d3502a96508ba411644bf6efa",
+          "mask_review.jpg": "238fa8a7298fbcf71a2547dbbd732e20d5b0fa28a008b00ae69b53b5ddff6b56"
+        }
+      }
     },
     {
       "id": "p05_seed9_detailed",
@@ -182,12 +250,12 @@
       "static_hand_alpha_sha256": "44cd170bf102d896550b8ddd6e21c60657dae4f94d3bfa1d292ad1a23764219f",
       "input_sha256": {
         "control_1024.png": "7e0229b4ada5e8d3bbce56c17b3ea91c7de1740056db6aca97e1314a033f7346",
-        "desk_mask.png": "9cde395e1d4540d734cfadf6e2ceda90a573f21fed05abc8ddf39fe63b58b80a",
-        "desk_weight.png": "3d859397af0190c6fb11354af2b61f911db8c2b7af9ae8db806becd86682c9c4",
+        "desk_mask.png": "761d68f441db4eadc30498cb5e152a3fb5320c1da8eb9fc74d88cadbbaf08a0a",
+        "desk_weight.png": "2e0c952fbb94eddff4db8cf125c5546fd36c372e3c89d4822b112bfc97bab7e4",
         "image_1024.png": "0c6a06abb30f9f34f4e2a97f348653a2960c619029cc3dd3df92f57465eb3978",
-        "mask_review.jpg": "dd4de9cc0af13202aeab734131042d7565ac345694478dbdf0e246f425b55633"
+        "mask_review.jpg": "25b0db0f2b90948897793744912edcf23ed9e6c9938b44f964230a1dfe0ee446"
       },
-      "editable_desk_pixels": 1365680,
+      "editable_desk_pixels": 1726950,
       "source_action_pixels": 43235,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -195,7 +263,24 @@
         1203.599999999999
       ],
       "source_lineage_group": "reference_05",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          343,
+          231,
+          886,
+          774
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "9cde395e1d4540d734cfadf6e2ceda90a573f21fed05abc8ddf39fe63b58b80a",
+          "desk_weight.png": "3d859397af0190c6fb11354af2b61f911db8c2b7af9ae8db806becd86682c9c4",
+          "mask_review.jpg": "dd4de9cc0af13202aeab734131042d7565ac345694478dbdf0e246f425b55633"
+        }
+      }
     },
     {
       "id": "p06_seed9_detailed",
@@ -221,12 +306,12 @@
       "static_hand_alpha_sha256": "39d18beb5c9006ab906d5ab63c00e7b4e899b63680fd5064709dcadab8d1caae",
       "input_sha256": {
         "control_1024.png": "084ace78fc097e7cc5ab7519e195fe5de4d67dd662e562de2b1d34f96d10ae49",
-        "desk_mask.png": "4e47873f8c0b60e96ef122bb0c7bfa8c077bd2f08a62fceea766956254ffb079",
-        "desk_weight.png": "6f20817771236d4a133e68cb45f60d944e7a4384c63bb885403852409ae8a3fc",
+        "desk_mask.png": "a11c7ebdf78394fc97e1dd3c1f36e559e1626e7adc36b1802e0e6e1ae6458848",
+        "desk_weight.png": "008396f0e3a016d7d7208b4b506453283a7ee9640efb7267e2bfb025b0bd2e02",
         "image_1024.png": "3f6e92db2ad10c72eb01063371684e73818d2d0e95aad64aa7d54bdd323c9560",
-        "mask_review.jpg": "4a05f65cac31e49f1953142c02d974bb2c8a6d4e27969196d450fcbc7f6732d6"
+        "mask_review.jpg": "26a80d1cc9ed08e10661286c14b11431837b236f7596ec614940ac1161c28d4c"
       },
-      "editable_desk_pixels": 1304833,
+      "editable_desk_pixels": 1654492,
       "source_action_pixels": 47116,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -234,7 +319,24 @@
         1274.7999999999986
       ],
       "source_lineage_group": "reference_06",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          323,
+          207,
+          906,
+          790
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "4e47873f8c0b60e96ef122bb0c7bfa8c077bd2f08a62fceea766956254ffb079",
+          "desk_weight.png": "6f20817771236d4a133e68cb45f60d944e7a4384c63bb885403852409ae8a3fc",
+          "mask_review.jpg": "4a05f65cac31e49f1953142c02d974bb2c8a6d4e27969196d450fcbc7f6732d6"
+        }
+      }
     },
     {
       "id": "p07_seed9_detailed",
@@ -260,12 +362,12 @@
       "static_hand_alpha_sha256": "c599c7fe286f0ea20a6239988e9207aa45458623063b2b87d86228067a1d9b3d",
       "input_sha256": {
         "control_1024.png": "4e3cc992eb6572a5f71e0d0940a4e047c010b0d0577842e9e7775b53a1f9d62a",
-        "desk_mask.png": "c015fad877d8222f4d2e5933200f77c882d6888bc1ee9debdaa73f52d5c1655e",
-        "desk_weight.png": "059e7c0a9997b244f259d96cbcf5ea58893ad9604dafc392248d6ba4bd320d92",
+        "desk_mask.png": "17b62b7e57283588a13873d87438340270fae23607c6ed543c3025a053c0f364",
+        "desk_weight.png": "49b8e07918a839402e14f33acb1015d51e3032728af7d024e6a06a6ab11cb91e",
         "image_1024.png": "98e5e207ad653cbc06060e91354fde725c139e3b44647b29ad69ae9891ee354c",
-        "mask_review.jpg": "d5bd23424f443477eb17feebc4488f74c74ee72e1750c03244f2ba384df9719c"
+        "mask_review.jpg": "55504bff31c1e4ada4dbd652f8dd84f00d08512aa4b5b808c5e4d14fd84bf7f2"
       },
-      "editable_desk_pixels": 1185201,
+      "editable_desk_pixels": 1623213,
       "source_action_pixels": 43344,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -273,7 +375,24 @@
         1275.7999999999993
       ],
       "source_lineage_group": "reference_07",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          308,
+          155,
+          884,
+          731
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "c015fad877d8222f4d2e5933200f77c882d6888bc1ee9debdaa73f52d5c1655e",
+          "desk_weight.png": "059e7c0a9997b244f259d96cbcf5ea58893ad9604dafc392248d6ba4bd320d92",
+          "mask_review.jpg": "d5bd23424f443477eb17feebc4488f74c74ee72e1750c03244f2ba384df9719c"
+        }
+      }
     },
     {
       "id": "p08_seed9_detailed",
@@ -299,12 +418,12 @@
       "static_hand_alpha_sha256": "1ad7d41907d875762353d8cd86dd09bce03b2612e102d264dbab87a128223b11",
       "input_sha256": {
         "control_1024.png": "5a1df1a9c38ab1066464157d4da07f208d6149e915ac3fc7c426e8107599ed00",
-        "desk_mask.png": "d43ca71f2ecab3065d48eea69aa9e1de864c488aa8acdca681aaaf8b4957a185",
-        "desk_weight.png": "944806cdbcc1a62557927c07bcfe7a00b92b43d0ec2c05e01496b3af86a06e85",
+        "desk_mask.png": "71f325b5c7d2c948ad0dff36b0d65de3b99dacc4bea08de371429458e513c273",
+        "desk_weight.png": "6836c8716e8c92a9eea396582d821d8ebfcf513efc9e1b58d243b113b949adf4",
         "image_1024.png": "1eefa7e4c912a80cc926fb949f4c5f2fe3361f5bb9fb5e4e3134415972afc7e5",
-        "mask_review.jpg": "7b6cd254ee377c66a439b5aa24aa6382304b1da8dd7993bca472f98b67bab230"
+        "mask_review.jpg": "ebb9a79cc9436d6b05e8cb3b7b116f6535a7c7fd3602610c621b7902b04746ef"
       },
-      "editable_desk_pixels": 1252380,
+      "editable_desk_pixels": 1657721,
       "source_action_pixels": 37247,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -312,7 +431,24 @@
         1255.0
       ],
       "source_lineage_group": "reference_08",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          327,
+          192,
+          870,
+          735
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "d43ca71f2ecab3065d48eea69aa9e1de864c488aa8acdca681aaaf8b4957a185",
+          "desk_weight.png": "944806cdbcc1a62557927c07bcfe7a00b92b43d0ec2c05e01496b3af86a06e85",
+          "mask_review.jpg": "7b6cd254ee377c66a439b5aa24aa6382304b1da8dd7993bca472f98b67bab230"
+        }
+      }
     },
     {
       "id": "p09_seed9_detailed",
@@ -338,12 +474,12 @@
       "static_hand_alpha_sha256": "898a109ee7653fb481b0988d4a8dfb99b76412a55a6f250684c118e3860231af",
       "input_sha256": {
         "control_1024.png": "74caf68992c50fcd214104156b0efb75b7e2bc2bd3a36c43e5c2f9afd391404e",
-        "desk_mask.png": "e39975d319048bca6427a56efa71b5711930076fc6ffc78cd5ae4ac1401ef2ad",
-        "desk_weight.png": "fc812e0d0f5749e1b00a10a46ed135a09c51c0eb6f09f2023c665ef16962ced3",
+        "desk_mask.png": "c7c31a9cd28fdb3ab83b511686f5671a2f08d83d0c68ab0b8952396f11b4d29f",
+        "desk_weight.png": "a1db491cff5900350f91d943e6aa1b2227f3e134e41526b9fd5b742cf93ec420",
         "image_1024.png": "2cd2b16e6fb34e4827d815a12468410c27bc4e2e024c1b887b6b903643d8d163",
-        "mask_review.jpg": "4e65a49821592658e2acfd2f5ff2305d1d970a24d581d1a4dc5c56f29201a98e"
+        "mask_review.jpg": "449a810fd5667f9fcdc722fb89826697acd671c7e2fe34d92f175b61e2674f6f"
       },
-      "editable_desk_pixels": 1259996,
+      "editable_desk_pixels": 1653005,
       "source_action_pixels": 42358,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -351,7 +487,24 @@
         1255.7692307692296
       ],
       "source_lineage_group": "reference_09",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          332,
+          191,
+          875,
+          734
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "e39975d319048bca6427a56efa71b5711930076fc6ffc78cd5ae4ac1401ef2ad",
+          "desk_weight.png": "fc812e0d0f5749e1b00a10a46ed135a09c51c0eb6f09f2023c665ef16962ced3",
+          "mask_review.jpg": "4e65a49821592658e2acfd2f5ff2305d1d970a24d581d1a4dc5c56f29201a98e"
+        }
+      }
     },
     {
       "id": "p10_seed123_detailed",
@@ -377,12 +530,12 @@
       "static_hand_alpha_sha256": "4c8e52065af23e6fbe92edd0d665e9a3e796b40fe7f8896aaf8691bf85b67d3c",
       "input_sha256": {
         "control_1024.png": "4b158c4c6baf4691de2ddddebffb7e575ee4f66a6b41adc39ee4a4a35a7c5e79",
-        "desk_mask.png": "ff0b2f7b6244bbe1276e99c67c32ef1dd2c07883b15201f577926e1c7d0680f9",
-        "desk_weight.png": "1d84aedf2c4865fc91531b31b2e0132c2ddeec47e407d01343e3259eedb91a8d",
+        "desk_mask.png": "7884aa37e46e189e600d463808c949680aeda865aac14cd987be9331f8ca7754",
+        "desk_weight.png": "ba9350eba1ef340ddabe24e687e43475cb22db74261a4ea7a7b9eab2582d2321",
         "image_1024.png": "df5f9932efe22f956f43db312df152ac0198c786b503c1e094e798455ba1d6da",
-        "mask_review.jpg": "8c175c7ba30ab5330aa619a8edaec0e2b4ec373374eec34351a287f9e251965e"
+        "mask_review.jpg": "f434691bfb9e7cbd7bbd778f1c7f950d6543b16ad35bf754f458916762534b27"
       },
-      "editable_desk_pixels": 1218786,
+      "editable_desk_pixels": 1606118,
       "source_action_pixels": 50217,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -390,7 +543,24 @@
         1258.5999999999995
       ],
       "source_lineage_group": "reference_10",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          293,
+          168,
+          912,
+          787
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "ff0b2f7b6244bbe1276e99c67c32ef1dd2c07883b15201f577926e1c7d0680f9",
+          "desk_weight.png": "1d84aedf2c4865fc91531b31b2e0132c2ddeec47e407d01343e3259eedb91a8d",
+          "mask_review.jpg": "8c175c7ba30ab5330aa619a8edaec0e2b4ec373374eec34351a287f9e251965e"
+        }
+      }
     },
     {
       "id": "p11_seed9_detailed",
@@ -416,12 +586,12 @@
       "static_hand_alpha_sha256": "57efc0df503861163c6c287a00b4214123aeabae99aa88051379bb93958a7fe1",
       "input_sha256": {
         "control_1024.png": "a808d2c5d32bc620739bcee185673188a7c9c194ca80b3c43c7155ba59e68c45",
-        "desk_mask.png": "359340010b49fb6501cd303096111aa78a38b28ecbe5e1bb3106387c4e6f9bbb",
-        "desk_weight.png": "f62d49110a85683d2a549080029d6606018bf93fea20e82f6b2619c4ebefb3fd",
+        "desk_mask.png": "e31bf0369922a8eb37a83f2969f6105715172e075796cb31b1b2a59c89a2129d",
+        "desk_weight.png": "b951ee674e7ecd524b5ab1a5db13779eca27a059b7c7c7f8a9c3a2bf721b163b",
         "image_1024.png": "7a00e81155024aad27940567f2237c3e12e17ad3249479d1b0595e59567c8730",
-        "mask_review.jpg": "dc6e624d8398563a0e40b93824f287e44566ba28d0ce735856a065fc84dde2fd"
+        "mask_review.jpg": "65c8a83cdc790a28930821a6e36f3626daa4befecabe415504364ce297908f32"
       },
-      "editable_desk_pixels": 1250069,
+      "editable_desk_pixels": 1614785,
       "source_action_pixels": 50296,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -429,7 +599,24 @@
         1257.999999999999
       ],
       "source_lineage_group": "reference_11",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          312,
+          175,
+          901,
+          764
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "359340010b49fb6501cd303096111aa78a38b28ecbe5e1bb3106387c4e6f9bbb",
+          "desk_weight.png": "f62d49110a85683d2a549080029d6606018bf93fea20e82f6b2619c4ebefb3fd",
+          "mask_review.jpg": "dc6e624d8398563a0e40b93824f287e44566ba28d0ce735856a065fc84dde2fd"
+        }
+      }
     },
     {
       "id": "p12_seed9_detailed",
@@ -455,12 +642,12 @@
       "static_hand_alpha_sha256": "7b81f416626f4eec728cc0998e225f9072fa754b2d9822057ddcad3fd66f58d9",
       "input_sha256": {
         "control_1024.png": "d82ee2b38a0d57f68fc4cd8775ebad2f3a651f1f6ea99c518aba844aaab10477",
-        "desk_mask.png": "79bef69ddbd5db56232407612645b2e2b0bebd79251a5c09a8d061f6b75c1ec4",
-        "desk_weight.png": "e8f135a823dafdd3529c5deaf102359eacccc1b1b38d5a37620dcc54fd022144",
+        "desk_mask.png": "23e24da48478362cbb3090c5fc5a22de766d5fd7cc250d95d001db169a82821c",
+        "desk_weight.png": "f9911beabed26605e0c69ecf97c6bb30e90f402fcfd84fe603e9be468a45580a",
         "image_1024.png": "4962a644b8bd1e074ee03991b214fa96a41c9ae76d10f1c112179f10649eb970",
-        "mask_review.jpg": "8ee0418d8175b13b756c0820fa83071dc5d0101ca682a690bd44e684f9015a58"
+        "mask_review.jpg": "790468e584a3ed4fba7946d5db11a4dfdc2fe69c21a9a2c1c315f5b5f8696884"
       },
-      "editable_desk_pixels": 1215027,
+      "editable_desk_pixels": 1596299,
       "source_action_pixels": 49294,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -468,7 +655,24 @@
         1255.1999999999982
       ],
       "source_lineage_group": "reference_12",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          293,
+          165,
+          910,
+          782
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "79bef69ddbd5db56232407612645b2e2b0bebd79251a5c09a8d061f6b75c1ec4",
+          "desk_weight.png": "e8f135a823dafdd3529c5deaf102359eacccc1b1b38d5a37620dcc54fd022144",
+          "mask_review.jpg": "8ee0418d8175b13b756c0820fa83071dc5d0101ca682a690bd44e684f9015a58"
+        }
+      }
     },
     {
       "id": "p13_seed9_detailed",
@@ -494,12 +698,12 @@
       "static_hand_alpha_sha256": "04264ecb8bf8589830b59e6dd23d16f60d526b27aa226ea5bd10662376a70c7f",
       "input_sha256": {
         "control_1024.png": "8f854de20d3f30543e20f7eabcb0dd3b939cabb6b164876e196fd8a3d5731116",
-        "desk_mask.png": "fbd141bc50d02e2151a14f9b9a5d6147716475834f8f58a4c75ceca7541c5812",
-        "desk_weight.png": "2a85b10be5ddc1e15216e0199ce65f125a6c86d0c7d89c2d337bf1b29d69c742",
+        "desk_mask.png": "ec6b54f478ee14a5590a9f3dd0849004aa4292b13c630946120df707da538e52",
+        "desk_weight.png": "2ea415992d466492c29e5b664656d5f077b96ddaac504b73981574ca95fe778b",
         "image_1024.png": "76b7873ffdeef13a3ad994908c00473d1b2fcac20cda887625c6925bd2b7980a",
-        "mask_review.jpg": "cdaa5068ffd9ef61315a56a5733d546eefaaffdaf73e67c2d2f5b9214ce2eb37"
+        "mask_review.jpg": "cbbf0930b7ee151ebd20eb1e6f5ca38585284849d097792a7c7d3b885c460ac6"
       },
-      "editable_desk_pixels": 1288595,
+      "editable_desk_pixels": 1650891,
       "source_action_pixels": 49655,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -507,7 +711,24 @@
         1276.9999999999986
       ],
       "source_lineage_group": "reference_13",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          322,
+          203,
+          902,
+          783
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "fbd141bc50d02e2151a14f9b9a5d6147716475834f8f58a4c75ceca7541c5812",
+          "desk_weight.png": "2a85b10be5ddc1e15216e0199ce65f125a6c86d0c7d89c2d337bf1b29d69c742",
+          "mask_review.jpg": "cdaa5068ffd9ef61315a56a5733d546eefaaffdaf73e67c2d2f5b9214ce2eb37"
+        }
+      }
     },
     {
       "id": "p14_seed9_detailed",
@@ -533,12 +754,12 @@
       "static_hand_alpha_sha256": "2535bcebb469c30bf6dd7c58a5bec6248ed3160348e5361e139df75d3efa87d9",
       "input_sha256": {
         "control_1024.png": "98d1f5dc3fab65650b12a36761867ef41763b703fe1ce91738e81bc12b460716",
-        "desk_mask.png": "0723b90bdd892c1109b58a1a08f99c9d951eab593f6e523aa02546923ed103b6",
-        "desk_weight.png": "caf84b27d15d46e4795db5bd89bac4ef2e20fe8e05a6f27ef9ff251c631b99e5",
+        "desk_mask.png": "31f30b059efcd013f76fbd2c0d7e1278f7a793d972358172c4e5849325080db1",
+        "desk_weight.png": "002d16289a3aab58ec7028385a3e3b53f1ae32560a3b2652f41d698c2ee69fe8",
         "image_1024.png": "b5d2717b090e2e60b4619a53e3120f8071e01d8a69ab62cca20d323fd798bf75",
-        "mask_review.jpg": "cf86f1f42fa002fcc994b73c8e2f4d570c8480817525ba2a781a6ee44addb530"
+        "mask_review.jpg": "5519ba85d6f0af05f6cf125ba7a34daa36c8465e294924da5c4c59678a403b9a"
       },
-      "editable_desk_pixels": 1267821,
+      "editable_desk_pixels": 1657254,
       "source_action_pixels": 39560,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -546,7 +767,24 @@
         1259.3999999999978
       ],
       "source_lineage_group": "reference_14",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          339,
+          195,
+          874,
+          730
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "0723b90bdd892c1109b58a1a08f99c9d951eab593f6e523aa02546923ed103b6",
+          "desk_weight.png": "caf84b27d15d46e4795db5bd89bac4ef2e20fe8e05a6f27ef9ff251c631b99e5",
+          "mask_review.jpg": "cf86f1f42fa002fcc994b73c8e2f4d570c8480817525ba2a781a6ee44addb530"
+        }
+      }
     },
     {
       "id": "p15_seed9_detailed",
@@ -572,12 +810,12 @@
       "static_hand_alpha_sha256": "e63fcdba4ea1bffb15fd770ed6da46c53af950015a796f1e50afe99f4655ba6e",
       "input_sha256": {
         "control_1024.png": "7f3726cfe67855632500fe2cb665c9c5691404a67967f82d2308233b920bb6f6",
-        "desk_mask.png": "a40e7bdb07f21865d1fe814811564976763264b4c907a6395b6cfed65173c579",
-        "desk_weight.png": "74a08af9e9f9224135b69be7f0b05499307d3be48cfc6bd24910b04c680d0ad8",
+        "desk_mask.png": "30eafb78df60ee7683ac3a24a1fcab64e794e111056bc26899bf562ff96d12d2",
+        "desk_weight.png": "0fd50fbb137df0520073bd0e496b3a4ffb11482f06fb711dc1cb407d1fbe7284",
         "image_1024.png": "d40ca0c61bb487c45ccc7126de27ed621b5a1087016aa916b17ea024b0182c09",
-        "mask_review.jpg": "20969109d17d9c00c7f9b95c9cf3d1b9fc5109f5a5578509afa7296671e11d93"
+        "mask_review.jpg": "4d2ee706c72249412e10ed3b2df642ed790dc4958386bcde13f3a3e1f466bddd"
       },
-      "editable_desk_pixels": 1297248,
+      "editable_desk_pixels": 1646839,
       "source_action_pixels": 48559,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -585,7 +823,24 @@
         1275.999999999999
       ],
       "source_lineage_group": "reference_15",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          314,
+          202,
+          913,
+          801
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "a40e7bdb07f21865d1fe814811564976763264b4c907a6395b6cfed65173c579",
+          "desk_weight.png": "74a08af9e9f9224135b69be7f0b05499307d3be48cfc6bd24910b04c680d0ad8",
+          "mask_review.jpg": "20969109d17d9c00c7f9b95c9cf3d1b9fc5109f5a5578509afa7296671e11d93"
+        }
+      }
     },
     {
       "id": "p16_seed9_detailed",
@@ -611,12 +866,12 @@
       "static_hand_alpha_sha256": "5fe69f40833dcfccaf2e96f5923cafe8b484098f506e77461b77dc903071b632",
       "input_sha256": {
         "control_1024.png": "0b6a87beaaaab2ced36e45d1b28ea536b2227b00f026abcbce74a95e4f01e3e8",
-        "desk_mask.png": "f350e8f53bd58226c55e207a9a13f9f9fecd945d098fae2968ad7c85aafeaad4",
-        "desk_weight.png": "7baf802c73e38eda8a5bd09127515b135eac91d254f270341f45d7df67805042",
+        "desk_mask.png": "d6d398c4aad42bfdf398456cbe5c7aaaecbdd5042d1ab1ff23eab3c53d7f780b",
+        "desk_weight.png": "a71fb4bf19747772e0e07889d49a91460f6890982015f1b59f96a914660ec7fe",
         "image_1024.png": "e535790e8f3fb65e1db5eceb70e96c214f724d593e650d57600c2bdc35b6bfc1",
-        "mask_review.jpg": "9e37d303c1a642a451131036f4dc5572c8584b16176fdea900e37b1dd1369291"
+        "mask_review.jpg": "d95c3d31bc9a10da36ead9a4ac88b0e355d8c7184c5130ea0e066d3bf7c2c87a"
       },
-      "editable_desk_pixels": 1242508,
+      "editable_desk_pixels": 1637229,
       "source_action_pixels": 43717,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -624,7 +879,24 @@
         1254.7999999999988
       ],
       "source_lineage_group": "reference_16",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          326,
+          180,
+          877,
+          731
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "f350e8f53bd58226c55e207a9a13f9f9fecd945d098fae2968ad7c85aafeaad4",
+          "desk_weight.png": "7baf802c73e38eda8a5bd09127515b135eac91d254f270341f45d7df67805042",
+          "mask_review.jpg": "9e37d303c1a642a451131036f4dc5572c8584b16176fdea900e37b1dd1369291"
+        }
+      }
     },
     {
       "id": "p17_seed9_detailed",
@@ -650,12 +922,12 @@
       "static_hand_alpha_sha256": "ebc9042900725e716bbef265519c833959c7529887c7580ffb6317b0653c1dff",
       "input_sha256": {
         "control_1024.png": "030d4e8aadbb0e068a518a3ae13681893cfb928e12283ee104967e1fa1bd19a7",
-        "desk_mask.png": "3f53c71809b6323f0cf5cc3e191f29e2f70e9cadfb02a01f6539ebcdc89b102e",
-        "desk_weight.png": "8fc0e062578264d91290e9f20b9ebdeb0540edb4b2c5a5497c0f7752ff1827cc",
+        "desk_mask.png": "8947eaa85dc84987bdf6a70736ef1cb7152f5ba0ce20e3d755bddf14a809899f",
+        "desk_weight.png": "372742592c92d5fd524839b305ead3b5454cf364a6a092fdd9242604a7a7f5d8",
         "image_1024.png": "a5f771b9665a9fef5306f22d46c2c945efa065906b382f441abbd2a9c1bf93c6",
-        "mask_review.jpg": "8db4d53ac8fa8fc29d7d4a427eee011f709c57a884684039ad715f1c74dac749"
+        "mask_review.jpg": "68fcbe4604f89702e4b35cf681b954d845fb31ece6f04482f5aedf797ca492eb"
       },
-      "editable_desk_pixels": 1279359,
+      "editable_desk_pixels": 1608491,
       "source_action_pixels": 51359,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -663,7 +935,24 @@
         1260.7999999999986
       ],
       "source_lineage_group": "reference_17",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          310,
+          195,
+          916,
+          801
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "3f53c71809b6323f0cf5cc3e191f29e2f70e9cadfb02a01f6539ebcdc89b102e",
+          "desk_weight.png": "8fc0e062578264d91290e9f20b9ebdeb0540edb4b2c5a5497c0f7752ff1827cc",
+          "mask_review.jpg": "8db4d53ac8fa8fc29d7d4a427eee011f709c57a884684039ad715f1c74dac749"
+        }
+      }
     },
     {
       "id": "p18_seed123_detailed",
@@ -689,12 +978,12 @@
       "static_hand_alpha_sha256": "2ff61b4caaaaf6cdcf451213b657f7e7b08212cc4cae1b7e1dfc803c93e44ad2",
       "input_sha256": {
         "control_1024.png": "721fe5a91c566daf37a672c61a93c799d429dba90923e90b6b2dcead054503ad",
-        "desk_mask.png": "886dfb5a4a5c7014d4149d5a5240c6c68a4e93b58911360e176f8f9c2fbd31c0",
-        "desk_weight.png": "671fea4c26de0c208164a753f743b59f578b1eafa6c9531580e0302de1c8d466",
+        "desk_mask.png": "42c131c6dd4d9d379699c231efef14ed97b1fd453d0981ae1a160a9b32dde7f3",
+        "desk_weight.png": "be234698ff7645f6f1480352d35cba87214145b6efce0499a986ab1ddbf2efe3",
         "image_1024.png": "388f0d03d8a8801e063b27b2d83d248c7a3ffbfe41a4fbe4c779fa599aeef7dd",
-        "mask_review.jpg": "0f7f0f0e1a2832505248507caccb259109a7d70fe690b399467eab04ad41490e"
+        "mask_review.jpg": "6033f6f4e62771552224c3a169f63f21437b18dc2feb9c89a19219db792f39aa"
       },
-      "editable_desk_pixels": 1214855,
+      "editable_desk_pixels": 1611144,
       "source_action_pixels": 49755,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -702,7 +991,24 @@
         1252.9999999999982
       ],
       "source_lineage_group": "reference_18",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          307,
+          173,
+          899,
+          765
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "886dfb5a4a5c7014d4149d5a5240c6c68a4e93b58911360e176f8f9c2fbd31c0",
+          "desk_weight.png": "671fea4c26de0c208164a753f743b59f578b1eafa6c9531580e0302de1c8d466",
+          "mask_review.jpg": "0f7f0f0e1a2832505248507caccb259109a7d70fe690b399467eab04ad41490e"
+        }
+      }
     },
     {
       "id": "p19_seed9_detailed",
@@ -728,12 +1034,12 @@
       "static_hand_alpha_sha256": "82862377024b554ced153e48ecaa0a630d69da5b7af795ae5d1ff794a43c778a",
       "input_sha256": {
         "control_1024.png": "abca1a2e124cd21a2910a46b2bca5a4600f58058682fc919204b81baa29ed065",
-        "desk_mask.png": "522870b8614d6cfb3ea75b0b2f61abdc4a1053293866c048b09e4028fc9a4aaf",
-        "desk_weight.png": "da9ec2f68f33b344ecaf5ec56a135805b3994f15ed4da8d9600dbcc8fa7ea0dc",
+        "desk_mask.png": "f50630802f9f00f02011a918602ef07d70c277e009f6867c6aeb557ed239f03b",
+        "desk_weight.png": "580bda6583ac9d30886ce8660e8671fac44828659b1cc7711ec6455f92c6e07d",
         "image_1024.png": "d978c662876641cf8298e7c1ab25d9a0061d8779d03d175fa2c31bba09da6d70",
-        "mask_review.jpg": "be08866d450fbdc27172ba21cd6e4bde115227880ebea248aa239a1224ff3326"
+        "mask_review.jpg": "8aef70f8b1532bda54d7165f2d76aadca0c93a139d3a2ec0603aa061fa0848c5"
       },
-      "editable_desk_pixels": 1172733,
+      "editable_desk_pixels": 1606305,
       "source_action_pixels": 45823,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -741,7 +1047,24 @@
         1270.9000000000003
       ],
       "source_lineage_group": "reference_19",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          319,
+          183,
+          891,
+          755
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "522870b8614d6cfb3ea75b0b2f61abdc4a1053293866c048b09e4028fc9a4aaf",
+          "desk_weight.png": "da9ec2f68f33b344ecaf5ec56a135805b3994f15ed4da8d9600dbcc8fa7ea0dc",
+          "mask_review.jpg": "be08866d450fbdc27172ba21cd6e4bde115227880ebea248aa239a1224ff3326"
+        }
+      }
     },
     {
       "id": "p20_seed9_detailed",
@@ -767,12 +1090,12 @@
       "static_hand_alpha_sha256": "0678b17cd9d184543869e914414d160dce69ab6156670c9f1dbeb99f797fb6b9",
       "input_sha256": {
         "control_1024.png": "d3bdda1158d8d598b46d41bfaa8f83571b55bc3e9edc9884dc269689d93e03b3",
-        "desk_mask.png": "16153d25cdea124cf2600605de331b3d138ba5ec2b340ed7301106912ec8b857",
-        "desk_weight.png": "b16f220d900e6e4158f0718f2a6eb88b8785be4a37b2d828e71c7a98d740c492",
+        "desk_mask.png": "1986495199691faa21412831ca0a7fa1a37623816a844a34cd5f1b3938d48fa8",
+        "desk_weight.png": "50b396d595658f120a977ecb41769ae918d89bd246edbf2bde11bd238ba42bcf",
         "image_1024.png": "a16977e34943aa96f25b0e5c7cabf9d59b7ece47c9616586dfaa6c230e82a88a",
-        "mask_review.jpg": "b2d788de8bcf16d68f2324e653cfceea4d0cf9f2d2e8573cc287ab80862e4e69"
+        "mask_review.jpg": "5736dc0fb9cf6eac52e73edd76f8f4623b8b4621bfe907736ed98318308e4b21"
       },
-      "editable_desk_pixels": 1195279,
+      "editable_desk_pixels": 1626207,
       "source_action_pixels": 46523,
       "editable_action_overlap_pixels": 0,
       "desk_edge": [
@@ -780,7 +1103,24 @@
         1251.5999999999985
       ],
       "source_lineage_group": "reference_20",
-      "independent_identity_claim": false
+      "independent_identity_claim": false,
+      "mask_coordinate_correction": {
+        "corrected_on": "2026-10-11",
+        "matte_coordinate_space": "1024-square hand crop; resize to native crop and paste at crop coordinates",
+        "native_crop": [
+          304,
+          183,
+          890,
+          769
+        ],
+        "hand_guard_native_px": 36,
+        "desk_feather_native_px": 48,
+        "previous_input_sha256": {
+          "desk_mask.png": "16153d25cdea124cf2600605de331b3d138ba5ec2b340ed7301106912ec8b857",
+          "desk_weight.png": "b16f220d900e6e4158f0718f2a6eb88b8785be4a37b2d828e71c7a98d740c492",
+          "mask_review.jpg": "b2d788de8bcf16d68f2324e653cfceea4d0cf9f2d2e8573cc287ab80862e4e69"
+        }
+      }
     }
   ]
 }

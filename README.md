@@ -76,6 +76,22 @@ python dataset.py verify --family r06_birch_s9_warm
 | `docs/480-family-review.pdf` | Original interactive review, local only |
 | [Accepted dataset](docs/accepted-dataset.json) / [receipt](docs/approval-receipt.json) | Historical acceptance and image hashes |
 
+## Mask correction (11 October 2026)
+
+The hand matte was a cropped image, mistakenly stretched across the full scene.
+The 20 local mask/weight/preview sets now place it at its native crop coordinates;
+the existing manifest and recipe hashes have been updated. **Black protects** both
+hand poses, a 36 px guard and the forearm/contact region; **white edits the desk**.
+The separate blending weight softens the editable boundary over 48 px. Masks are
+processing inputs and are never displayed as stimuli. The guide shows before/after photos.
+
+The approved 480 families remain unchanged and were generated with the old masks.
+Their acceptance hashes and original production inputs are preserved. Historical
+pixel checks must use those original weights; checking this archive against corrected
+masks is invalid. A future corrected run needs a fresh output folder and new visual
+canary approval. Reuse the corrected frozen inputs; the legacy preparation script
+still contains the original scaling mistake.
+
 ## Current position
 
 The original 480-family batch was visually accepted on 11 October 2026. Reference 17
