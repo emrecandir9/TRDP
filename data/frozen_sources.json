@@ -1,0 +1,786 @@
+{
+  "accepted_manifest_sha256": "56ff9cba04611dbc99943b80163052f6d605aa4f3a1cc0524cb221b311701805",
+  "accepted_user_review_sha256": "346dfc04a95ac1f58f277b168f07a36077102124658d93cd8422f90e5fca0074",
+  "sources": [
+    {
+      "id": "p01_seed9_detailed",
+      "reference": 1,
+      "source_directory": "p01_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "03b701b9fcfbe97afbada330d04774971538ec8578de30dc484cb9215949209d",
+        "full_body/movement.png": "e4354d32ea062613b9421b34dc159000e83af8334982eb08bd4f89ea84ce3d6a",
+        "upper_limb/static.png": "8eecb249709808d6537ef83c3c4c972b543d38a28d774bbde8117626f8d5fc4c",
+        "upper_limb/movement.png": "dccec0c660dce9d7e1d536aafcede68509eaebb6e526df990a48a0c39201953f",
+        "detached_hand/static.png": "f9bdef88930513243631c762ad38aeca7ee1dd464cea0b6f58c379cb60aeb3f0",
+        "detached_hand/movement.png": "9e156d32975e45484e8b3b2a12d2b6d25bdd2deadda15515a25ca0d078563bf2"
+      },
+      "used_hand_box": [
+        384,
+        163,
+        866,
+        768
+      ],
+      "upper_limb_cutoff": 1266,
+      "reference_abduction_degrees": 14.631625147108583,
+      "frozen_case_sha256": "298b1f2157db389734dc7760b77d7bba44e2677b0c76c7f1159d3802942464b3",
+      "static_hand_alpha_sha256": "be8a575a946ec20e50103cb505a10c3961032cd1da805a7ef94d3989a1f38c84",
+      "input_sha256": {
+        "control_1024.png": "80e58a3d628047dd380fa9a97215b10380f2f9f6443117db030aae7df5f28531",
+        "desk_mask.png": "62b379cc633eb37357d33aa30509b8a6bebddbcceb40e48ba62359a3213f1f73",
+        "desk_weight.png": "589612ab7b02338118c3fa25d5b377dd53635a95271f7ad26d7caba24de0dee8",
+        "image_1024.png": "5281d8fb92507ad5568f9c89517453033ff7c682ff7193bffc12096cd327693b",
+        "mask_review.jpg": "91d7e98dde3e11fd2afa6e75d40b609cbf326e17fbc1786cf953e33c44017d00"
+      },
+      "editable_desk_pixels": 1251987,
+      "source_action_pixels": 37031,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.0040000000000010956,
+        1258.1999999999985
+      ],
+      "source_lineage_group": "reference_01",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p02_seed9_detailed",
+      "reference": 2,
+      "source_directory": "p02_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "bef27d180df9951d3e7a450908ce0d3fc0e65cb0e5e8424767477050d54aa48c",
+        "full_body/movement.png": "763b844d5bc7e5c00488b7a22b519299b03adf232ccfc0782384434dc12b1959",
+        "upper_limb/static.png": "22fd7ea871b58a66d2abbea57d8dd9e3c802036db771f2083370542312c9920f",
+        "upper_limb/movement.png": "a75f4bbed1b4f806d06b695cc5f81baeb9fd4422a5fb9618e637f618f321110e",
+        "detached_hand/static.png": "16c3851546e6bd6c0ff8e1701767920c22d88f9103368d8ad3096e5437a4c9cb",
+        "detached_hand/movement.png": "e55c844170aad2a98a576390234da7e58d2c2a817aedf71272e1fee74acbc8a0"
+      },
+      "used_hand_box": [
+        384,
+        196,
+        898,
+        817
+      ],
+      "upper_limb_cutoff": 1290,
+      "reference_abduction_degrees": 18.888862208622403,
+      "frozen_case_sha256": "41702b1e3d58334e5a34fe6f078b3d82b52c5d281bdddd84d52765c5d55322a7",
+      "static_hand_alpha_sha256": "45ab1aec45e5bb6fc3b017034e2472d274aa095d96cb1a51e1510b932106ea49",
+      "input_sha256": {
+        "control_1024.png": "7b665ecff38bc4405c601da317594af91f3982298d5e8c6b272908da12ae0b36",
+        "desk_mask.png": "fcf7c1be6e9dc1b5561775c1d053f96047f5aee9b0522b43adb0d4015af32d7a",
+        "desk_weight.png": "3076dba44d6535db17bcffab7975b31ac514fec7a860d87ad02bde435031c274",
+        "image_1024.png": "fced5992a63a8bc3b41aac187dd9f63a3b797b91153b027deb1a8ff1cd963c25",
+        "mask_review.jpg": "7e03c154be97164202378508c4aea5c5f76d56f310b2239bc40a3bcb066374d8"
+      },
+      "editable_desk_pixels": 1280862,
+      "source_action_pixels": 38690,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        -0.05000000000000152,
+        1309.6666666666677
+      ],
+      "source_lineage_group": "reference_02",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p03_seed9_detailed",
+      "reference": 3,
+      "source_directory": "p03_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "227fd464f5a2a28ba8b6a7fcf0bf12ae1333fedbefdfef1b2adb6ae322df904b",
+        "full_body/movement.png": "14d806507a482cfb7009a2d30801147851121e04ee7901958c5603872e96f28f",
+        "upper_limb/static.png": "738aa7d51b87a437087471c4b84c1f3564d8bcf94502d045e11f1c7dd90a5124",
+        "upper_limb/movement.png": "cf43c4906113c37169347196150c4240316f407d5c09cc64ec417b34af38e02a",
+        "detached_hand/static.png": "adb2659045a3c84d542a5aaab801bcd9222d3b5ce5a2d5d0e237fd9b491cdcac",
+        "detached_hand/movement.png": "b0f06dd63ffa1b4cb9a0b7a1af01f8ab6e3a6d29a51bb8a10f7c679fe597a526"
+      },
+      "used_hand_box": [
+        490,
+        139,
+        996,
+        776
+      ],
+      "upper_limb_cutoff": 1274,
+      "reference_abduction_degrees": 15.116756818960374,
+      "frozen_case_sha256": "bce8c9157c5182c70929a89aaced851402779366dc4c96bd84c0eabce3d9ce61",
+      "static_hand_alpha_sha256": "c81b73fcb7116e130f50c36e617dd9a058bf873ac072abcf6b5d9a7b2637db3c",
+      "input_sha256": {
+        "control_1024.png": "92ae120f81d47c21f05bc7141e567f015d29a3e3654ffa65ee3c174211e9ebcb",
+        "desk_mask.png": "d4d581f5f5cdb0f52aa06e4df3c8d636c6f894acd2450438b915b73c539022ec",
+        "desk_weight.png": "14ad326538bf14f05322be7124687b0cf0aa14553bad15c350ff9722f6a62260",
+        "image_1024.png": "245687d60d3401a7543b6ceb7c58c3f07b00d53a83901eb382436745c58c12f9",
+        "mask_review.jpg": "1c783bd08f2e08d3ae276b76da27b14aa8f985a1cbbf0ace0e1fb832d2a04e4e"
+      },
+      "editable_desk_pixels": 1333230,
+      "source_action_pixels": 41316,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.014000000000000864,
+        1240.199999999999
+      ],
+      "source_lineage_group": "reference_03",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p04_seed9_detailed",
+      "reference": 4,
+      "source_directory": "p04_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "063242201efd6897b4f9ced18eedf19cc9ce54f0b40820119938dfa161a07887",
+        "full_body/movement.png": "71054f88086800e686c51c8be682e896920ee90c79319e4c185bf0c40ce127fa",
+        "upper_limb/static.png": "4184206dc41c08b021c2c1f289b477a8ed6ce7d5dfd10f4968da67da80eb424d",
+        "upper_limb/movement.png": "985d7cbf4d6ade6ec2c7075d3062c58a50ad07473f86762f395c906f6f6bfe6d",
+        "detached_hand/static.png": "685bae2ae55682e61798bafc5fe7a2a12f1b0d546a4d1efd9a30409fe6986241",
+        "detached_hand/movement.png": "b894a1696168f4a20d3d62e9b0162d51c961bcb06fac472a2d1dc5253bffe0a4"
+      },
+      "used_hand_box": [
+        376,
+        163,
+        857,
+        768
+      ],
+      "upper_limb_cutoff": 1258,
+      "reference_abduction_degrees": 16.902450401048206,
+      "frozen_case_sha256": "365c0ab27e5c4d97a2f51461d4af299aa8f34e4f3707e99f136f68167967fbd8",
+      "static_hand_alpha_sha256": "7c473250d8c7d59461d1000f8911ac9e9c1c1467d195668703faaee691e5338a",
+      "input_sha256": {
+        "control_1024.png": "1a1b1e317125540030aaa51f57bcc48734057fb98f91302844575f65e6950c08",
+        "desk_mask.png": "c9ecaf0db9c64482beb519c94c310da02f02e72f96300672faf47b12a3fd2e44",
+        "desk_weight.png": "8abaebaf7f842b32f1a462dced3ab58b44465a1d3502a96508ba411644bf6efa",
+        "image_1024.png": "1626d76d0fc6874e9045d3bc6d1a0127583bf09f30dd38573d05b927b9498346",
+        "mask_review.jpg": "238fa8a7298fbcf71a2547dbbd732e20d5b0fa28a008b00ae69b53b5ddff6b56"
+      },
+      "editable_desk_pixels": 1225894,
+      "source_action_pixels": 39544,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.006000000000000989,
+        1254.5999999999985
+      ],
+      "source_lineage_group": "reference_04",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p05_seed9_detailed",
+      "reference": 5,
+      "source_directory": "p05_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "0275942c2390663ee1b07ff9cc053061146fdb80323338b083abb29f3a4378c6",
+        "full_body/movement.png": "3c4536318be4bc6d7297e535fd559617b612ed8c2ba4b5d5680140154d08b84b",
+        "upper_limb/static.png": "8ec44c31247845282421aa52be805af9a41236931e8cf260fb20f3609c2e8e01",
+        "upper_limb/movement.png": "a8bc43e91ca80435c2a29b5c02fe849f6fd457a5703870a84a96bfb7814c7cc9",
+        "detached_hand/static.png": "38619649ae46bbde3c259edc523c50c08c034e9b3677e81438d4ae965ed4bd6f",
+        "detached_hand/movement.png": "c1e091d81749f7506343b86fb9d4199806497fc4adc9de8d962ff1c3200b9f50"
+      },
+      "used_hand_box": [
+        408,
+        212,
+        898,
+        833
+      ],
+      "upper_limb_cutoff": 1347,
+      "reference_abduction_degrees": 19.863051611941366,
+      "frozen_case_sha256": "9cc458a7fb890082f31a3b0aa1d62832ee3791030b9e3ae714b8fe753681d415",
+      "static_hand_alpha_sha256": "44cd170bf102d896550b8ddd6e21c60657dae4f94d3bfa1d292ad1a23764219f",
+      "input_sha256": {
+        "control_1024.png": "7e0229b4ada5e8d3bbce56c17b3ea91c7de1740056db6aca97e1314a033f7346",
+        "desk_mask.png": "9cde395e1d4540d734cfadf6e2ceda90a573f21fed05abc8ddf39fe63b58b80a",
+        "desk_weight.png": "3d859397af0190c6fb11354af2b61f911db8c2b7af9ae8db806becd86682c9c4",
+        "image_1024.png": "0c6a06abb30f9f34f4e2a97f348653a2960c619029cc3dd3df92f57465eb3978",
+        "mask_review.jpg": "dd4de9cc0af13202aeab734131042d7565ac345694478dbdf0e246f425b55633"
+      },
+      "editable_desk_pixels": 1365680,
+      "source_action_pixels": 43235,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.08100000000000056,
+        1203.599999999999
+      ],
+      "source_lineage_group": "reference_05",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p06_seed9_detailed",
+      "reference": 6,
+      "source_directory": "p06_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "d961c1733f4f8d4e491313fb412c80b6f2f9a66356f2bf39f13be5b0f6d81e0e",
+        "full_body/movement.png": "92f3761ee60b8129c88f26a8f3fb120a90745be982922054801716ef18425953",
+        "upper_limb/static.png": "079776588f1e79ab3188771c8f2af9fb84009829ff92e805e4f18da57be1360e",
+        "upper_limb/movement.png": "c01e22c78d5bdf25d76d6128ed9d0de800360079567c9d9812e4df7db29400a1",
+        "detached_hand/static.png": "aa5ec8bcc859f7a06dbd93f4cc2778c78a5577def87bb1dba94a64e0210e7160",
+        "detached_hand/movement.png": "1ab2d75b9a3df1d78865a6a5b5fe4465273c2129af407d1b6ae4c37e155235e9"
+      },
+      "used_hand_box": [
+        367,
+        196,
+        898,
+        808
+      ],
+      "upper_limb_cutoff": 1274,
+      "reference_abduction_degrees": 21.230734341662153,
+      "frozen_case_sha256": "14f9f598e828d920a292a294d5017ac672153a98ef7d446c2a70b3d3fe3c0220",
+      "static_hand_alpha_sha256": "39d18beb5c9006ab906d5ab63c00e7b4e899b63680fd5064709dcadab8d1caae",
+      "input_sha256": {
+        "control_1024.png": "084ace78fc097e7cc5ab7519e195fe5de4d67dd662e562de2b1d34f96d10ae49",
+        "desk_mask.png": "4e47873f8c0b60e96ef122bb0c7bfa8c077bd2f08a62fceea766956254ffb079",
+        "desk_weight.png": "6f20817771236d4a133e68cb45f60d944e7a4384c63bb885403852409ae8a3fc",
+        "image_1024.png": "3f6e92db2ad10c72eb01063371684e73818d2d0e95aad64aa7d54bdd323c9560",
+        "mask_review.jpg": "4a05f65cac31e49f1953142c02d974bb2c8a6d4e27969196d450fcbc7f6732d6"
+      },
+      "editable_desk_pixels": 1304833,
+      "source_action_pixels": 47116,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        -0.0019999999999991886,
+        1274.7999999999986
+      ],
+      "source_lineage_group": "reference_06",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p07_seed9_detailed",
+      "reference": 7,
+      "source_directory": "p07_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "823a15e5bda73391c8dbbc04ab306b68eaafae67c0a4bd7e761a48a8ed9bddb1",
+        "full_body/movement.png": "07ed05293bce8fa2006866c1ba0ca5e7302ed3f793a7ad187d01f1b25ca5e3a6",
+        "upper_limb/static.png": "b3ee1fe3bbc531274e9f0e2ef5e008029015826436db5d20144662760d991596",
+        "upper_limb/movement.png": "598c5b7b022da7746bdc664ed02d9dc9a68e4c2b7bce8470e358547110afa8a2",
+        "detached_hand/static.png": "86dba299a89dbfa8d3672079e4b795a90cafb58549fe5171dea66d262708aa3b",
+        "detached_hand/movement.png": "280b4007b8a2e280b1557def864c9230305948819544401cae741e76de0c2680"
+      },
+      "used_hand_box": [
+        367,
+        114,
+        915,
+        751
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 15.551747914834987,
+      "frozen_case_sha256": "fedc654fd2a596c80ee10ae0e978242fb181731e0d3382a415e9cdf6460f3ca8",
+      "static_hand_alpha_sha256": "c599c7fe286f0ea20a6239988e9207aa45458623063b2b87d86228067a1d9b3d",
+      "input_sha256": {
+        "control_1024.png": "4e3cc992eb6572a5f71e0d0940a4e047c010b0d0577842e9e7775b53a1f9d62a",
+        "desk_mask.png": "c015fad877d8222f4d2e5933200f77c882d6888bc1ee9debdaa73f52d5c1655e",
+        "desk_weight.png": "059e7c0a9997b244f259d96cbcf5ea58893ad9604dafc392248d6ba4bd320d92",
+        "image_1024.png": "98e5e207ad653cbc06060e91354fde725c139e3b44647b29ad69ae9891ee354c",
+        "mask_review.jpg": "d5bd23424f443477eb17feebc4488f74c74ee72e1750c03244f2ba384df9719c"
+      },
+      "editable_desk_pixels": 1185201,
+      "source_action_pixels": 43344,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        -0.004999999999999582,
+        1275.7999999999993
+      ],
+      "source_lineage_group": "reference_07",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p08_seed9_detailed",
+      "reference": 8,
+      "source_directory": "p08_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "bf4d84a5d49ac6be678e2a1a5be50b927d2fdc0b41454738670dbbba4ec83001",
+        "full_body/movement.png": "fef3624f855e7c089574dee53df9a90be1f898050f76de50b632975f6b230563",
+        "upper_limb/static.png": "e96beede7134eeaaa72749d9813fee7fc996a4ef582bb1003a62c895ffc73250",
+        "upper_limb/movement.png": "ea4f6fe79c2cf8be280b0ca8cd5a655f1287a1d24e1a18b7cb389542fa1ce8e7",
+        "detached_hand/static.png": "a7d4b37fe81b2a5fe35205527fb44ee73a6b61b19d30cdfb821718cfcb7de777",
+        "detached_hand/movement.png": "3d6c6d15d6e1b70c83691ffca644214747e0e16d686b8c61d65cff88eac2f60f"
+      },
+      "used_hand_box": [
+        367,
+        163,
+        874,
+        776
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 10.522092284322545,
+      "frozen_case_sha256": "f635ba67f7d209fbc5d3635f93dc977abf6b0522de349539fe549f96b6d1c29d",
+      "static_hand_alpha_sha256": "1ad7d41907d875762353d8cd86dd09bce03b2612e102d264dbab87a128223b11",
+      "input_sha256": {
+        "control_1024.png": "5a1df1a9c38ab1066464157d4da07f208d6149e915ac3fc7c426e8107599ed00",
+        "desk_mask.png": "d43ca71f2ecab3065d48eea69aa9e1de864c488aa8acdca681aaaf8b4957a185",
+        "desk_weight.png": "944806cdbcc1a62557927c07bcfe7a00b92b43d0ec2c05e01496b3af86a06e85",
+        "image_1024.png": "1eefa7e4c912a80cc926fb949f4c5f2fe3361f5bb9fb5e4e3134415972afc7e5",
+        "mask_review.jpg": "7b6cd254ee377c66a439b5aa24aa6382304b1da8dd7993bca472f98b67bab230"
+      },
+      "editable_desk_pixels": 1252380,
+      "source_action_pixels": 37247,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.0060000000000001875,
+        1255.0
+      ],
+      "source_lineage_group": "reference_08",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p09_seed9_detailed",
+      "reference": 9,
+      "source_directory": "p09_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "d680a1c8a7921ca954d60b5f7e8fac0efd7f31618680b8a3e9657a47a93a3b15",
+        "full_body/movement.png": "65872234aa4d3097ae188fdcacecb3be0cdada733623b2323ed40351784c7998",
+        "upper_limb/static.png": "e77901e75b5deed671f8decf368496de686be8ba3c969773fe96bf0339d7ab89",
+        "upper_limb/movement.png": "a01372522bf5adb1d401dd189134ee61415950ee3e0f99c559076154fbade3a1",
+        "detached_hand/static.png": "1e31b7adb3f106436b3f86aacf9b7ec867400bc525e99a07edfcd304841f4b72",
+        "detached_hand/movement.png": "f6a660478b162a604c2c2b30ccabf3e4de3f2058bce5313bb1f111477951addd"
+      },
+      "used_hand_box": [
+        367,
+        163,
+        882,
+        776
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 17.500398524838435,
+      "frozen_case_sha256": "8acd2b617687cab0aeec6f6fa94dd476c4d926a11436f372e97f746a9b1dde18",
+      "static_hand_alpha_sha256": "898a109ee7653fb481b0988d4a8dfb99b76412a55a6f250684c118e3860231af",
+      "input_sha256": {
+        "control_1024.png": "74caf68992c50fcd214104156b0efb75b7e2bc2bd3a36c43e5c2f9afd391404e",
+        "desk_mask.png": "e39975d319048bca6427a56efa71b5711930076fc6ffc78cd5ae4ac1401ef2ad",
+        "desk_weight.png": "fc812e0d0f5749e1b00a10a46ed135a09c51c0eb6f09f2023c665ef16962ced3",
+        "image_1024.png": "2cd2b16e6fb34e4827d815a12468410c27bc4e2e024c1b887b6b903643d8d163",
+        "mask_review.jpg": "4e65a49821592658e2acfd2f5ff2305d1d970a24d581d1a4dc5c56f29201a98e"
+      },
+      "editable_desk_pixels": 1259996,
+      "source_action_pixels": 42358,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.005384615384616187,
+        1255.7692307692296
+      ],
+      "source_lineage_group": "reference_09",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p10_seed123_detailed",
+      "reference": 10,
+      "source_directory": "p10_seed123_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "65fbf524a916f9a3b0df15be42f681b1f7e49b314ff23ed1ce1d4e4bc3bf7675",
+        "full_body/movement.png": "3b4b3a5bac05e0360cfcd65685a74d05800d4dc0486c4e0abe564d2e68969358",
+        "upper_limb/static.png": "399714fb8bb1f834e5f6cbc34aaa19a2024401da07d1c0dda02fd463d390ad90",
+        "upper_limb/movement.png": "f9a5d58fa84872eae1ca24ef3a38dc60e2df0d0ba1a27bc313cfa2fa6468f374",
+        "detached_hand/static.png": "9f97a6e863efcda627460bd64dcf459155f3c7633aea8c9c989a4666210182bf",
+        "detached_hand/movement.png": "e5a76ffdeb56e3a624e1dc33e1894dbe6472417af5e46ee500e0487fd20d9a40"
+      },
+      "used_hand_box": [
+        367,
+        155,
+        898,
+        776
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 17.304867421746746,
+      "frozen_case_sha256": "60518a31de3967510805f07f1856e1764b6470876aa8bee2e02975ebb17e0570",
+      "static_hand_alpha_sha256": "4c8e52065af23e6fbe92edd0d665e9a3e796b40fe7f8896aaf8691bf85b67d3c",
+      "input_sha256": {
+        "control_1024.png": "4b158c4c6baf4691de2ddddebffb7e575ee4f66a6b41adc39ee4a4a35a7c5e79",
+        "desk_mask.png": "ff0b2f7b6244bbe1276e99c67c32ef1dd2c07883b15201f577926e1c7d0680f9",
+        "desk_weight.png": "1d84aedf2c4865fc91531b31b2e0132c2ddeec47e407d01343e3259eedb91a8d",
+        "image_1024.png": "df5f9932efe22f956f43db312df152ac0198c786b503c1e094e798455ba1d6da",
+        "mask_review.jpg": "8c175c7ba30ab5330aa619a8edaec0e2b4ec373374eec34351a287f9e251965e"
+      },
+      "editable_desk_pixels": 1218786,
+      "source_action_pixels": 50217,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.002000000000000397,
+        1258.5999999999995
+      ],
+      "source_lineage_group": "reference_10",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p11_seed9_detailed",
+      "reference": 11,
+      "source_directory": "p11_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "899c3fb12bf78e2f42f38c6b527307c86e52c28f7273f14dd865a65ce09d72c3",
+        "full_body/movement.png": "b82ea4d9d81db2a97a37afd65498147530af6b0d16a792831796dba063122f34",
+        "upper_limb/static.png": "7afd903e58312f26cdcc02607ccfa988f5a81aaf9435d3c1cb66631d87e59463",
+        "upper_limb/movement.png": "48ab6b61c87a2826a2f38781e6945a73de74a37e5fad5892304bffab4d34ecf9",
+        "detached_hand/static.png": "a094cec0524179c44ba5fd80af5999ecbba69653b91bc3c1aa78041738a822f7",
+        "detached_hand/movement.png": "12acc85d2ffab71b093e551c6225f9e1e51941aa91503f0b53d63ec9323c1b03"
+      },
+      "used_hand_box": [
+        367,
+        155,
+        898,
+        776
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 24.672966422205803,
+      "frozen_case_sha256": "e8ec8a45c012b2829f2f6551d06a00b9d32ae44059382806ad13ec1d5424aaa2",
+      "static_hand_alpha_sha256": "57efc0df503861163c6c287a00b4214123aeabae99aa88051379bb93958a7fe1",
+      "input_sha256": {
+        "control_1024.png": "a808d2c5d32bc620739bcee185673188a7c9c194ca80b3c43c7155ba59e68c45",
+        "desk_mask.png": "359340010b49fb6501cd303096111aa78a38b28ecbe5e1bb3106387c4e6f9bbb",
+        "desk_weight.png": "f62d49110a85683d2a549080029d6606018bf93fea20e82f6b2619c4ebefb3fd",
+        "image_1024.png": "7a00e81155024aad27940567f2237c3e12e17ad3249479d1b0595e59567c8730",
+        "mask_review.jpg": "dc6e624d8398563a0e40b93824f287e44566ba28d0ce735856a065fc84dde2fd"
+      },
+      "editable_desk_pixels": 1250069,
+      "source_action_pixels": 50296,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        6.040965346574662e-16,
+        1257.999999999999
+      ],
+      "source_lineage_group": "reference_11",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p12_seed9_detailed",
+      "reference": 12,
+      "source_directory": "p12_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "ecc48582f05760611d6831a1e70b699928df75bc2d748ff7a4739681f9e6e9ae",
+        "full_body/movement.png": "0069f7f4a27b76e37a4d319e4e916f70c70053d6f53624b48f69ab811ffeb93d",
+        "upper_limb/static.png": "2e446ee532ba427b5be70bc8f20528e894332069e1e18bf65387ce936f52cde9",
+        "upper_limb/movement.png": "c1640e861fd7e45b1d2bcfc3d97ccd380250b11df97a33d9477d4b88bf37393e",
+        "detached_hand/static.png": "2af37cfe4d79b174bbd435e89ac9df2b1edd96df50283642cb7702a70e3f6648",
+        "detached_hand/movement.png": "e341c9bd1008eff00e8223492544387160b4abd6fb4285e94f2da6d75e3a0357"
+      },
+      "used_hand_box": [
+        367,
+        147,
+        898,
+        784
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 18.370441986179877,
+      "frozen_case_sha256": "84f19f5b105f51e1d73fcb4f474c0bca7ffb8d90ad0b0f717ff1bbd79767c9fc",
+      "static_hand_alpha_sha256": "7b81f416626f4eec728cc0998e225f9072fa754b2d9822057ddcad3fd66f58d9",
+      "input_sha256": {
+        "control_1024.png": "d82ee2b38a0d57f68fc4cd8775ebad2f3a651f1f6ea99c518aba844aaab10477",
+        "desk_mask.png": "79bef69ddbd5db56232407612645b2e2b0bebd79251a5c09a8d061f6b75c1ec4",
+        "desk_weight.png": "e8f135a823dafdd3529c5deaf102359eacccc1b1b38d5a37620dcc54fd022144",
+        "image_1024.png": "4962a644b8bd1e074ee03991b214fa96a41c9ae76d10f1c112179f10649eb970",
+        "mask_review.jpg": "8ee0418d8175b13b756c0820fa83071dc5d0101ca682a690bd44e684f9015a58"
+      },
+      "editable_desk_pixels": 1215027,
+      "source_action_pixels": 49294,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.0010000000000013058,
+        1255.1999999999982
+      ],
+      "source_lineage_group": "reference_12",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p13_seed9_detailed",
+      "reference": 13,
+      "source_directory": "p13_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "6951712d7447efbb5e5e6015e7a701dc17c55a6b07027892730fa67eb08b587e",
+        "full_body/movement.png": "bb327a7dad5e630807f1cbd565d67abd0837f28d3296f526c18897a4c899f9f5",
+        "upper_limb/static.png": "375c727116b990d198b84258c364a78aeacbf4786bf8d6e75ce7fb20b58044e1",
+        "upper_limb/movement.png": "edb67df2d6ad93fab5deb546ad4fc01f1830e9658f4971d6902020a694307d41",
+        "detached_hand/static.png": "c3713bd0693d493b98644020ecb7092dbf13a1f8cd9a3bab1eb204aefb5812e3",
+        "detached_hand/movement.png": "e76a653036fb96ff9a20b821b6f5996fc9cb24a4d88957febc9d27697eb2b881"
+      },
+      "used_hand_box": [
+        367,
+        180,
+        906,
+        817
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 23.685543345735415,
+      "frozen_case_sha256": "1d527c3cccbeb9d01167e53656b9aa5d722b60b84f317b37e7bfdf2b90b0de41",
+      "static_hand_alpha_sha256": "04264ecb8bf8589830b59e6dd23d16f60d526b27aa226ea5bd10662376a70c7f",
+      "input_sha256": {
+        "control_1024.png": "8f854de20d3f30543e20f7eabcb0dd3b939cabb6b164876e196fd8a3d5731116",
+        "desk_mask.png": "fbd141bc50d02e2151a14f9b9a5d6147716475834f8f58a4c75ceca7541c5812",
+        "desk_weight.png": "2a85b10be5ddc1e15216e0199ce65f125a6c86d0c7d89c2d337bf1b29d69c742",
+        "image_1024.png": "76b7873ffdeef13a3ad994908c00473d1b2fcac20cda887625c6925bd2b7980a",
+        "mask_review.jpg": "cdaa5068ffd9ef61315a56a5733d546eefaaffdaf73e67c2d2f5b9214ce2eb37"
+      },
+      "editable_desk_pixels": 1288595,
+      "source_action_pixels": 49655,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        -0.002999999999999085,
+        1276.9999999999986
+      ],
+      "source_lineage_group": "reference_13",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p14_seed9_detailed",
+      "reference": 14,
+      "source_directory": "p14_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "8dc81ac7b0923bc16cdac162ccee40a28f351af83327a105360c698f68ff3007",
+        "full_body/movement.png": "5f2dc43711ce325f7f1e9a4c2252856566de6846ce555f624905efd23259f79a",
+        "upper_limb/static.png": "ef1e87e0e85b9ee2af9f427b4d9d53ecce7b3a22ffd657ef37d7fee7c3095b31",
+        "upper_limb/movement.png": "c7528cfb89c74b23866faec284bf8c87937bb660ed8997a6f277d299cd2c0db8",
+        "detached_hand/static.png": "5503264379d89008505afa3afc1aff5bce645eb05c8540fbb9cc855897d59783",
+        "detached_hand/movement.png": "3d7da30d8d07b9b99214c58c8efed6610e9b281da3bfc584fac75907d6e294cc"
+      },
+      "used_hand_box": [
+        367,
+        163,
+        898,
+        784
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 18.232249756571353,
+      "frozen_case_sha256": "c1d6d251887067ab4b9545774244b9d4003aaecd78b6356ddf1bb7ed5eb44844",
+      "static_hand_alpha_sha256": "2535bcebb469c30bf6dd7c58a5bec6248ed3160348e5361e139df75d3efa87d9",
+      "input_sha256": {
+        "control_1024.png": "98d1f5dc3fab65650b12a36761867ef41763b703fe1ce91738e81bc12b460716",
+        "desk_mask.png": "0723b90bdd892c1109b58a1a08f99c9d951eab593f6e523aa02546923ed103b6",
+        "desk_weight.png": "caf84b27d15d46e4795db5bd89bac4ef2e20fe8e05a6f27ef9ff251c631b99e5",
+        "image_1024.png": "b5d2717b090e2e60b4619a53e3120f8071e01d8a69ab62cca20d323fd798bf75",
+        "mask_review.jpg": "cf86f1f42fa002fcc994b73c8e2f4d570c8480817525ba2a781a6ee44addb530"
+      },
+      "editable_desk_pixels": 1267821,
+      "source_action_pixels": 39560,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.002000000000001303,
+        1259.3999999999978
+      ],
+      "source_lineage_group": "reference_14",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p15_seed9_detailed",
+      "reference": 15,
+      "source_directory": "p15_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "ad8f69d30dbcae30bdeb73b554d04b7e311649a2228b271e158a19c041348771",
+        "full_body/movement.png": "e8e625ad4660bc51d02deaa2786642b93a132f526c78ed2c0c6c01168619a3ff",
+        "upper_limb/static.png": "1c6c51e71dec29769f3f078e47f830729ff2021c70418a92f4d0b8b699b7f5cc",
+        "upper_limb/movement.png": "e2298a3f8b96db7e60e635eba2f366b5a318468f19066b5cb3f48521e9da5f20",
+        "detached_hand/static.png": "2ff94f9ba1dd2d57b0584643e92e6365959178a54cd617ab65afed5c50f7a4a4",
+        "detached_hand/movement.png": "bc7a637208113e568d4f26476ef8ec710354380862114fa25ab0c9fbbd26c172"
+      },
+      "used_hand_box": [
+        367,
+        180,
+        906,
+        825
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 18.30628923283874,
+      "frozen_case_sha256": "201954ba6d070d868ae28c73bb525d4386c80cc3989382f274be3891d3809dfb",
+      "static_hand_alpha_sha256": "e63fcdba4ea1bffb15fd770ed6da46c53af950015a796f1e50afe99f4655ba6e",
+      "input_sha256": {
+        "control_1024.png": "7f3726cfe67855632500fe2cb665c9c5691404a67967f82d2308233b920bb6f6",
+        "desk_mask.png": "a40e7bdb07f21865d1fe814811564976763264b4c907a6395b6cfed65173c579",
+        "desk_weight.png": "74a08af9e9f9224135b69be7f0b05499307d3be48cfc6bd24910b04c680d0ad8",
+        "image_1024.png": "d40ca0c61bb487c45ccc7126de27ed621b5a1087016aa916b17ea024b0182c09",
+        "mask_review.jpg": "20969109d17d9c00c7f9b95c9cf3d1b9fc5109f5a5578509afa7296671e11d93"
+      },
+      "editable_desk_pixels": 1297248,
+      "source_action_pixels": 48559,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        -0.003999999999999339,
+        1275.999999999999
+      ],
+      "source_lineage_group": "reference_15",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p16_seed9_detailed",
+      "reference": 16,
+      "source_directory": "p16_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "43ff9c9faf39f316f199db167fdf8428550c8762c54d018bfde167a59d610c4f",
+        "full_body/movement.png": "6208b0ff229bb42f05782b4b35703917cde3cb948a826be318450e57c7616589",
+        "upper_limb/static.png": "338359b37bfffc950304550b2b35bb020e7e299d8c36d0ef09b3b602ebd804a1",
+        "upper_limb/movement.png": "d4fbc97d448a63bd5d2c7ae940c8ed13a881ed6dbc1b8c9f36348a135fa22cf7",
+        "detached_hand/static.png": "c28e5de0129ddb7bb69cd36c644745f0f06c77d4d3ece8a526486b60c6bbc603",
+        "detached_hand/movement.png": "5d8434d269670d07b8aa81894a6353a89861d355f723a2d8c36de606fb4956ab"
+      },
+      "used_hand_box": [
+        367,
+        163,
+        898,
+        784
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 21.83957507438208,
+      "frozen_case_sha256": "ed604d957b6ddd701a56397f8eaa432630f0d2b3b46ee032709c0baa064a2cf2",
+      "static_hand_alpha_sha256": "5fe69f40833dcfccaf2e96f5923cafe8b484098f506e77461b77dc903071b632",
+      "input_sha256": {
+        "control_1024.png": "0b6a87beaaaab2ced36e45d1b28ea536b2227b00f026abcbce74a95e4f01e3e8",
+        "desk_mask.png": "f350e8f53bd58226c55e207a9a13f9f9fecd945d098fae2968ad7c85aafeaad4",
+        "desk_weight.png": "7baf802c73e38eda8a5bd09127515b135eac91d254f270341f45d7df67805042",
+        "image_1024.png": "e535790e8f3fb65e1db5eceb70e96c214f724d593e650d57600c2bdc35b6bfc1",
+        "mask_review.jpg": "9e37d303c1a642a451131036f4dc5572c8584b16176fdea900e37b1dd1369291"
+      },
+      "editable_desk_pixels": 1242508,
+      "source_action_pixels": 43717,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.00500000000000069,
+        1254.7999999999988
+      ],
+      "source_lineage_group": "reference_16",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p17_seed9_detailed",
+      "reference": 17,
+      "source_directory": "p17_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "4aa6267f52de556d9eb31e5b18858b63e56b1b5d49ee183627af2ce5d308a59f",
+        "full_body/movement.png": "579289974873092c2947fca011b4fa8eb985f4c89a8f35b61afaf7e7742b4fa2",
+        "upper_limb/static.png": "0da5495bc0061dd4d93e7e1a856b9a30457be8f3dc4c1786df125bdcfb41f240",
+        "upper_limb/movement.png": "fd4b179224f7bc2a51d8ebebae7cd434e2ab5eaa97589a9c1afbd42cbb714226",
+        "detached_hand/static.png": "b3e496bcfab5a50cb8bb1af3bf4f84527947f42851d6973632124842975a0a4c",
+        "detached_hand/movement.png": "da25001d8338c1bc5826313f55ddb35d7aff084e63dbb7730d9aae1a5e18b4c0"
+      },
+      "used_hand_box": [
+        367,
+        180,
+        915,
+        833
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 20.23061992484799,
+      "frozen_case_sha256": "05baa3bc89201b66ebb5cd464849ef01634d6920ee799e733eb1c98b55fc5f6e",
+      "static_hand_alpha_sha256": "ebc9042900725e716bbef265519c833959c7529887c7580ffb6317b0653c1dff",
+      "input_sha256": {
+        "control_1024.png": "030d4e8aadbb0e068a518a3ae13681893cfb928e12283ee104967e1fa1bd19a7",
+        "desk_mask.png": "3f53c71809b6323f0cf5cc3e191f29e2f70e9cadfb02a01f6539ebcdc89b102e",
+        "desk_weight.png": "8fc0e062578264d91290e9f20b9ebdeb0540edb4b2c5a5497c0f7752ff1827cc",
+        "image_1024.png": "a5f771b9665a9fef5306f22d46c2c945efa065906b382f441abbd2a9c1bf93c6",
+        "mask_review.jpg": "8db4d53ac8fa8fc29d7d4a427eee011f709c57a884684039ad715f1c74dac749"
+      },
+      "editable_desk_pixels": 1279359,
+      "source_action_pixels": 51359,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        -0.008999999999999066,
+        1260.7999999999986
+      ],
+      "source_lineage_group": "reference_17",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p18_seed123_detailed",
+      "reference": 18,
+      "source_directory": "p18_seed123_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "c31c261050c32dd7744d5b6dab2df8763e08292d169b3ede739ab598a6584d50",
+        "full_body/movement.png": "3b1b4427304488d0b455b8f33f11e506bd38b46ba1c79e256ad2dc554093fb7b",
+        "upper_limb/static.png": "3ad2ec223b6ff7ea4ace84cba817439cbf19de749772ba5873043b0f6ac5ed5a",
+        "upper_limb/movement.png": "78891a02c2642844a197a03092b11ac9cd9c5f38c93bdf924d533b3b6da4acc4",
+        "detached_hand/static.png": "bf6c5108dc4afd93a6d151d84c251de1731744f8bcdd4c8c597a52a71f2fd39b",
+        "detached_hand/movement.png": "4dc06bc17f9f9169382d7dec48c9f56f4a18de23b080caa79edc96a1033d3e4a"
+      },
+      "used_hand_box": [
+        367,
+        155,
+        906,
+        792
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 16.168887337437273,
+      "frozen_case_sha256": "1a52c1f3d26be4bd9c188d1af3fbbeca18a24bb2437131c9b8c9ab97de7601c6",
+      "static_hand_alpha_sha256": "2ff61b4caaaaf6cdcf451213b657f7e7b08212cc4cae1b7e1dfc803c93e44ad2",
+      "input_sha256": {
+        "control_1024.png": "721fe5a91c566daf37a672c61a93c799d429dba90923e90b6b2dcead054503ad",
+        "desk_mask.png": "886dfb5a4a5c7014d4149d5a5240c6c68a4e93b58911360e176f8f9c2fbd31c0",
+        "desk_weight.png": "671fea4c26de0c208164a753f743b59f578b1eafa6c9531580e0302de1c8d466",
+        "image_1024.png": "388f0d03d8a8801e063b27b2d83d248c7a3ffbfe41a4fbe4c779fa599aeef7dd",
+        "mask_review.jpg": "0f7f0f0e1a2832505248507caccb259109a7d70fe690b399467eab04ad41490e"
+      },
+      "editable_desk_pixels": 1214855,
+      "source_action_pixels": 49755,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.0040000000000010956,
+        1252.9999999999982
+      ],
+      "source_lineage_group": "reference_18",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p19_seed9_detailed",
+      "reference": 19,
+      "source_directory": "p19_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "098ccef9ef3c5a0102d3b6733e0dda240959ce6064ef2d69ed69d3a0ae3e31a1",
+        "full_body/movement.png": "61692382ada298c3e89ee62c9e84b4d4ef5806c1b0e3531b713346b11bd1275e",
+        "upper_limb/static.png": "bb82d59afd85ba19fbacfd5eb4bc1321bfd3e940323f2309bc351985fcde19c6",
+        "upper_limb/movement.png": "6c7f0a5267a4ecf74775b9d4c81106a9b5641ff4e0bd2924fa26e2f47e7a74a9",
+        "detached_hand/static.png": "08092318c1af01971bfe81ed2860c945400ed104652e4d80512a81daad31448a",
+        "detached_hand/movement.png": "95435ea7b8b6630bb58af3081698a59f5260898e1f3240422536fb0f04f81f9e"
+      },
+      "used_hand_box": [
+        367,
+        147,
+        898,
+        800
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 18.970095698211093,
+      "frozen_case_sha256": "8c50bb0c0932120193d1f139d2be58ca655df447f18da78088fa681aca7fc17e",
+      "static_hand_alpha_sha256": "82862377024b554ced153e48ecaa0a630d69da5b7af795ae5d1ff794a43c778a",
+      "input_sha256": {
+        "control_1024.png": "abca1a2e124cd21a2910a46b2bca5a4600f58058682fc919204b81baa29ed065",
+        "desk_mask.png": "522870b8614d6cfb3ea75b0b2f61abdc4a1053293866c048b09e4028fc9a4aaf",
+        "desk_weight.png": "da9ec2f68f33b344ecaf5ec56a135805b3994f15ed4da8d9600dbcc8fa7ea0dc",
+        "image_1024.png": "d978c662876641cf8298e7c1ab25d9a0061d8779d03d175fa2c31bba09da6d70",
+        "mask_review.jpg": "be08866d450fbdc27172ba21cd6e4bde115227880ebea248aa239a1224ff3326"
+      },
+      "editable_desk_pixels": 1172733,
+      "source_action_pixels": 45823,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        -0.017000000000000223,
+        1270.9000000000003
+      ],
+      "source_lineage_group": "reference_19",
+      "independent_identity_claim": false
+    },
+    {
+      "id": "p20_seed9_detailed",
+      "reference": 20,
+      "source_directory": "p20_seed9_detailed",
+      "source_condition_sha256": {
+        "full_body/static.png": "d38c7cab8efb07583d9820b0ac916e75a7f68b0258dbaa483b49fff8fc9be6e7",
+        "full_body/movement.png": "e2f0c95c929254671d291edf91d4d746a10c39aa527002efdedf625e23bb2d7c",
+        "upper_limb/static.png": "17c99d4cf6762786526fa6188f650249cb36ec5f915a437a2bb80168b9434442",
+        "upper_limb/movement.png": "f10f76f0eca51c758fad7e4758711b3fab4fa018a3d799100a9db4be37d1190c",
+        "detached_hand/static.png": "4de8f5178705f872bddd6cf427dbfd77f633812d4f76af9ccc17dfc12aef1836",
+        "detached_hand/movement.png": "fcdc7dc3ffcfe235b4002d898dbc5490f71c2210fb7abdc0ffdc1b297295353a"
+      },
+      "used_hand_box": [
+        367,
+        155,
+        906,
+        808
+      ],
+      "upper_limb_cutoff": 1249,
+      "reference_abduction_degrees": 13.308047796425521,
+      "frozen_case_sha256": "03e1ad8b511487710b88eb2ae94203e20b118315e73a0b0802d6c047c82d7680",
+      "static_hand_alpha_sha256": "0678b17cd9d184543869e914414d160dce69ab6156670c9f1dbeb99f797fb6b9",
+      "input_sha256": {
+        "control_1024.png": "d3bdda1158d8d598b46d41bfaa8f83571b55bc3e9edc9884dc269689d93e03b3",
+        "desk_mask.png": "16153d25cdea124cf2600605de331b3d138ba5ec2b340ed7301106912ec8b857",
+        "desk_weight.png": "b16f220d900e6e4158f0718f2a6eb88b8785be4a37b2d828e71c7a98d740c492",
+        "image_1024.png": "a16977e34943aa96f25b0e5c7cabf9d59b7ece47c9616586dfaa6c230e82a88a",
+        "mask_review.jpg": "b2d788de8bcf16d68f2324e653cfceea4d0cf9f2d2e8573cc287ab80862e4e69"
+      },
+      "editable_desk_pixels": 1195279,
+      "source_action_pixels": 46523,
+      "editable_action_overlap_pixels": 0,
+      "desk_edge": [
+        0.007000000000000885,
+        1251.5999999999985
+      ],
+      "source_lineage_group": "reference_20",
+      "independent_identity_claim": false
+    }
+  ]
+}

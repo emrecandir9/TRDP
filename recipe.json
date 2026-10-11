@@ -1,0 +1,71 @@
+{
+  "frozen_sources_sha256": "fd77d45cf7915ade0101e700ed16fbf9339714ed5276b21b60a02179cee22804",
+  "desks": {
+    "beech": "warm natural beech wood with fine straight grain",
+    "oak": "warm natural oak wood with subtle open grain",
+    "maple": "warm natural maple wood with fine flowing grain",
+    "birch": "warm natural birch wood with delicate irregular grain"
+  },
+  "seeds": [
+    9,
+    123
+  ],
+  "lighting": {
+    "neutral": [
+      1.0,
+      1.0,
+      1.0
+    ],
+    "warm": [
+      1.035,
+      1.0,
+      0.965
+    ],
+    "cool": [
+      0.965,
+      1.0,
+      1.035
+    ]
+  },
+  "canary": [
+    "r02_beech_s9_neutral",
+    "r02_oak_s123_warm",
+    "r03_maple_s9_cool",
+    "r03_birch_s123_neutral",
+    "r05_beech_s123_warm",
+    "r05_oak_s9_cool",
+    "r06_maple_s123_neutral",
+    "r06_birch_s9_warm",
+    "r18_beech_s9_cool",
+    "r18_oak_s123_neutral"
+  ],
+  "prompt": "Photograph of a clean {desk} desktop. Subtle realistic wood texture, even soft daylight, original camera perspective. Keep the desk flat and empty, preserve its straight edges and existing contact shadows. The seated adult, hand, forearm and neutral sweatshirt stay unchanged. Natural unretouched photograph.",
+  "negative_prompt": "objects, clutter, extra hand, fingers, face, body, fabric, dark shadow, glossy reflection, cutout, floating, halo, hard seam, illustration, text, watermark",
+  "render": {
+    "size": 1024,
+    "export_size": 2048,
+    "steps": 40,
+    "strength": 0.4,
+    "cfg": 3.5,
+    "control_scale": 0.65,
+    "control_end": 0.9,
+    "cpu_threads": 2
+  },
+  "colour_offset_limit_rgb": 24,
+  "minimum_free_workspace_gib": 16,
+  "minimum_gpu_vram_mib": 12000,
+  "models": {
+    "model": {
+      "id": "SG161222/RealVisXL_V4.0",
+      "revision": "26dfe44930964cd70d0a817b6d1cc945c130e38d"
+    },
+    "control": {
+      "id": "xinsir/controlnet-canny-sdxl-1.0",
+      "revision": "1271357eda52d54b857c650cacb5b51144643ccb"
+    },
+    "vae": {
+      "id": "madebyollin/sdxl-vae-fp16-fix",
+      "revision": "207b116dae70ace3637169f1ddd2434b91b3a8cd"
+    }
+  }
+}

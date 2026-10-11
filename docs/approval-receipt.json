@@ -1,0 +1,62 @@
+{
+  "schema": "trdp-user-approval-validation-v1",
+  "decision_file_sha256": "1a72cc9e5337f9815c89623b34d3564b9ab70840b0731b49150cc63b4d61ea34",
+  "review_manifest_sha256": "b914662613601880a7ccaa56c91b79e92e2df86133521e7ec6cda1f0c631d6bc",
+  "reviewer": "human_user",
+  "exported_at_utc": "2026-10-11T13:10:29.438Z",
+  "families_approved": 480,
+  "original_png_hashes_matched": 2880,
+  "preview_hashes_matched": 2880,
+  "all_family_ids_unique": true,
+  "numeric_verification": {
+    "families_checked": 480,
+    "condition_pngs_checked": 2880,
+    "protected_source_deviation_pixels": 0,
+    "new_stationary_movement_pixels": 0,
+    "context_retained_pixel_errors": 0,
+    "hidden_context_nonblack_pixels": 0,
+    "visual_quality_certified": false
+  },
+  "known_issue": {
+    "reference": 17,
+    "description": "User reports a small clothing problem, accepted despite this issue.",
+    "flagged_family_ids": [
+      "r17_beech_s9_neutral",
+      "r17_beech_s9_warm",
+      "r17_beech_s9_cool",
+      "r17_beech_s123_neutral",
+      "r17_beech_s123_warm",
+      "r17_beech_s123_cool",
+      "r17_oak_s9_neutral",
+      "r17_oak_s9_warm",
+      "r17_oak_s9_cool",
+      "r17_oak_s123_neutral",
+      "r17_oak_s123_warm",
+      "r17_oak_s123_cool",
+      "r17_maple_s9_neutral",
+      "r17_maple_s9_warm",
+      "r17_maple_s9_cool",
+      "r17_maple_s123_neutral",
+      "r17_maple_s123_warm",
+      "r17_maple_s123_cool",
+      "r17_birch_s9_neutral",
+      "r17_birch_s9_warm",
+      "r17_birch_s9_cool",
+      "r17_birch_s123_neutral",
+      "r17_birch_s123_warm",
+      "r17_birch_s123_cool"
+    ],
+    "proposed_sensitivity_analysis": "Repeat analyses excluding every reference-17 variant: 456 families, 2736 images."
+  },
+  "scientific_interpretation": {
+    "source_pairs": 20,
+    "appearance_variants_per_source": 24,
+    "independent_people_or_poses_claimed": false,
+    "source_lineage_independence_verified": false,
+    "split_rule": "Keep all six conditions and all 24 variants of each source together; merge source groups sharing upstream lineage before evaluation.",
+    "scientific_replication_validated": false
+  },
+  "scope": "Local hash-bound record of user visual acceptance. No production image, generation configuration, assistant review ledger, or browser approval state was modified.",
+  "original_pngs_rehashed_this_turn": false,
+  "previous_original_verification_sha256": "1c61896bcdf77699166f4efa01fbaff5255fca13635d2ee839e7b4db835e14c7"
+}

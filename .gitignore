@@ -1,0 +1,10 @@
+.venv/
+__pycache__/
+*.pyc
+.DS_Store
+/output/
+/review*.json
+.env
+/data/sources/
+/data/inputs/
+/docs/480-family-review.pdf
