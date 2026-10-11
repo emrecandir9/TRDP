@@ -1,8 +1,8 @@
 #!/usr/bin/env bash
 set -euo pipefail
-cd "$(dirname "$0")"
+cd "$(dirname "$0")/.."
 mode=${1:-review}
-case "$mode" in review|cuda) ;; *) echo 'Usage: ./setup.sh [review|cuda]' >&2; exit 2;; esac
+case "$mode" in review|cuda) ;; *) echo 'Usage: ./scripts/setup.sh [review|cuda]' >&2; exit 2;; esac
 python=${PYTHON:-python3}
 "$python" -c 'import sys; assert (3, 12) <= sys.version_info[:2] <= (3, 13), "Use Python 3.12 or 3.13"'
 if [[ "$mode" == cuda ]]; then

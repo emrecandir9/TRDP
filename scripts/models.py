@@ -21,7 +21,7 @@ def model_paths(download=False):
         path = Path(snapshot_download(repo_id=model['id'], revision=model['revision'],
                                      allow_patterns=FILES[name], local_files_only=not download))
         for pattern in FILES[name]:
-            require(any(p.is_file() for p in path.glob(pattern)), f'Missing {name}/{pattern}; run models.py --download')
+            require(any(p.is_file() for p in path.glob(pattern)), f'Missing {name}/{pattern}; run scripts/models.py --download')
         paths[name] = path
     return paths
 

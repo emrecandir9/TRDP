@@ -71,7 +71,7 @@ def preflight(cfg):
                ('torch', 'torchvision', 'diffusers', 'transformers', 'accelerate', 'safetensors',
                 'huggingface-hub', 'numpy', 'Pillow')}
     runtime.update(python=platform.python_version(), compiled_cuda=torch.version.cuda)
-    require(torch.version.cuda is not None, 'Install the CUDA environment with ./setup.sh cuda')
+    require(torch.version.cuda is not None, 'Install the CUDA environment with ./scripts/setup.sh cuda')
     return paths, dict(identity=identity(), runtime=runtime, gpu=gpu_state()['name'], models=cfg['models'])
 
 
@@ -158,7 +158,7 @@ def run(args):
     if not pending and not args.preflight:
         print('All selected families already exist and pass saved-image checks; no models loaded.')
         return
-    require(platform.system() == 'Linux', 'Generation requires Linux and NVIDIA CUDA; use dataset.py check on Mac')
+    require(platform.system() == 'Linux', 'Generation requires Linux and NVIDIA CUDA; use scripts/dataset.py check on Mac')
     require(socket.gethostname().split('.')[0] not in {'jaguar', 'puma', 'leopard', 'sshproxy'}, 'Do not compute on a gateway')
     args.output.mkdir(parents=True, exist_ok=True)
     require(shutil.disk_usage(args.output).free >= cfg['minimum_free_workspace_gib'] * 2**30, 'Need 16 GiB of disk headroom')

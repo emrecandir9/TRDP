@@ -8,8 +8,8 @@ from pathlib import Path
 import numpy as np
 from PIL import Image
 
-ROOT = Path(__file__).resolve().parent
-RECIPE = ROOT / 'recipe.json'
+ROOT = Path(__file__).resolve().parents[1]
+RECIPE = ROOT / 'config/recipe.json'
 DATA = ROOT / 'data'
 CONTEXTS = ('full_body', 'upper_limb', 'detached_hand')
 CHECKS = ('natural_table_texture', 'smooth_desk_transition', 'hand_and_contact_preserved',
@@ -53,7 +53,7 @@ def frozen_files(directory, files):
 
 def identity():
     return {name: sha(ROOT / name) for name in
-            ('recipe.json', 'data/frozen_sources.json', 'dataset.py', 'generate.py', 'models.py')}
+            ('config/recipe.json', 'data/frozen_sources.json', 'scripts/dataset.py', 'scripts/generate.py', 'scripts/models.py')}
 
 
 def plan():
@@ -88,6 +88,19 @@ def check_sources(sources):
             require(image.mode == 'L' and image.size == (2048, 2048), 'Invalid desk weight')
             weight = np.array(image)
         require(not weight[np.any(a != b, axis=2)].any(), f"Desk overlaps action: {source['id']}")
+        check_context_pixels(directory, a, b, source)
+        for name, mode, size, image_format in (
+                ('desk_mask.png', 'L', (2048, 2048), 'PNG'),
+                ('image_1024.png', 'RGB', (1024, 1024), 'PNG'),
+                ('control_1024.png', 'RGB', (1024, 1024), 'PNG'),
+                ('mask_review.jpg', 'RGB', (1024, 1024), 'JPEG')):
+            with Image.open(inputs / name) as image:
+                image.load()
+                require(image.mode == mode and image.size == size and image.format == image_format,
+                        f'Invalid frozen input: {inputs / name}')
+                if name == 'desk_mask.png':
+                    require(np.array_equal(np.array(image), (weight > 0).astype(np.uint8) * 255),
+                            'Binary desk mask disagrees with blending weight')
 
 
 def lighting(image, gains):
@@ -144,6 +157,14 @@ def audit_pair(a, b, original_a, original_b, weight, gains):
     require(not delta[~allowed].any() and delta.any(), 'Action changed outside its original support or vanished')
 
 
+def check_context_pixels(directory, a, b, source):
+    for context in CONTEXTS[1:]:
+        keep = context_mask(a.shape[:2], source, context)
+        for label, full in (('static', a), ('movement', b)):
+            pixels = rgb(directory / f'{context}/{label}.png')
+            require(np.array_equal(pixels[keep], full[keep]) and not pixels[~keep].any(), 'Context pixels changed')
+
+
 def export_family(directory, a, b, original_a, original_b, source, job, weight, gains, provenance):
     audit_pair(a, b, original_a, original_b, weight, gains)
     directory = Path(directory)
@@ -166,6 +187,17 @@ def export_family(directory, a, b, original_a, original_b, source, job, weight, 
     return record
 
 
+def check_family_pixels(directory, source, gains, weight=None):
+    original = DATA / 'sources' / source['source_directory']
+    original_a, original_b = rgb(original / 'full_body/static.png'), rgb(original / 'full_body/movement.png')
+    a, b = rgb(directory / 'full_body/static.png'), rgb(directory / 'full_body/movement.png')
+    if weight is None:
+        weight = np.array(Image.open(DATA / 'inputs' / source['id'] / 'desk_weight.png'))
+    audit_pair(a, b, original_a, original_b, weight, gains)
+    check_context_pixels(directory, a, b, source)
+    return a, b, original_b, weight
+
+
 def verify_family(output, job, source, cfg):
     directory = output / 'candidates' / job['id']
     record = read(directory / 'audit.json')
@@ -180,22 +212,13 @@ def verify_family(output, job, source, cfg):
     frozen_files(directory, record['files'])
     expected_files = {f'{c}/{label}.png' for c in CONTEXTS for label in ('static', 'movement')}
     require(set(record['files']) == expected_files, 'Expected exactly six condition PNGs')
-    original = DATA / 'sources' / source['source_directory']
-    original_a, original_b = rgb(original / 'full_body/static.png'), rgb(original / 'full_body/movement.png')
-    a, b = rgb(directory / 'full_body/static.png'), rgb(directory / 'full_body/movement.png')
-    weight = np.array(Image.open(DATA / 'inputs' / source['id'] / 'desk_weight.png'))
     gains = cfg['lighting'][job['light_id']]
-    audit_pair(a, b, original_a, original_b, weight, gains)
+    a, b, original_b, weight = check_family_pixels(directory, source, gains)
     new_a = rgb(parent / 'static_with_shared_desk.png')
     new_b = original_b.copy()
     new_b[weight > 0] = new_a[weight > 0]
     require(np.array_equal(a, lighting(new_a, gains)) and np.array_equal(b, lighting(new_b, gains)),
             'Candidate differs from its recorded parent')
-    for context in CONTEXTS:
-        keep = context_mask(a.shape[:2], source, context)
-        for label, full in (('static', a), ('movement', b)):
-            pixels = rgb(directory / f'{context}/{label}.png')
-            require(np.array_equal(pixels[keep], full[keep]) and not pixels[~keep].any(), 'Context pixels changed')
     return dict(id=job['id'], audit_sha256=sha(directory / 'audit.json'), condition_pngs=6)
 
 

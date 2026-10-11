@@ -1,6 +1,6 @@
 """CPU-only regression checks; no local dataset, model downloads or GPU required."""
 import argparse
-import json
+import sys
 from pathlib import Path
 import tempfile
 import types
@@ -9,10 +9,12 @@ from unittest.mock import patch
 
 import numpy as np
 from PIL import Image
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'scripts'))
 import dataset as d
 import generate as g
 import models
 import run
+import validate_dataset as archive
 
 
 class Guards(unittest.TestCase):
@@ -92,6 +94,46 @@ class Guards(unittest.TestCase):
             (root / 'input.png').write_bytes(b'wrong')
             with self.assertRaisesRegex(ValueError, 'Changed frozen file'):
                 d.frozen_files(root, {'input.png': 'abc'})
+
+    def test_archive_rejects_changed_approval_and_hashes(self):
+        cfg, sources, jobs = d.plan()
+        job = jobs[0]
+        source = sources[job['source_id']]
+        family = dict(d.read(archive.MANIFEST)['families'][0])
+        audit = dict(id=job['id'], source_id=source['id'], reference=source['reference'],
+                     desk_id=job['desk_id'], seed=job['seed'], lighting=job['light_id'],
+                     source_lineage_group=source['source_lineage_group'],
+                     source_condition_sha256=source['source_condition_sha256'], files=family['condition_png_sha256'])
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            d.write(root / 'audit.json', audit)
+            with self.assertRaisesRegex(ValueError, 'Missing local file'):
+                archive.check_record(root, family, job, source)
+            with patch.object(archive, 'frozen_files'):
+                self.assertEqual(archive.check_record(root, family, job, source)['condition_pngs_checked'], 6)
+                family['decision'] = 'reject'
+                with self.assertRaisesRegex(ValueError, 'approval'):
+                    archive.check_record(root, family, job, source)
+
+    def test_archive_binds_the_original_guard_to_parent_provenance(self):
+        _, sources, jobs = d.plan()
+        job = jobs[0]
+        source = dict(sources[job['source_id']])
+        with tempfile.TemporaryDirectory() as temporary:
+            root = Path(temporary)
+            weight = root / '_provenance/inputs' / source['id'] / 'desk_weight.png'
+            weight.parent.mkdir(parents=True)
+            Image.new('L', (2048, 2048)).save(weight)
+            source['mask_coordinate_correction'] = {'previous_input_sha256': {'desk_weight.png': d.sha(weight)}}
+            inputs = dict(source['input_sha256'])
+            inputs['desk_weight.png'] = d.sha(weight)
+            parent = root / '_provenance/diffusion_parents' / job['base_id'] / 'result.json'
+            d.write(parent, dict(job=dict(id=job['base_id'], source_id=source['id']), frozen_input_sha256=inputs))
+            audit = {'provenance': {'diffusion_parent_result_sha256': d.sha(parent)}}
+            self.assertFalse(archive.historical_weight(root, job, source, audit).any())
+            Image.new('L', (2048, 2048), 255).save(weight)
+            with self.assertRaisesRegex(ValueError, 'Historical desk weight changed'):
+                archive.historical_weight(root, job, source, audit)
 
     def test_incomplete_output_is_not_retried(self):
         with tempfile.TemporaryDirectory() as temporary:

@@ -56,7 +56,7 @@ def launch(scope, output):
     with (logs / f'{name}.log').open('x') as log:
         env = {**os.environ, 'PYTHONDONTWRITEBYTECODE': '1', 'OMP_NUM_THREADS': '2',
                'OPENBLAS_NUM_THREADS': '2', 'MKL_NUM_THREADS': '2'}
-        worker = subprocess.Popen(['nice', '-n', '19', sys.executable, str(ROOT / 'generate.py'), scope,
+        worker = subprocess.Popen(['nice', '-n', '19', sys.executable, str(ROOT / 'scripts/generate.py'), scope,
                                    '--output', str(output)], stdin=subprocess.DEVNULL, stdout=subprocess.PIPE,
                                   stderr=subprocess.STDOUT, text=True, bufsize=1, env=env)
         record['worker_pid'] = worker.pid
