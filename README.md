@@ -37,7 +37,7 @@ TRDP/
 │       ├── _provenance/          # LOCAL: original masks and hash-bound parent records
 │       │   ├── inputs/           # 20 original desk_weight.png files
 │       │   └── diffusion_parents/ # 160 original result.json records
-│       ├── r06_birch_s9_warm/    # Example: reference 6, birch, seed 9, warm balance
+│       ├── r12_birch_s9_warm/    # Example: reference 12, birch, seed 9, warm balance
 │       │   ├── full_body/       # static.png + movement.png
 │       │   ├── upper_limb/      # static.png + movement.png
 │       │   ├── detached_hand/   # static.png + movement.png
@@ -78,22 +78,6 @@ approximations of the frozen inputs. Archive validation checks hashes, image for
 approval, protected pixels under the original masks, action support and contexts; it writes
 `data/accepted/validation.json`. It does not replace human visual review.
 
-## Mask correction (11 October 2026)
-
-The hand matte was a cropped image, mistakenly stretched across the full scene.
-The 20 local mask/weight/preview sets now place it at its native crop coordinates;
-the existing manifest and recipe hashes have been updated. **Black protects** both
-hand poses, a 36 px guard and the forearm/contact region; **white edits the desk**.
-The separate blending weight softens the editable boundary over 48 px. Masks are
-processing inputs and are never displayed as stimuli. The guide shows before/after photos.
-
-The approved 480 families remain unchanged and were generated with the old masks.
-Their acceptance hashes and original production inputs are preserved. Historical
-pixel checks use those original weights; validation separately reports deviations
-from the corrected guard. A future corrected run needs a fresh output folder and new visual
-canary approval. Reuse the corrected frozen inputs; the legacy preparation script
-still contains the original scaling mistake.
-
 ## Generate on CUDA
 
 Linux, one NVIDIA GPU, at least 12,000 MiB free VRAM and 16 GiB free output space.
@@ -130,7 +114,7 @@ New runs use `output/parents/<desk-parent>/` for the 160 raw desk proposals and 
 shared composites, and `output/candidates/<family>/<context>/{static,movement}.png`
 for the condition images. JSON records bind pixels, recipe, code, models, runtime and
 reviews. Use `--output PATH` consistently for another run. To check just one family:
-`python scripts/dataset.py verify --family r06_birch_s9_warm`.
+`python scripts/dataset.py verify --family r12_birch_s9_warm`.
 
 ## Current position and next steps
 

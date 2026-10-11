@@ -16,7 +16,7 @@ not been sampled or visually approved.
 | Original provenance | All 160 parent JSONs match the family audit hashes; all 20 original desk weights match the parent input hashes and recorded previous versions |
 | Historical pixel invariants | Zero protected-pixel errors under the original masks; action differences stay inside original support; retained context pixels match; hidden pixels are black |
 | Corrected-guard comparison | All 480 families have deviations: 4,116,516 changed pixel positions summed across the 960 full-body A/B images. This includes the larger protected contact buffer; it is not a count of distinct people, anatomical defects or corrupted files |
-| Worked example | Reference 6, birch, seed 9: composition from the original saved proposal and original weight matches the saved native composite exactly; warm export pixels also match |
+| Worked example | Reference 12 (male), birch, seed 9: composition from the original saved proposal and original weight matches the saved native composite exactly; warm export pixels also match |
 | Illustrated guide | 25 pages rendered and visually inspected; bookmarks, text extraction, page dimensions and image provenance checked |
 | Large local review PDF | 480 pages, 960 form fields, readable and unencrypted; retained unchanged. Its 480 pages were not freshly re-rendered |
 | Publication boundary | Dataset, original-mask provenance, frozen input images, environment, new outputs and large review PDF are ignored by Git; no Git LFS |
