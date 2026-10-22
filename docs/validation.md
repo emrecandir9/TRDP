@@ -130,6 +130,18 @@ needed.
 `dataset.py review` records only `reviewer: human_user`; assistant inspections and numeric
 checks are advisory. A regression test rejects an assistant review file.
 
+## Control stimuli — 22 October 2026
+
+| Check | Result |
+| --- | --- |
+| Forearm segmentation | SAM-HQ (pinned), 20 static frames, predicted IoU 0.971–0.998, byte-identical on repeat |
+| Integrity | 6 controls × 20 sources: hand and every changed pixel identical to the full-body image; static/movement renders differ exactly at the movement |
+| Matched pairs | `hand_stub` vs `hand_gap_stub` area difference < 10⁻¹¹; `window_hand` vs `window_arm` < 10⁻⁵ |
+| Scramble | Valid block permutation per source; fixed blocks unchanged |
+| Low-level statistics | Matched pairs agree in visible area, luminance, changed-pixel share and movement distance ([controls.md](controls.md)) |
+| Tests | 28 CPU tests passed, including 4 for the controls |
+| Visual | Assistant inspected all 20 sources; approved by the project owner on 22 October ([record](controls-approval.json)) |
+
 ## Remaining limits
 
 No fresh CUDA inference or actual model download was run during this cleanup. No new

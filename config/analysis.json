@@ -145,6 +145,31 @@
   "frozen_spec": {
     "path": "docs/analysis-spec.md",
     "sha256": "559c4a3f3e4ef978d89cb4e00bed041d4b82226482fd053505262fc656de69bb",
-    "date": "2026-10-22"
+    "date": "2026-10-22",
+    "amendments": [
+      {
+        "date": "2026-10-22",
+        "section": "7.2 controls",
+        "sha256_after": "62182356f066f64e8a30f09cea85200df29cd40dee9ace29e505b0e6e5191100",
+        "before_any_result": true
+      }
+    ]
+  },
+  "controls": {
+    "definition": "docs/controls.md",
+    "manifest": "data/controls.json",
+    "manifest_sha256": "01121a62960d0d0fdf6df41c326a04f18759e51214223883760e478dca628d2d",
+    "arm_segmentation_manifest": "data/arm_segmentation.json",
+    "arm_segmentation_sha256": "4214f86a38c6d4e4b3716505011bf806f51466e0e186cfc478ea74717666ad35",
+    "names": [
+      "hand_stub",
+      "hand_gap_stub",
+      "window_hand",
+      "window_arm",
+      "scrambled",
+      "occluded_wrist"
+    ],
+    "rendering": "On demand from each family full-body image (scripts/controls.py render); no stored image archive",
+    "visual_review": "approved by the project owner on 2026-10-22 (docs/controls-approval.json)"
   }
 }

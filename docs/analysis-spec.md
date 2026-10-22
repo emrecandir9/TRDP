@@ -261,16 +261,19 @@ No condition label enters any model, and no condition receives its own gain.
 
 ### 7.2 Controls (masks over frozen full-body pixels)
 
+Defined and checked in [controls.md](controls.md); P = palm width (landmarks 5–17).
+
 | Control | H2 prediction |
 | --- | --- |
-| Arm with a black gap across the wrist | Behaves like the detached hand |
-| Detached hand with a forearm stub | Behaves like the upper limb |
+| `hand_gap_stub`: silhouette + forearm segment starting 0.5 P below the wrist, on black, area equal to `hand_stub` (missing wrist) | Behaves like the detached hand |
+| `hand_stub`: silhouette + 1 P of forearm, on black | Behaves like the upper limb |
 | Rectangle with desk patch (archive `detached_hand`) | Behaves like the detached hand: a surface is not a body |
-| Equal-area windows, hand-centred vs arm-centred | Only the window containing a connected arm produces facilitation |
-| Block-scrambled context, hand intact | Behaves like the detached hand |
+| `window_hand` vs `window_arm`: equal-area hand-axis rectangles, extended sideways over desk or 1 P down the arm | Only the window containing a connected arm produces facilitation |
+| `scrambled`: upper-limb view in 32 px blocks, blocks touching the hand fixed | Behaves like the detached hand |
+| `occluded_wrist` (exploratory): upper-limb view with an opaque band over 0.5 P of the wrist | Not declared (occlusion, not discontinuity) |
 
-Each control is checked like the contexts: visible pixels equal full-body pixels, hidden
-pixels are black, and A/B differences stay inside the action region.
+Each control is checked like the contexts: the hand and every pixel that changes between frames
+equal the full-body image, hidden pixels are black, and matched pairs have equal area.
 
 ## 8. Gates
 
@@ -299,6 +302,7 @@ pixels are black, and A/B differences stay inside the action region.
 | 22 Oct 2026 (draft) | Reference-image origin recorded (AI-generated, 20 distinct synthetic identities) | Resolves the §3 open item; restricts generalisation claims |
 | 22 Oct 2026 (draft) | §5 revised: hierarchical aggregation, 10 initialisations, primary model named, P2 and P3 added, S3 redefined as same-model low-level and hand-only controls, H2 fit target excludes upper limb, full-body-only training | Audit found undefined aggregation, a P1 loophole, a vacuous S3, partial circularity of S1 for H2 and unspecified training contexts; approved by the project owner |
 | 22 Oct 2026 | **Frozen** | Open items resolved, criteria approved; no model result exists |
+| 22 Oct 2026 (after freeze, before any result) | §7.2 controls given exact definitions and parameters; the wrist gap is shown on black as `hand_gap_stub` with area matched to `hand_stub`; the desk-scene band is kept as exploratory `occluded_wrist` without a declared prediction | A black band on a desk scene reads as an occluder behind which the arm is completed, so it does not test discontinuity; parameters had not been fixed at freezing |
 
 ## 11. References
 

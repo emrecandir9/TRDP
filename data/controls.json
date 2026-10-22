@@ -1,0 +1,750 @@
+{
+  "method": "Control stimuli of analysis spec \u00a77.2: masks over frozen full-body pixels.",
+  "parameters": {
+    "gap_length_palms": 0.5,
+    "stub_length_palms": 1.0,
+    "window_extension_palms": 1.0,
+    "window_margin_px": 20,
+    "window_area_tolerance": 0.005,
+    "gap_arm_dilation_px": 3,
+    "block_px": 32,
+    "hand_guard_px": 6,
+    "edge_sigma_px": 0.7,
+    "cut_ramp_px": 2
+  },
+  "controls": [
+    "hand_stub",
+    "hand_gap_stub",
+    "window_hand",
+    "window_arm",
+    "scrambled",
+    "occluded_wrist"
+  ],
+  "code_sha256": "7d79df8b22a2b0277174f9c3149a9679f991cbf931d3e0654c603b746c05ae7e",
+  "silhouettes_sha256": "b071f424e711992a49caf50fe6443b17716f1044a49a5d49c4e9a2c6e012daff",
+  "arm_segmentation_sha256": "4214f86a38c6d4e4b3716505011bf806f51466e0e186cfc478ea74717666ad35",
+  "frozen_sources_sha256": "2495d9098ad6b7b8df014b7e56223c76ebf9cb5295fd88d0aa26c748c8e38faf",
+  "visual_review": "pending",
+  "sources": {
+    "p01_seed9_detailed": {
+      "palm_px": 139.4841122703102,
+      "gap_px": 69.7420561351551,
+      "stub_px": 139.4841122703102,
+      "window_extension_px": 139.4841122703102,
+      "window_sideways_px": 123.65320647036032,
+      "window_areas_px": {
+        "window_hand": 221283.01176470588,
+        "window_arm": 221282.99607843137
+      },
+      "window_area_difference": 7.088784400131606e-08,
+      "gap_segment_px": 142.99951269682802,
+      "occluded_band_px": 11223,
+      "stub_area_px": 21021.064478572538,
+      "gap_stub_area_px": 21021.064478579327,
+      "stub_area_difference": 3.229364745516501e-13,
+      "scrambled_blocks": {
+        "movable": 2365,
+        "fixed": 131,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 1,
+      "files": {
+        "control_occluded_wrist.png": "3951c6b2b864bc7d905c00bfed06d53a947b9d098d636b6764d5c456bb1ea1a1",
+        "control_hand_stub_static.png": "abb087b49880438ca14551846f91a2940ba0118960e213ddddd7b769a2da676d",
+        "control_hand_stub_movement.png": "b3a20ae0b8f87cf5cd9445c54c880c51435b4140c01202f371ec74344441aebf",
+        "control_hand_gap_stub_static.png": "b704073cbf431dcfe367896cd0d17bdb5246c73385d14ed11ca8d2d09d7af34e",
+        "control_hand_gap_stub_movement.png": "caf9e3048b7ccffb69c1406881dbacf8f97641b0c4e770093b01ce5d7273b8ae",
+        "control_window_hand.png": "19b46c26db820bd4122f4b04cf19a3126127d44db8b569f6e500440166ee4aa2",
+        "control_window_arm.png": "7b00d558851a73d8454cdd5cd40ffd593b15954f07f2ede360511df529076250",
+        "control_scrambled.npy": "2227c9a8ebf00f061752870b394e2a9c439f0fdf02d7523a0263cd4a1a7f5b9b"
+      }
+    },
+    "p02_seed9_detailed": {
+      "palm_px": 148.74968697153113,
+      "gap_px": 74.37484348576557,
+      "stub_px": 148.74968697153113,
+      "window_extension_px": 148.74968697153113,
+      "window_sideways_px": 133.68093827090786,
+      "window_areas_px": {
+        "window_hand": 244259.9843137255,
+        "window_arm": 244260.9843137255
+      },
+      "window_area_difference": 4.093981700800868e-06,
+      "gap_segment_px": 150.59564135223582,
+      "occluded_band_px": 12286,
+      "stub_area_px": 22889.890065916574,
+      "gap_stub_area_px": 22889.890065906948,
+      "stub_area_difference": 4.205390194467593e-13,
+      "scrambled_blocks": {
+        "movable": 2420,
+        "fixed": 140,
+        "grid": [
+          40,
+          64
+        ]
+      },
+      "seed": 2,
+      "files": {
+        "control_occluded_wrist.png": "073e733d2286af578b2faf4c23b60677b7659e5f2cb5be76e15c4878494477b6",
+        "control_hand_stub_static.png": "212563c85ee659931abddeb09f780bec8696840662f4e0bf19d247032ccb2cbc",
+        "control_hand_stub_movement.png": "5494dd626dc3a178af12c680aadc4d1d0c8b04ce83ba9413c5d22ad7a614f9a5",
+        "control_hand_gap_stub_static.png": "2639275294cd0e29bf8b4cac3f5afad9cc0f5e6fe2c1ec22031b202b373903f3",
+        "control_hand_gap_stub_movement.png": "3defc8d49f58e4b0746440f1a4977c16e42d8ebe5fb206af16b38c3af43a2928",
+        "control_window_hand.png": "57b0149a683eaeda1ee310ab734e7c9f533a85431d15c0dd09ef32f0f86cd14d",
+        "control_window_arm.png": "5e27cb4bad40f4733c16a59e66aea125bb302315e58f5c7d94a9dc3e95887453",
+        "control_scrambled.npy": "c31f2327ab29a6d1ec5be041bcd7bb8f376be4d8982d314fd12bf13e5797eb4f"
+      }
+    },
+    "p03_seed9_detailed": {
+      "palm_px": 142.07250124816701,
+      "gap_px": 71.03625062408351,
+      "stub_px": 142.07250124816701,
+      "window_extension_px": 142.07250124816701,
+      "window_sideways_px": 116.3537695414011,
+      "window_areas_px": {
+        "window_hand": 240327.0156862745,
+        "window_arm": 240327.00784313725
+      },
+      "window_area_difference": 3.263527192996593e-08,
+      "gap_segment_px": 142.8803861829387,
+      "occluded_band_px": 11723,
+      "stub_area_px": 22240.294495987204,
+      "gap_stub_area_px": 22240.294495975573,
+      "stub_area_difference": 5.229525287253147e-13,
+      "scrambled_blocks": {
+        "movable": 2349,
+        "fixed": 147,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 3,
+      "files": {
+        "control_occluded_wrist.png": "2bf55b65c47d967ace5746fd25e25f6f3fb351adbe08dbb2d9474688851c87ac",
+        "control_hand_stub_static.png": "d37dd6c5dde5a5efbab64f1a380a6200b3d9c4ebd10a06a96f4a7b8dd9d6ec1c",
+        "control_hand_stub_movement.png": "aef0aabb9456a9f362050a8ad5b300c035ee9c719f282b7d41baa0991c68f410",
+        "control_hand_gap_stub_static.png": "cea5341bcc34af7fae0be9841bff4e715f1a5b372632317f2c659244f5179e0c",
+        "control_hand_gap_stub_movement.png": "57768ea15bf88ce667e15b17c9e41a34c88065ee997f436ce9038358321e44da",
+        "control_window_hand.png": "c1ba0009fc5beb4ec3c96260aa5a71bb08f2d96b755334a2cf67f05fb2a853f9",
+        "control_window_arm.png": "a7ebed31043d1ac55b12ab3c12884ac227dc3ad8d0549caa45d9886dfc055949",
+        "control_scrambled.npy": "c070deaeb62b6fd5598ca2dee39e4e1a812e2b3e671eae8edf4f2ecf582d3021"
+      }
+    },
+    "p04_seed9_detailed": {
+      "palm_px": 141.4310300105969,
+      "gap_px": 70.71551500529846,
+      "stub_px": 141.4310300105969,
+      "window_extension_px": 141.4310300105969,
+      "window_sideways_px": 117.67162449159031,
+      "window_areas_px": {
+        "window_hand": 216448.99607843137,
+        "window_arm": 216448.99607843137
+      },
+      "window_area_difference": 0.0,
+      "gap_segment_px": 142.8550712021082,
+      "occluded_band_px": 11122,
+      "stub_area_px": 20948.80056715936,
+      "gap_stub_area_px": 20948.800567168175,
+      "stub_area_difference": 4.207793482650211e-13,
+      "scrambled_blocks": {
+        "movable": 2362,
+        "fixed": 134,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 4,
+      "files": {
+        "control_occluded_wrist.png": "9cee0e1be3d0f41f651f6c27dffb282d1c33262a5017cfb676a31b1e42a21461",
+        "control_hand_stub_static.png": "bb6f125c879147d0f339a1b9093cf5f26a3b2d65d7951497d15a2ec27e78127b",
+        "control_hand_stub_movement.png": "d273241db07d6a7f78197f172f05717646de836de6e010ca2a2b48f255357913",
+        "control_hand_gap_stub_static.png": "da1c6a148651c764fb4ab82c346e4eb8c7edd60dcd7acd258da07b45a8a52603",
+        "control_hand_gap_stub_movement.png": "b0855fdcda209887ac62607b961725b9e01827fe9e2671e90b9e0fc95a1c278a",
+        "control_window_hand.png": "26e0d3b95ede1a1a3300149c51ea2d81f064779b7b47485ecad6a886a041c7e6",
+        "control_window_arm.png": "b942ad75cf939808823c0e7faf54f816768bd84f2cfa06dabefa8b7620b4d83a",
+        "control_scrambled.npy": "e626b1700db4042d4cc58eecb0f7ed48e64613b56d62aadec485369313691a5e"
+      }
+    },
+    "p05_seed9_detailed": {
+      "palm_px": 130.98258663945117,
+      "gap_px": 65.49129331972559,
+      "stub_px": 130.98258663945117,
+      "window_extension_px": 130.98258663945117,
+      "window_sideways_px": 113.91098631937061,
+      "window_areas_px": {
+        "window_hand": 234649.00392156863,
+        "window_arm": 234649.02352941176
+      },
+      "window_area_difference": 8.356243225632634e-08,
+      "gap_segment_px": 139.63954270286868,
+      "occluded_band_px": 11229,
+      "stub_area_px": 20835.149776128776,
+      "gap_stub_area_px": 20835.14977614181,
+      "stub_area_difference": 6.256195998525489e-13,
+      "scrambled_blocks": {
+        "movable": 2544,
+        "fixed": 144,
+        "grid": [
+          42,
+          64
+        ]
+      },
+      "seed": 5,
+      "files": {
+        "control_occluded_wrist.png": "22696c855d8d210a9a5a4f91089bda977e03095f04faf5da8cf7228020b495c8",
+        "control_hand_stub_static.png": "9aae486885970a97ac14f2f7e7294fe239112e10714948db4e780f5a59c212ba",
+        "control_hand_stub_movement.png": "40b379a29cbdc7e1eab111f6a2a3192b31b3f39c5e818fc766ca644ca08df0a7",
+        "control_hand_gap_stub_static.png": "541fa99adebd7851eed6a3909d4830096a6577a830b2bae2d5fadc46c30b3799",
+        "control_hand_gap_stub_movement.png": "48b923f3c3671046549ff0a7752ffe093aa1bcc62717f42075ff22d01da46bc0",
+        "control_window_hand.png": "fbb3d328529038bc22bd34f176a595df8f4429e6c9b187914ed298915555eeac",
+        "control_window_arm.png": "97e2068bd4daab0bb9a69d86f41cff0a188eb8fc72f6d4d1b90c75c90b85bbe3",
+        "control_scrambled.npy": "407a9df220becb4941806c337523d3e1f0165672dc31f118e51c10025318475f"
+      }
+    },
+    "p06_seed9_detailed": {
+      "palm_px": 140.77151149456233,
+      "gap_px": 70.38575574728117,
+      "stub_px": 140.77151149456233,
+      "window_extension_px": 140.77151149456233,
+      "window_sideways_px": 121.5369916179275,
+      "window_areas_px": {
+        "window_hand": 254157.00784313725,
+        "window_arm": 254158.00784313725
+      },
+      "window_area_difference": 3.934560270149686e-06,
+      "gap_segment_px": 148.25970160485306,
+      "occluded_band_px": 11736,
+      "stub_area_px": 21888.905055864212,
+      "gap_stub_area_px": 21888.905055873925,
+      "stub_area_difference": 4.437592191178414e-13,
+      "scrambled_blocks": {
+        "movable": 2343,
+        "fixed": 153,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 6,
+      "files": {
+        "control_occluded_wrist.png": "36aaff2cfd18b1fa6ce403c561a5e51424a45804404fda17b9412650710413b3",
+        "control_hand_stub_static.png": "3514c19db857fe70a4e9ddb0a7bf5890730b3a1515b56ca5e1be881a24cd40a1",
+        "control_hand_stub_movement.png": "08157b97d55934e4a74dd336112507635d37bf55bd80db612509213a9d53d267",
+        "control_hand_gap_stub_static.png": "2d1458e7e25dc6ff00e312fc187ce3b433995abdc45ca312041e84202377529c",
+        "control_hand_gap_stub_movement.png": "faa67ba5daead666dff9411be13e5b1a8eb9483aefc2779a346c131ce387db2d",
+        "control_window_hand.png": "711cd082aa4819d09c2380b910dd7f6fd5fe100660aa0db8df41a8badb6ca4b1",
+        "control_window_arm.png": "adb1510033317b0afff63ef3558646ba591384a75eb45c711d0544bedfbdedb9",
+        "control_scrambled.npy": "aa851a8f8a39b6a61f7661e0cd25a2c826f67f447ea8dd45e3b9d0a0f801ca59"
+      }
+    },
+    "p07_seed9_detailed": {
+      "palm_px": 145.9947210170537,
+      "gap_px": 72.99736050852685,
+      "stub_px": 145.9947210170537,
+      "window_extension_px": 145.9947210170537,
+      "window_sideways_px": 122.26105740188362,
+      "window_areas_px": {
+        "window_hand": 245047.0,
+        "window_arm": 245046.9843137255
+      },
+      "window_area_difference": 6.401333421866992e-08,
+      "gap_segment_px": 149.46088656951025,
+      "occluded_band_px": 11687,
+      "stub_area_px": 22014.907440339863,
+      "gap_stub_area_px": 22014.90744033138,
+      "stub_area_difference": 3.8536462627102933e-13,
+      "scrambled_blocks": {
+        "movable": 2349,
+        "fixed": 147,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 7,
+      "files": {
+        "control_occluded_wrist.png": "e409e20a7e0237bd3b6b82efe60638fecc89d018b27979a6aea8829f70c69731",
+        "control_hand_stub_static.png": "ab267ac8d1e1bed8c1d0fa64a6cfcb2d7e4a20ded7d601d062437bf6e55bcc4c",
+        "control_hand_stub_movement.png": "0ca2183a6303f9a0a9844797227cebcc662dfd619c96de42a65ba2384463e70b",
+        "control_hand_gap_stub_static.png": "aacfb56b695379d44a612f2d06aa5b34d2e667a9b06038da272a8c8625d0766c",
+        "control_hand_gap_stub_movement.png": "a6bc48a7097cad50b2f4c89c70dceb92f56bfc4ef9c43fd1071c08358a65f2c4",
+        "control_window_hand.png": "0d3565e69b2bb7e9e955245accd16d9866c2ee9eec97cf34652bc7f59af35e41",
+        "control_window_arm.png": "1e75ef5bf2ccd896c3d1c30aa530fc0fbe8c5ae88c07e2aa6f89598dbadf30fa",
+        "control_scrambled.npy": "d17f53f65b5b0d21cad7dc8769634461d258d800df9cb574bde6ace7bbc245cf"
+      }
+    },
+    "p08_seed9_detailed": {
+      "palm_px": 134.4991812525279,
+      "gap_px": 67.24959062626395,
+      "stub_px": 134.4991812525279,
+      "window_extension_px": 134.4991812525279,
+      "window_sideways_px": 111.55154374105533,
+      "window_areas_px": {
+        "window_hand": 216047.99215686275,
+        "window_arm": 216048.99215686275
+      },
+      "window_area_difference": 4.628579795799039e-06,
+      "gap_segment_px": 139.68081026952092,
+      "occluded_band_px": 10205,
+      "stub_area_px": 18981.98853363912,
+      "gap_stub_area_px": 18981.988533616233,
+      "stub_area_difference": 1.2056968970798493e-12,
+      "scrambled_blocks": {
+        "movable": 2369,
+        "fixed": 127,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 8,
+      "files": {
+        "control_occluded_wrist.png": "851bed4b9386cfd695acf91eed131c3d8f0fb6682ff88aa027169b93d2c49ab3",
+        "control_hand_stub_static.png": "939f28e06ecce0cea6e927c5f7e8fc5885c423d7b0609cfc86774e252dd4b57c",
+        "control_hand_stub_movement.png": "2c4ea20520e7cb0f105c60fe82f500617c9a9cfbc4a02aafd2c20b6088ecf48b",
+        "control_hand_gap_stub_static.png": "f694643c07c8663a6fc2638f8768f7c077c51210d2cf957aa1eec85945f59d35",
+        "control_hand_gap_stub_movement.png": "497c414990ca73a610f40777c88a12a5a08100a266b75d97956d695328f5680e",
+        "control_window_hand.png": "a0d16e4457637dba3d9439595cae5baa0ff48ca8fc6610329e91a7bba4564469",
+        "control_window_arm.png": "17eb4289f587ba8de53b0ac0be0e9fb9cacb13c976ab61bb6892f72563e7c8e3",
+        "control_scrambled.npy": "a409dd7a82cb485975c209a028ca84b667ceff1aa66a02f7ce3a7f1178285772"
+      }
+    },
+    "p09_seed9_detailed": {
+      "palm_px": 132.97694861844957,
+      "gap_px": 66.48847430922478,
+      "stub_px": 132.97694861844957,
+      "window_extension_px": 132.97694861844957,
+      "window_sideways_px": 107.52366634654271,
+      "window_areas_px": {
+        "window_hand": 213871.0,
+        "window_arm": 213870.98823529412
+      },
+      "window_area_difference": 5.50084234270737e-08,
+      "gap_segment_px": 140.38517165569894,
+      "occluded_band_px": 10251,
+      "stub_area_px": 18979.25299451987,
+      "gap_stub_area_px": 18979.252994495037,
+      "stub_area_difference": 1.3084204812685908e-12,
+      "scrambled_blocks": {
+        "movable": 2361,
+        "fixed": 135,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 9,
+      "files": {
+        "control_occluded_wrist.png": "409c07f36d66fc84f8105132034e9f2c31139b464c342978aafb4b872500a8e4",
+        "control_hand_stub_static.png": "1ef984fadbcc8f9392352f39b8b2fde4e0d54a32504f5775c24a8b946f6d013a",
+        "control_hand_stub_movement.png": "42cdda1b3821bf3fe412a7edd99832c8c72766cafd02b85ce4e1a0a326b5114d",
+        "control_hand_gap_stub_static.png": "6d7d9a7670500ccd204e78f7e282b8075fe61407e03597605b1b9be0423f6f5f",
+        "control_hand_gap_stub_movement.png": "e4516f23cf10b1b8424f25993188ede1ae6afc4be30ea2e85fbce4fdafa44bf0",
+        "control_window_hand.png": "073e67b9a9e40aaddecfb56117776523868269196202cfb5ae1e7c0709439b52",
+        "control_window_arm.png": "77065248a9597ddb4ce9ea24a8a25c209d4633d83bbb2ff7ec587531e64ae171",
+        "control_scrambled.npy": "90ae16f4cace6b68440f1871d2d8dd89be631b1dcc3c626ee3365d566486acfe"
+      }
+    },
+    "p10_seed123_detailed": {
+      "palm_px": 154.68668791480607,
+      "gap_px": 77.34334395740304,
+      "stub_px": 154.68668791480607,
+      "window_extension_px": 154.68668791480607,
+      "window_sideways_px": 118.23130490121882,
+      "window_areas_px": {
+        "window_hand": 256521.98823529412,
+        "window_arm": 256522.99607843137
+      },
+      "window_area_difference": 3.928860775292559e-06,
+      "gap_segment_px": 147.9435670071692,
+      "occluded_band_px": 13255,
+      "stub_area_px": 25652.397327894265,
+      "gap_stub_area_px": 25652.397327882285,
+      "stub_area_difference": 4.670075883600234e-13,
+      "scrambled_blocks": {
+        "movable": 2337,
+        "fixed": 159,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 10,
+      "files": {
+        "control_occluded_wrist.png": "afe7501e3104fed46f57c7e09be232e185b7d33b27622700759d95214f147c36",
+        "control_hand_stub_static.png": "ae5f352eed3bfef58decf801b80ffc14312ea6b74bd67b243b7cda5879607b53",
+        "control_hand_stub_movement.png": "3a4534bca301b09100fdf182ec3ddc87ac1fa625645e27437a3807df83dc2c7d",
+        "control_hand_gap_stub_static.png": "e1a574f095c54c68f9aa65c012437fab136e98d45dbd02fea2d137c89f21fe5d",
+        "control_hand_gap_stub_movement.png": "9ffd6f416d6a365ce9369ed38a8efd6dd3f44d6bda620a4f0259d64ef29e7768",
+        "control_window_hand.png": "7206601f1b885102276be132500af867ab3595bcb146d569796ab929bfdad59d",
+        "control_window_arm.png": "dd378a8cafedd5d725186c9de06c3c05187ca6b34020f1fdf033c250c8216a55",
+        "control_scrambled.npy": "ac370a892e77b3f65583c1c8353e8e6dd51f04c532b4085df02a0ca56a218772"
+      }
+    },
+    "p11_seed9_detailed": {
+      "palm_px": 145.27377852715074,
+      "gap_px": 72.63688926357537,
+      "stub_px": 145.27377852715074,
+      "window_extension_px": 145.27377852715074,
+      "window_sideways_px": 113.08256568776962,
+      "window_areas_px": {
+        "window_hand": 236334.9843137255,
+        "window_arm": 236335.0
+      },
+      "window_area_difference": 6.637304887617863e-08,
+      "gap_segment_px": 148.87372302096693,
+      "occluded_band_px": 11899,
+      "stub_area_px": 22005.080798707993,
+      "gap_stub_area_px": 22005.080798683182,
+      "stub_area_difference": 1.1275130362539835e-12,
+      "scrambled_blocks": {
+        "movable": 2344,
+        "fixed": 152,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 11,
+      "files": {
+        "control_occluded_wrist.png": "6b906953baf00de46427c56fbbde6a9a5712fd1e914e8e487c7fd672e6fc0979",
+        "control_hand_stub_static.png": "aedf89aad4d9211487fd69e711eecbfd02ffc9c0076c874a5b46ad5b5f953df5",
+        "control_hand_stub_movement.png": "1834227d80571c2c228de19ed5c7c0708bbb401935c13ef3af8fcea8e0ea5b91",
+        "control_hand_gap_stub_static.png": "00da618343e2db58f3e5e9263bf0b2b6b879bec7158763c046d436598c61f7dd",
+        "control_hand_gap_stub_movement.png": "cd98ec23ca3d6bd0efb9c4be322f7ae18d3ff3ce15cde476e24fdf978797c479",
+        "control_window_hand.png": "45137b1f07487a1f790eb125710e8548e723bcabd4e024c2730a7b2eb63c2359",
+        "control_window_arm.png": "b66dc7e7f48b989222110b2e2aa0e0ce6af691bc5dbc53a32919acc672aee182",
+        "control_scrambled.npy": "21040c3c8572dbec844fb948fddaaa5b52272e5afdd485d90881e8812643ce49"
+      }
+    },
+    "p12_seed9_detailed": {
+      "palm_px": 155.36435304315478,
+      "gap_px": 77.68217652157739,
+      "stub_px": 155.36435304315478,
+      "window_extension_px": 155.36435304315478,
+      "window_sideways_px": 121.88680434219751,
+      "window_areas_px": {
+        "window_hand": 260103.99607843137,
+        "window_arm": 260105.0
+      },
+      "window_area_difference": 3.859678086259541e-06,
+      "gap_segment_px": 149.14642759312335,
+      "occluded_band_px": 13477,
+      "stub_area_px": 25921.64366481247,
+      "gap_stub_area_px": 25921.643664851348,
+      "stub_area_difference": 1.499869376113901e-12,
+      "scrambled_blocks": {
+        "movable": 2337,
+        "fixed": 159,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 12,
+      "files": {
+        "control_occluded_wrist.png": "a8ef7fff78386c8d1803921f6a5f6fe3427ce48a4c741584d624e2f703ce66f1",
+        "control_hand_stub_static.png": "cc5600846f4cece0298d7d68aeb7b8af1a4c512bae70d8906681a7170cc768d1",
+        "control_hand_stub_movement.png": "b805f378674a5a934a373f2c06d6bb82ccce35fb08ce843e0f376648211af05e",
+        "control_hand_gap_stub_static.png": "57848a789eaef5512313713a8324643b419d94c636192f792460c6f3bcd3899f",
+        "control_hand_gap_stub_movement.png": "3eead97a047da4fe4bcc42c05b8320d00714164430f15c001f87859acee6ea0e",
+        "control_window_hand.png": "26287e1f98b6d7f70002a48344c89388f1c3ed131a3d34aec97559732c6644e6",
+        "control_window_arm.png": "9ced5cc5ba83e9c277e3431db2e100a00334086d5e0f60f25fc471ee37f93093",
+        "control_scrambled.npy": "8b29593aee54f8f3a83a4d9115c87451d59b3c5d612a909ddb07ca7f08748d74"
+      }
+    },
+    "p13_seed9_detailed": {
+      "palm_px": 148.04691881713805,
+      "gap_px": 74.02345940856902,
+      "stub_px": 148.04691881713805,
+      "window_extension_px": 148.04691881713805,
+      "window_sideways_px": 129.11620230063755,
+      "window_areas_px": {
+        "window_hand": 257307.00784313725,
+        "window_arm": 257307.9843137255
+      },
+      "window_area_difference": 3.794948652079915e-06,
+      "gap_segment_px": 153.27977560011556,
+      "occluded_band_px": 13076,
+      "stub_area_px": 24369.18122946997,
+      "gap_stub_area_px": 24369.181229471207,
+      "stub_area_difference": 5.075725699455867e-14,
+      "scrambled_blocks": {
+        "movable": 2339,
+        "fixed": 157,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 13,
+      "files": {
+        "control_occluded_wrist.png": "44b3d9108e08e2c9135e59de97b4e448a306fc3db425a087ed669c1ccebf9804",
+        "control_hand_stub_static.png": "d59e23f27febca65ba4081854de40d7b1ed2d826c819a280174930cfe4dd276c",
+        "control_hand_stub_movement.png": "a089fccd5db5ef93c447a3a0f6de1eaf593b73911ae1896f2d4164febe99e159",
+        "control_hand_gap_stub_static.png": "a41d9d2351931aaee305f592baa315ea9baf01eb4bb1da96789d1c0339ddb4c7",
+        "control_hand_gap_stub_movement.png": "cd1a738ebaa22da4c2d881bb5a1a066aea16b4f85ec6883d19da48b525772ac5",
+        "control_window_hand.png": "ef00e4be5019e5c94c6e4590c74c8c57c1c1e3766a01002a9ee305df398c6fe8",
+        "control_window_arm.png": "b30824d48857ba2654b99754834188a8e9729c280968ceead1ffcee75c4fe5df",
+        "control_scrambled.npy": "c5d06ea9a8365937f8e58bbf3ad55d40bad5c4781727f6e85a690968a1007110"
+      }
+    },
+    "p14_seed9_detailed": {
+      "palm_px": 138.5177399412427,
+      "gap_px": 69.25886997062135,
+      "stub_px": 138.5177399412427,
+      "window_extension_px": 138.5177399412427,
+      "window_sideways_px": 117.27506084978701,
+      "window_areas_px": {
+        "window_hand": 218436.9843137255,
+        "window_arm": 218436.99215686275
+      },
+      "window_area_difference": 3.590571897018051e-08,
+      "gap_segment_px": 140.871718358059,
+      "occluded_band_px": 10692,
+      "stub_area_px": 20110.17441761224,
+      "gap_stub_area_px": 20110.17441761002,
+      "stub_area_difference": 1.1053136611218706e-13,
+      "scrambled_blocks": {
+        "movable": 2363,
+        "fixed": 133,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 14,
+      "files": {
+        "control_occluded_wrist.png": "9a06c1731def7b169c5c10ffe20cac39c17509cccda38655a6509c93db62eb8a",
+        "control_hand_stub_static.png": "18deb7ee714a76a1342b8964514216c5b606aab45afc9454adea75dd5ed8c919",
+        "control_hand_stub_movement.png": "e4146d8c12483a920dcf393162b47525b7e0c288477dcb2cd9dfa85930e6b08b",
+        "control_hand_gap_stub_static.png": "2c398b8501cd0fab8bf6970a2d02e6aee3c8c594266f9a8059205e8608787147",
+        "control_hand_gap_stub_movement.png": "e87a0f218c98ff5faf7f307e5c975a831da0b16813b0363eb94cde8d77128001",
+        "control_window_hand.png": "a376ce50e7e325482721889d9dd3e71838132fe9a14086d3c2c2f95655718bc2",
+        "control_window_arm.png": "f93ce8b6d6194bec270d95d78a032076d7968fb698d77d71569ca3b16d9ed31d",
+        "control_scrambled.npy": "48ca9ebdb0954274307e2374124a520e6bff7f089d21487111cd3ba9416f3b3f"
+      }
+    },
+    "p15_seed9_detailed": {
+      "palm_px": 138.11167340481757,
+      "gap_px": 69.05583670240878,
+      "stub_px": 138.11167340481757,
+      "window_extension_px": 138.11167340481757,
+      "window_sideways_px": 113.7415257379771,
+      "window_areas_px": {
+        "window_hand": 251569.0,
+        "window_arm": 251568.9843137255
+      },
+      "window_area_difference": 6.235376967849785e-08,
+      "gap_segment_px": 141.68495363005627,
+      "occluded_band_px": 10684,
+      "stub_area_px": 20055.271879911445,
+      "gap_stub_area_px": 20055.271879921616,
+      "stub_area_difference": 5.07187776138657e-13,
+      "scrambled_blocks": {
+        "movable": 2342,
+        "fixed": 154,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 15,
+      "files": {
+        "control_occluded_wrist.png": "2ba8e48a3dcd8bc44e91230fae5db76d5407e1d2f448eb75e7aa31991712b4ab",
+        "control_hand_stub_static.png": "89dab4b3d5aee9eda8a6e6c959ff22e474f51a361c64d274ed3f43d2f6fe4485",
+        "control_hand_stub_movement.png": "b864b1743082fe575555e62902e2bb89055de03c209c6f19bcfe7f7982a27ba1",
+        "control_hand_gap_stub_static.png": "bb9a77a90ca615ab5a8b0c3aa1964ed516ab99f3dc824628c5d7754531153fee",
+        "control_hand_gap_stub_movement.png": "d85433722f5982d4578b20f065c442e2ac4aa5919aafb1d04399a0ea81942f13",
+        "control_window_hand.png": "b36971ac3bbb119e4636cc130fe4a7b62f5d67645daae54d24e047350cccd436",
+        "control_window_arm.png": "6e9372940c99ec0133e4ede000a589b3b439bb93736bdf937a574b7e7dd75931",
+        "control_scrambled.npy": "d3a83b922d7d6f1dc5205a687b4c7e5a18d1c3fb51ca6f075c16ec8279c6ab39"
+      }
+    },
+    "p16_seed9_detailed": {
+      "palm_px": 147.27137562265176,
+      "gap_px": 73.63568781132588,
+      "stub_px": 147.27137562265176,
+      "window_extension_px": 147.27137562265176,
+      "window_sideways_px": 122.2710714753633,
+      "window_areas_px": {
+        "window_hand": 227889.99607843137,
+        "window_arm": 227890.00392156863
+      },
+      "window_area_difference": 3.441632857128371e-08,
+      "gap_segment_px": 146.05951788743508,
+      "occluded_band_px": 11753,
+      "stub_area_px": 22268.37335793411,
+      "gap_stub_area_px": 22268.37335793298,
+      "stub_area_difference": 5.0807995304354214e-14,
+      "scrambled_blocks": {
+        "movable": 2354,
+        "fixed": 142,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 16,
+      "files": {
+        "control_occluded_wrist.png": "f559e4ae75fe26e7cf3b7c98218eddef0f6afac32636f15c140f5fb83cdafdf4",
+        "control_hand_stub_static.png": "f2f54aa7f766e66590bcaeb49ac202134324ec9a60b21d7f0d760918fb0fa9ce",
+        "control_hand_stub_movement.png": "3a06b6ba60f948d3a35f7e1204abb88be1df4f17a52b6f0b17a6575b00664688",
+        "control_hand_gap_stub_static.png": "8507e68614aa852ca6586ca2d2663dd437d2ae2e11b0830ff4f22bf45e3f0c1a",
+        "control_hand_gap_stub_movement.png": "be796ed4460f9285ad6a9657f36f3d4b1fe3fd2261638c0513ccfefb29c4fe8c",
+        "control_window_hand.png": "cfde1d34682e2569041d69c23804d32078d42cc31266813b00f48636404c0d9d",
+        "control_window_arm.png": "71b069d4ce049dbb2e8e120b9deed094aa8d209fe9016f8441ebe94a831b0705",
+        "control_scrambled.npy": "1724b142a906e56883e768945210ccc8943d4b6607c6fab5657ebf387c6de685"
+      }
+    },
+    "p17_seed9_detailed": {
+      "palm_px": 142.4716957479834,
+      "gap_px": 71.2358478739917,
+      "stub_px": 142.4716957479834,
+      "window_extension_px": 142.4716957479834,
+      "window_sideways_px": 117.87724555812923,
+      "window_areas_px": {
+        "window_hand": 257819.9843137255,
+        "window_arm": 257820.9843137255
+      },
+      "window_area_difference": 3.878660236527394e-06,
+      "gap_segment_px": 149.79446628583872,
+      "occluded_band_px": 11328,
+      "stub_area_px": 20923.43938914744,
+      "gap_stub_area_px": 20923.439389144634,
+      "stub_area_difference": 1.340545217304257e-13,
+      "scrambled_blocks": {
+        "movable": 2338,
+        "fixed": 158,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 17,
+      "files": {
+        "control_occluded_wrist.png": "be340c2219e6d295ee261e4880c7b7d18ecf99d628eb4c3b9d4d2e73155d4094",
+        "control_hand_stub_static.png": "19872303123a726aa80b3200a36bab39a0a882d1ed5905623f627a69e422c9b6",
+        "control_hand_stub_movement.png": "6d350df5256f25db7e876ce8f5fc405b8d46a10f45335017bdb5e73a6a38d532",
+        "control_hand_gap_stub_static.png": "477145a2fb252d5015fbc08807e56127daa6066a3988d9252a4313c3a51ea62b",
+        "control_hand_gap_stub_movement.png": "4f56040e1c849b1e7d1b06efd93702b7e543d56c1ec7788f26e33628ae2b3511",
+        "control_window_hand.png": "dc0a34c151832e19e4feb2fe70fe4f035393665896ac96d15086f4c5ac6602c7",
+        "control_window_arm.png": "6929b1fae8aa5614a7dcce4760fc8c370430bcec813b3a0861b43e70ffec2412",
+        "control_scrambled.npy": "7504b272c730ed92d480eb08b17a39a8735c6257446cd3a66d4454f129ed7bf5"
+      }
+    },
+    "p18_seed123_detailed": {
+      "palm_px": 148.36687014996556,
+      "gap_px": 74.18343507498278,
+      "stub_px": 148.36687014996556,
+      "window_extension_px": 148.36687014996556,
+      "window_sideways_px": 123.61268936462764,
+      "window_areas_px": {
+        "window_hand": 244788.9843137255,
+        "window_arm": 244788.9843137255
+      },
+      "window_area_difference": 0.0,
+      "gap_segment_px": 149.7595753991548,
+      "occluded_band_px": 12852,
+      "stub_area_px": 23923.85652086961,
+      "gap_stub_area_px": 23923.85652085057,
+      "stub_area_difference": 7.957556124324615e-13,
+      "scrambled_blocks": {
+        "movable": 2343,
+        "fixed": 153,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 18,
+      "files": {
+        "control_occluded_wrist.png": "70591605300a4cb2b0eb9be5a62660fd6c24a28d63bf05338c1278e88beace0b",
+        "control_hand_stub_static.png": "07997c7d98704a01820d5cabe01568515ef13d398030ee7d8fbd6d3aaa44edba",
+        "control_hand_stub_movement.png": "08080f150e2ae764c06fb6fbcae8763eb641423a569919e535e2a2c993482d62",
+        "control_hand_gap_stub_static.png": "e091292df014be641684b79f3de0e2b4af890f8428c954378e4d85a8fc70ff73",
+        "control_hand_gap_stub_movement.png": "1b5cfe91c0615833d9831d1cd29d8b059b8cbef99850dca013e4d6d259083f46",
+        "control_window_hand.png": "eafb454b02d03cb931105d0ad0f27eab55dbe73895a4b8c0bc6d523bc15f3bd7",
+        "control_window_arm.png": "978bd343295fee6b115ac1c4d680af7a6ef5e2636b7269aac1e7232dd80a156e",
+        "control_scrambled.npy": "facf1c2621bc56d6e9984c01b919afa46a25213fb2420cefcdf0ab56c5d337e4"
+      }
+    },
+    "p19_seed9_detailed": {
+      "palm_px": 166.09894958514104,
+      "gap_px": 83.04947479257052,
+      "stub_px": 166.09894958514104,
+      "window_extension_px": 166.09894958514104,
+      "window_sideways_px": 142.34666339127776,
+      "window_areas_px": {
+        "window_hand": 260673.99215686275,
+        "window_arm": 260673.9843137255
+      },
+      "window_area_difference": 3.0087917187917344e-08,
+      "gap_segment_px": 150.67451346149613,
+      "occluded_band_px": 16991,
+      "stub_area_px": 34446.95062869937,
+      "gap_stub_area_px": 34446.95062872095,
+      "stub_area_difference": 6.26484779923838e-13,
+      "scrambled_blocks": {
+        "movable": 2342,
+        "fixed": 154,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 19,
+      "files": {
+        "control_occluded_wrist.png": "336aa9860fbade60646f5a99c619f29a11fe63c71a26fe4e447da300f3171389",
+        "control_hand_stub_static.png": "7a9ce2e3b985df7510d6961d0c8030e67ba94d6765d98a97a51c79fe2c9c9b6b",
+        "control_hand_stub_movement.png": "f1ac2e4495979b657ab7617823b1eaaab27163d44c44a071c096e9851e78fa68",
+        "control_hand_gap_stub_static.png": "e0ffb5a3dc7525bf7cbb106b69609de117bd8a32e867c28cd2235d0a73dd5cf8",
+        "control_hand_gap_stub_movement.png": "1bc99146e73fe361aa7c24b042e3b7c202f3fe8f1b519fb56a7746c13536740a",
+        "control_window_hand.png": "86810356f0a4de6e6f48a6b72972d78e1fcb811ee6d085c442b41616d269cbd3",
+        "control_window_arm.png": "9fbc143a2f52f052a43ef260bbf0424f6e5f8cfab23cd3a18fd0be88734e6fa2",
+        "control_scrambled.npy": "f408d0a94414de5105fcaad60514d4a2abeb3275ada15cc3b4bf0fc83dd325b8"
+      }
+    },
+    "p20_seed9_detailed": {
+      "palm_px": 150.70928594329646,
+      "gap_px": 75.35464297164823,
+      "stub_px": 150.70928594329646,
+      "window_extension_px": 150.70928594329646,
+      "window_sideways_px": 118.17084025692876,
+      "window_areas_px": {
+        "window_hand": 240667.98823529412,
+        "window_arm": 240667.99607843137
+      },
+      "window_area_difference": 3.2589032945285485e-08,
+      "gap_segment_px": 150.9318848685066,
+      "occluded_band_px": 12234,
+      "stub_area_px": 23038.09057724227,
+      "gap_stub_area_px": 23038.09057721807,
+      "stub_area_difference": 1.0504271152002246e-12,
+      "scrambled_blocks": {
+        "movable": 2348,
+        "fixed": 148,
+        "grid": [
+          39,
+          64
+        ]
+      },
+      "seed": 20,
+      "files": {
+        "control_occluded_wrist.png": "d527706cc4a9e7544f1e0d087cb76ee6d799979ee80fedc2443fa1c9695c45f5",
+        "control_hand_stub_static.png": "931a96b72ad1140f0d3de1f078f4e366ab916ecf7aba9f65e065a8e4571549b5",
+        "control_hand_stub_movement.png": "36aba326964a88f1150be6793107f081558154d99bbb5619afde881540044ba9",
+        "control_hand_gap_stub_static.png": "49855339ba5e67ab825aef6549dcfaffbaf949c744e042246026fb7c657fa850",
+        "control_hand_gap_stub_movement.png": "79a3f0366e5a47b9741117a33e5e481f7344ab0db65f900945b57469c682c650",
+        "control_window_hand.png": "a9ba2814d5f451042372ed445eff96b503f82bc9d531f781ff5c897b827758bd",
+        "control_window_arm.png": "5502d7433839692924f65cee475ed78e07d6c6909c054283e9806f30cf5d10b1",
+        "control_scrambled.npy": "e2ebe38c51baaaa3e7925a512db3480f62f458c8b525a1e382b73b3ca90d639f"
+      }
+    }
+  }
+}

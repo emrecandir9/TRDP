@@ -1,0 +1,17 @@
+{
+  "schema": "trdp-controls-approval-v1",
+  "decision": "approve",
+  "reviewer": "human_user",
+  "recorded_at_utc": "2026-10-22T17:54:33+00:00",
+  "scope": "Visual approval of the six control stimuli of analysis spec section 7.2 for all 20 sources, as shown in docs/figures/controls-1..4.jpg and docs/controls.md",
+  "controls_manifest_sha256": "01121a62960d0d0fdf6df41c326a04f18759e51214223883760e478dca628d2d",
+  "arm_segmentation_manifest_sha256": "4214f86a38c6d4e4b3716505011bf806f51466e0e186cfc478ea74717666ad35",
+  "silhouettes_manifest_sha256": "b071f424e711992a49caf50fe6443b17716f1044a49a5d49c4e9a2c6e012daff",
+  "review_figures_sha256": {
+    "controls-1.jpg": "26b3addce622f714cfabf0341816264828ca428103c22584088b513a47857bf2",
+    "controls-2.jpg": "b2fc5274303b6737046eff6616cac88f516e223506d172639e5c771d75201f15",
+    "controls-3.jpg": "c12fed9170d437b36b1644985a07cec74ccae9355b64cb4fb4253fa727bdc34b",
+    "controls-4.jpg": "c209e9b2f9e0b2520425f74fc258167636dc76180045282387e18a145be6c600"
+  },
+  "scientific_replication_validated": false
+}

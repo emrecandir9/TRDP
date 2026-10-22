@@ -95,19 +95,12 @@ scale-free ratios, never on absolute millivolts.
 
 ### 4.2 Control stimuli (CPU only, built from frozen pixels)
 
-Every control is a mask over existing full-body pixels, so the action pixels stay
-identical:
-
-| Control | Question |
-| --- | --- |
-| Arm with a black gap across the wrist | Does a visual break in continuity remove the effect? (Tieri et al. 2015) |
-| Detached hand plus forearm stub | Is a short attached segment enough? |
-| Rectangle with desk patch (archive `detached_hand`) | Does a visible surface, without a body, matter? |
-| Equal-area windows: hand-centred vs arm-centred | Does visible area alone explain the effect? |
-| Block-scrambled context, hand intact | Does any surround work, or only a body? |
-
-Each control gets the same tests as the contexts: visible pixels equal full-body
-pixels, hidden pixels black, A/B differences only in the action region.
+Built 22 Oct: six controls for all 20 sources, defined, checked and illustrated in
+[controls.md](controls.md); exact parameters added to spec §7.2 by amendment before any result.
+Two matched pairs isolate connection: `hand_stub` vs `hand_gap_stub` (equal forearm area) and
+`window_arm` vs `window_hand` (equal area, arm vs desk). `scrambled` keeps the upper-limb
+pixels but scatters the arm; `occluded_wrist` is exploratory. Visually approved 22 Oct
+([record](controls-approval.json)).
 
 ### 4.3 Visual baselines
 
@@ -133,7 +126,7 @@ pixels, hidden pixels black, A/B differences only in the action region.
 | --- | --- | --- | --- |
 | W0 | 22–23 Oct | Freeze cohort; human target module; draft analysis spec | Done 22 Oct |
 | W1 | 26–30 Oct | Fix issues 7–8 (analysis spec already frozen 22 Oct) | Frozen `docs/analysis-spec.md` and `config/analysis.json` |
-| W2 | 2–6 Nov | Build and test control stimuli; matte-deviation count (it also affects the silhouette's hand pixels); prepare rater sample including both detached-hand versions | Control set with tests; rater sheet |
+| W2 | 2–6 Nov | Control stimuli built and approved early (22 Oct); matte-deviation count done; prepare rater sample including both detached-hand versions | Rater sheet |
 | W3 | 9–13 Nov | Extract features; movement-signal and grouped decoding analyses; ratings collected | Baseline table and figure. **Gate 1, 13 Nov** |
 | W4 | 16–20 Nov | Trial simulator; feedforward LIF and non-spiking twin; rate and probe diagnostics | Working models with stable activity |
 | W5 | 23–27 Nov | H0/H1/H2; calibrate on full body + detached hand, predict upper limb; recurrent variant | First held-out predictions |

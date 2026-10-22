@@ -36,16 +36,21 @@ TRDP/
 │   ├── dataset.py               # Source checks, composition, verification and review
 │   ├── segment_hands.py         # SAM-HQ hand segmentation of the final frames (CPU)
 │   ├── silhouette.py            # Paper-matched detached-hand mattes and archive export
+│   ├── segment_arms.py          # SAM-HQ hand and forearm segmentation for the controls
+│   ├── controls.py              # Control stimuli of analysis spec §7.2 (masks, checks, rendering)
 │   └── validate_dataset.py      # Checks the downloaded, historically accepted archive
 ├── tests/
 │   ├── test_dataset.py          # CPU regression checks, including failure cases
 │   ├── test_silhouette.py       # Silhouette geometry, registration, seams, wrist cut, frozen mattes
+│   ├── test_controls.py         # Control geometry, equal areas, scramble, frozen controls
 │   └── test_human_target.py     # Human target checks; published-statistics reproduction
 ├── data/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
 │   ├── hand_segmentation.json   # Tracked SAM-HQ provenance, prompts and mask hashes
 │   ├── silhouettes.json         # Tracked matte hashes, parameters and per-source diagnostics
 │   ├── source_metadata.json     # Reference and confirmed apparent sex per source, with provenance
+│   ├── arm_segmentation.json    # Tracked SAM-HQ forearm masks: provenance, prompts, hashes
+│   ├── controls.json            # Tracked control masks, permutations, parameters, diagnostics
 │   ├── sources/                 # LOCAL: 20 approved V7 pairs in all three contexts
 │   ├── inputs/                  # LOCAL: source image, Canny control, desk mask/weight,
 │   │                            #        hand matte, case geometry, SAM-HQ masks, mattes
@@ -68,7 +73,9 @@ TRDP/
 │   ├── accepted-silhouette.json # Hashes of the 960 archive silhouette PNGs
 │   ├── silhouette-approval.json # Hash-bound human approval of the silhouettes
 │   ├── detached-hand-silhouette.md # Silhouette method, checks and residual defects
-│   ├── figures/                 # Silhouette review sheets
+│   ├── controls.md              # Control stimuli: design, parameters, checks, figures
+│   ├── controls-approval.json   # Hash-bound human approval of the controls
+│   ├── figures/                 # Silhouette and control review sheets
 │   ├── validation.md            # Validation scope, results and limitations
 │   ├── next-phase-plan.md       # Priorities and schedule to 18 December 2026
 │   ├── analysis-spec.md         # Endpoints, splits, models and success criteria
@@ -98,12 +105,13 @@ python scripts/dataset.py check
 python scripts/validate_dataset.py
 python scripts/silhouette.py check
 python scripts/silhouette.py verify-archive
+python scripts/controls.py check
 python scripts/validate_dataset.py --hand-deviation
 python analysis/human_target.py
 ```
 
 Tests need no dataset or GPU; the published-statistics test runs only when the OSF files
-are present. The last six commands require local data. This working
+are present. The last seven commands require local data. This working
 copy contains the frozen inputs and full accepted archive. After cloning elsewhere,
 copy `data/sources/`, `data/inputs/`, `data/accepted/`, `data/accepted_silhouette/`,
 `data/human/` and optionally
