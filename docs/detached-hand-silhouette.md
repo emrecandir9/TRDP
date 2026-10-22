@@ -59,7 +59,7 @@ Both steps are deterministic: repeated runs give byte-identical masks and mattes
 | Agreement with the reviewed matte | Static IoU 0.978–0.993 above the wrist: the same hand, with differences confined to the outline |
 | Shape | Movement/static hand area 0.990–1.005 |
 | Archive | 480 families / 960 PNGs exported from their own full-body pixels; `verify-archive` recomputes every image exactly |
-| Visual | Assistant inspected every fingertip, the index web and the finger valleys of all 40 frames at 2× and suspicious spots at 4×; human review pending |
+| Visual | Assistant inspected every fingertip, the index web and the finger valleys of all 40 frames at 2× and suspicious spots at 4×; **approved by the project owner on 22 October** ([record](silhouette-approval.json)) |
 
 | Ref | SAM-HQ predicted IoU (static / movement) | IoU with reviewed matte | Movement/static area | Prompt rotation fit vs recorded | Visible (static) |
 | --- | --- | --- | --- | --- | --- |
@@ -103,7 +103,7 @@ Remaining observations, all reflecting image content rather than the mask:
 | 02 | Faint light line along the index web edge, present in the movement photograph |
 | Several | Fingers that touch in the photograph appear joined; a 2 px seam is closed, wider gaps stay black |
 
-No silhouette has been approved by a human yet: `visual_review` is `pending` in the manifests.
+Approved by the project owner on 22 October 2026; the hash-bound record is [silhouette-approval.json](silhouette-approval.json). The `visual_review` field inside the build manifests stays `pending` because they are written by the build; the approval record binds their hashes.
 
 ![Static and movement silhouettes for all 20 sources](figures/silhouette-sources.jpg)
 

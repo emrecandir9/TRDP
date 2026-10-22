@@ -150,6 +150,7 @@ def ratios():
     connected = lambda x: (delta(x, 'full_body', 'FDI') + delta(x, 'upper_limb', 'FDI')) / 2
     return [('ratio_DH_to_connected_FDI', lambda x: delta(x, 'detached_hand', 'FDI') / connected(x)),
             ('ratio_UL_to_FB_FDI', lambda x: delta(x, 'upper_limb', 'FDI') / delta(x, 'full_body', 'FDI')),
+            ('ratio_DH_to_FB_FDI', lambda x: delta(x, 'detached_hand', 'FDI') / delta(x, 'full_body', 'FDI')),
             ('ratio_ADM_to_FDI_FB', lambda x: delta(x, 'full_body', 'ADM') / delta(x, 'full_body', 'FDI')),
             ('ratio_ADM_to_FDI_UL', lambda x: delta(x, 'upper_limb', 'ADM') / delta(x, 'upper_limb', 'FDI'))]
 

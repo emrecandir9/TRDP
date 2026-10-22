@@ -103,7 +103,7 @@ analysis. Discrepancies with the paper's Methods are listed in
 | Archive export | 960 PNGs for 480 families; every image recomputed exactly from its full-body PNG by `verify-archive` |
 | Code paths | `dataset.py check` verifies the mattes; new runs export 8 PNGs per family; the archive validator still checks the historical 6 (sample of 24 families re-run on real data) |
 | Test suite | 23 CPU tests passed, including 6 for the silhouette (segmentation hash check and seam closing among them) |
-| Visual | Assistant inspected every fingertip, index web and finger valley of all 40 frames at 2×, suspicious spots at 4×; remaining observations are image content, listed in [detached-hand-silhouette.md](detached-hand-silhouette.md). Human review pending |
+| Visual | Assistant inspected every fingertip, index web and finger valley of all 40 frames at 2×, suspicious spots at 4×; remaining observations are image content, listed in [detached-hand-silhouette.md](detached-hand-silhouette.md). Approved by the project owner on 22 October ([record](silhouette-approval.json)) |
 
 ## Remaining limits
 

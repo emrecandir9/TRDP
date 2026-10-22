@@ -1,5 +1,5 @@
 {
-  "status": "draft; freeze on 2026-10-30 together with docs/analysis-spec.md",
+  "status": "draft; open items resolved and success criteria approved on 2026-10-22; freeze by 2026-10-30 with docs/analysis-spec.md",
   "cohort": {
     "decision_date": "2026-10-22",
     "archive": "data/accepted",
@@ -39,6 +39,12 @@
     "condition_pngs_per_family": {
       "historical_archive": 6,
       "with_silhouette": 8
+    },
+    "reference_images": {
+      "origin": "AI-generated grayscale reference pairs (normal1-20 / open1-20), stated by the project owner on 2026-10-22",
+      "identities": "20 different synthetic people; no person repeats",
+      "lineage_groups": 20,
+      "limit": "Independent in identity only: one generator, one scene template and one camera geometry; no claim about real people's hands"
     }
   },
   "human_data": {

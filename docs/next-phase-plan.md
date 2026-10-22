@@ -68,9 +68,9 @@ Baselines must show this explicitly.
 4. **Draft the analysis spec** (`docs/analysis-spec.md`): endpoints, splits, models,
    gates and what counts as success or failure. Freeze it on 30 October, before any
    model result exists.
-   *Drafted 22 Oct. Before freezing: confirm the origin of the 20 reference photos and
-   whether any person repeats (spec §3), review the success criteria (spec §5.2), and
-   commit the spec with `config/analysis.json`.*
+   *Drafted 22 Oct. Open items resolved the same day: the 20 references are AI-generated,
+   20 distinct synthetic identities (spec §3); the success criteria were audited, revised and
+   approved (spec §5.2); the silhouettes were visually approved. Remaining: freeze by 30 Oct.*
 
 ## 3. Issues to address
 
@@ -79,10 +79,10 @@ Baselines must show this explicitly.
 | 1 | Paper's statistics treat trials as independent and use raw mV despite the Methods; questionnaire z = −117 is implausible for n = 32 | Done: participant-level targets; discrepancies listed in [analysis spec](analysis-spec.md) §4.2. Contacting the authors is optional and your decision | W1 |
 | 2 | Only 20 independent movements | Leave-one-source-out (20 folds) for every evaluation; never split a source's 24 variants or six conditions. Report per-source results | All weeks |
 | 3 | Area, luminance and edge confounds between contexts | Control stimuli (§4.2) and low-level baselines; a continuity claim must survive them | W2–W3 |
-| 4 | Detached hand is a desk rectangle with a cut wrist, not an isolated hand | Done 22 Oct: skin-only silhouette cut at the wrist is the primary condition; rectangle kept as sensitivity ([method](detached-hand-silhouette.md)). Your visual review of the 20 sources is pending | W1 |
+| 4 | Detached hand is a desk rectangle with a cut wrist, not an isolated hand | Done 22 Oct: skin-only silhouette cut at the wrist is the primary condition; rectangle kept as sensitivity ([method](detached-hand-silhouette.md)). Visually approved 22 Oct ([record](silhouette-approval.json)) | W1 |
 | 5 | One unblinded reviewer accepted all images | Two naive raters score a fixed sample (20 sources × 4 contexts × 2 frames, both detached-hand versions) for realism and visible artifacts; report agreement | W2–W4 |
 | 6 | Archive was produced with the earlier mask; hand-matte pixels changed in 6/20 checked exemplars | Count matte deviations for all 480 families; run a sensitivity analysis without the affected sources if counts are non-trivial | W2 |
-| 7 | No sex metadata per source (the paper sex-matched bodies) | Add a reviewed `apparent_sex` field to the source metadata; report its distribution | W1 |
+| 7 | No sex metadata per source (the paper sex-matched bodies) | Add a reviewed `apparent_sex` field to the source metadata (the references are AI-generated synthetic people); report its distribution | W1 |
 | 8 | `dataset.py review` accepts `assistant` as reviewer | State in the docs that only human decisions approve stimuli, or remove the option | W1 |
 
 ## 4. New work to start
@@ -132,7 +132,7 @@ pixels, hidden pixels black, A/B differences only in the action region.
 | Week | Dates | Work | Deliverable |
 | --- | --- | --- | --- |
 | W0 | 22–23 Oct | Freeze cohort; human target module; draft analysis spec | Done 22 Oct |
-| W1 | 26–30 Oct | Resolve spec open items (reference provenance, criteria review); fix issues 7–8; **freeze analysis spec 30 Oct** | Frozen `docs/analysis-spec.md` and `config/analysis.json` |
+| W1 | 26–30 Oct | Fix issues 7–8; **freeze analysis spec by 30 Oct** (open items resolved 22 Oct) | Frozen `docs/analysis-spec.md` and `config/analysis.json` |
 | W2 | 2–6 Nov | Build and test control stimuli; matte-deviation count (it also affects the silhouette's hand pixels); prepare rater sample including both detached-hand versions | Control set with tests; rater sheet |
 | W3 | 9–13 Nov | Extract features; movement-signal and grouped decoding analyses; ratings collected | Baseline table and figure. **Gate 1, 13 Nov** |
 | W4 | 16–20 Nov | Trial simulator; feedforward LIF and non-spiking twin; rate and probe diagnostics | Working models with stable activity |

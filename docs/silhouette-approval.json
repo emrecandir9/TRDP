@@ -1,0 +1,22 @@
+{
+  "schema": "trdp-silhouette-approval-v1",
+  "decision": "approve",
+  "reviewer": "human_user",
+  "recorded_at_utc": "2026-10-22T16:44:44+00:00",
+  "scope": "Visual approval of the 40 detached-hand silhouette mattes (20 sources x static/movement) and the 960 archive silhouette PNGs derived from them, as shown in docs/figures and output/silhouette_review",
+  "basis": "Project owner approved after reviewing the revised SAM-HQ silhouettes on 2026-10-22",
+  "silhouettes_manifest_sha256": "b071f424e711992a49caf50fe6443b17716f1044a49a5d49c4e9a2c6e012daff",
+  "hand_segmentation_manifest_sha256": "e2b8b27230e9d57c8b8d65393217ddff636f33d054a48c43889558e44d0c639d",
+  "archive_silhouette_manifest_sha256": "bcff80679c0bff73e38fbc6280a7a429e7eee1a431a00db6479cae68468d29c2",
+  "review_figures_sha256": {
+    "silhouette-sources.jpg": "24a44e722ce4ea39434ab8f89085be3c3fce1473082576e5e25e29254cca1d4c",
+    "silhouette-movement_closeups.jpg": "bfcec2ae81aaa8c0cb075be655d64b7ef191f8ea3e4813f5aa58d9e1bab4053f"
+  },
+  "known_image_content_observations": [
+    "r03 index and middle fingertips overlap",
+    "r05 small skin bump in the index web",
+    "r02 faint light line along the index web edge",
+    "touching fingers appear joined"
+  ],
+  "scientific_replication_validated": false
+}

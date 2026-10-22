@@ -65,6 +65,7 @@ TRDP/
 │   ├── accepted-dataset.json    # Historical approval and hashes of all 2,880 PNGs
 │   ├── approval-receipt.json    # Acceptance scope and known reference-17 issue
 │   ├── accepted-silhouette.json # Hashes of the 960 archive silhouette PNGs
+│   ├── silhouette-approval.json # Hash-bound human approval of the silhouettes
 │   ├── detached-hand-silhouette.md # Silhouette method, checks and residual defects
 │   ├── figures/                 # Silhouette review sheets
 │   ├── validation.md            # Validation scope, results and limitations
