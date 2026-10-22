@@ -20,6 +20,25 @@
       "families": 456,
       "condition_pngs": 2736,
       "reason": "Accepted clothing issue flagged in docs/approval-receipt.json"
+    },
+    "detached_hand": {
+      "primary": "detached_hand_silhouette",
+      "primary_description": "Paper-matched: skin-only hand on black, cut at the wrist; derived from each family's own full-body pixels",
+      "sensitivity": "detached_hand",
+      "sensitivity_description": "Historical rectangle with desk patch and part of the wrist (accepted archive)",
+      "silhouette_mattes_manifest": "data/silhouettes.json",
+      "silhouette_mattes_manifest_sha256": "b071f424e711992a49caf50fe6443b17716f1044a49a5d49c4e9a2c6e012daff",
+      "archive_silhouette_manifest": "docs/accepted-silhouette.json",
+      "archive_silhouette_manifest_sha256": "bcff80679c0bff73e38fbc6280a7a429e7eee1a431a00db6479cae68468d29c2",
+      "archive_silhouette_images": 960,
+      "decision_date": "2026-10-22",
+      "hand_segmentation_manifest": "data/hand_segmentation.json",
+      "hand_segmentation_manifest_sha256": "e2b8b27230e9d57c8b8d65393217ddff636f33d054a48c43889558e44d0c639d",
+      "segmentation": "SAM-HQ ViT-B on the final V7 frames (pinned checkpoint and code)"
+    },
+    "condition_pngs_per_family": {
+      "historical_archive": 6,
+      "with_silhouette": 8
     }
   },
   "human_data": {

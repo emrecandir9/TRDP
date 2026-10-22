@@ -4,7 +4,7 @@ from datetime import datetime, timezone
 from pathlib import Path
 import numpy as np
 from PIL import Image
-from dataset import (ROOT, CONTEXTS, read, write, sha, require, plan, check_sources,
+from dataset import (ROOT, HISTORICAL_CONTEXTS, read, write, sha, require, plan, check_sources,
                      frozen_files, check_family_pixels, rgb, lighting)
 
 MANIFEST = ROOT / 'docs/accepted-dataset.json'
@@ -13,7 +13,7 @@ MANIFEST = ROOT / 'docs/accepted-dataset.json'
 def check_record(directory, family, job, source):
     audit = read(directory / 'audit.json')
     files = family['condition_png_sha256']
-    expected = {f'{context}/{label}.png' for context in CONTEXTS for label in ('static', 'movement')}
+    expected = {f'{context}/{label}.png' for context in HISTORICAL_CONTEXTS for label in ('static', 'movement')}
     require(set(files) == expected and audit['files'] == files, 'Image list disagrees with approved manifest')
     require(family['decision'] == 'approve' and family['reviewer'] == 'human_user', 'Missing historical human approval')
     require(audit['id'] == family['id'] == job['id'] and audit['source_id'] == family['source_id'] == source['id'],
@@ -69,7 +69,7 @@ def validate(directory):
         audit = read(folder / 'audit.json')
         weight = historical_weight(directory, job, source, audit)
         gains = cfg['lighting'][job['light_id']]
-        a, b, _, _ = check_family_pixels(folder, source, gains, weight)
+        a, b, _, _ = check_family_pixels(folder, source, gains, weight, HISTORICAL_CONTEXTS[1:])
         current = np.array(Image.open(ROOT / 'data/inputs' / source['id'] / 'desk_weight.png')) == 0
         original = ROOT / 'data/sources' / source['source_directory'] / 'full_body'
         record['current_guard_deviation_pixels'] = sum(

@@ -49,7 +49,9 @@ class Guards(unittest.TestCase):
         weight = np.zeros(a.shape[:2], np.uint8)
         weight[100:200, 100:200] = 255
         new_a, new_b, _ = d.shared_desk(a, b, np.full_like(a, 150), weight)
-        with tempfile.TemporaryDirectory() as temporary:
+        alpha = np.zeros(a.shape[:2], np.uint8)
+        alpha[10:40, 10:40], alpha[9, 10:40] = 255, 128
+        with tempfile.TemporaryDirectory() as temporary, patch.object(d.silhouette, 'load', return_value=alpha):
             root = Path(temporary)
             data, output = root / 'data', root / 'output'
             original = data / 'sources' / source['source_directory'] / 'full_body'
@@ -75,7 +77,11 @@ class Guards(unittest.TestCase):
             d.write(output / 'verification.json', {'aggregate': 'must survive'})
             with patch.object(d, 'DATA', data), patch.object(d, 'plan', return_value=(cfg, {source['id']: source}, [job])), \
                  patch.object(d, 'check_sources'):
-                self.assertEqual(d.verify(output, job['id'])['condition_pngs_checked'], 6)
+                self.assertEqual(d.verify(output, job['id'])['condition_pngs_checked'], 8)
+                silhouette_image = np.array(Image.open(destination / 'detached_hand_silhouette/static.png'))
+                np.testing.assert_array_equal(silhouette_image[10:40, 10:40], new_a[10:40, 10:40])
+                np.testing.assert_array_equal(silhouette_image[9, 10:40], np.rint(new_a[9, 10:40].astype(float) * 128 / 255))
+                self.assertFalse(silhouette_image[41:].any())
                 self.assertEqual(d.read(output / 'verification.json'), {'aggregate': 'must survive'})
                 with self.assertRaises(FileNotFoundError):
                     d.require_canary(output)

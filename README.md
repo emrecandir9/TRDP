@@ -1,13 +1,17 @@
 # TRDP
 
 Controlled visual stimuli for studying body context and observed index-finger movement.
-The generator expands **20 approved V7 image pairs into 480 families / 2,880 PNGs**:
+The generator expands **20 approved V7 image pairs into 480 families**:
 four desks × two seeds × three shared white balances per source.
 It preserves the approved hand movement while varying the desk and white balance.
+The accepted archive holds 2,880 PNGs in three contexts; the paper-matched
+[detached-hand silhouette](docs/detached-hand-silhouette.md) adds 960 PNGs derived from
+the same full-body pixels.
 
 Read the [illustrated project guide](docs/project-guide.pdf) for the complete workflow:
 original references, source generation, hand and clothing repairs, V7 approval, masks,
-final expansion, earlier methods and next steps. [Validation](docs/validation.md) records
+final expansion, earlier methods and next steps. The guide predates the silhouette: its page 17
+shows the rectangular detached hand, now the sensitivity condition. [Validation](docs/validation.md) records
 what was checked and what remains untested.
 
 ## Directory map
@@ -16,6 +20,7 @@ what was checked and what remains untested.
 TRDP/
 ├── README.md                    # Start here: setup, commands and project status
 ├── requirements.txt             # CPU environment: NumPy, Pillow, pandas, SciPy, statsmodels
+├── requirements-segmentation.txt # Optional: torch, timm, pinned SAM-HQ for segment_hands.py
 ├── .gitignore                   # Keeps data, models, environments and runs local
 ├── .gitattributes               # Treats PDFs as binary files; no Git LFS
 ├── config/
@@ -29,29 +34,39 @@ TRDP/
 │   ├── run.py                   # Logs and launches the CUDA worker cooperatively
 │   ├── generate.py              # Makes shared desk proposals and exports families
 │   ├── dataset.py               # Source checks, composition, verification and review
+│   ├── segment_hands.py         # SAM-HQ hand segmentation of the final frames (CPU)
+│   ├── silhouette.py            # Paper-matched detached-hand mattes and archive export
 │   └── validate_dataset.py      # Checks the downloaded, historically accepted archive
 ├── tests/
 │   ├── test_dataset.py          # CPU regression checks, including failure cases
+│   ├── test_silhouette.py       # Silhouette geometry, registration, seams, wrist cut, frozen mattes
 │   └── test_human_target.py     # Human target checks; published-statistics reproduction
 ├── data/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
+│   ├── hand_segmentation.json   # Tracked SAM-HQ provenance, prompts and mask hashes
+│   ├── silhouettes.json         # Tracked matte hashes, parameters and per-source diagnostics
 │   ├── sources/                 # LOCAL: 20 approved V7 pairs in all three contexts
-│   ├── inputs/                  # LOCAL: source image, Canny control, desk mask/weight
+│   ├── inputs/                  # LOCAL: source image, Canny control, desk mask/weight,
+│   │                            #        hand matte, case geometry, SAM-HQ masks, mattes
 │   ├── human/                   # LOCAL: unchanged OSF files of the reference paper
-│   └── accepted/                # LOCAL: original 480-family accepted dataset
-│       ├── _provenance/          # LOCAL: original masks and hash-bound parent records
-│       │   ├── inputs/           # 20 original desk_weight.png files
-│       │   └── diffusion_parents/ # 160 original result.json records
-│       ├── r12_birch_s9_warm/    # Example: reference 12, birch, seed 9, warm balance
-│       │   ├── full_body/       # static.png + movement.png
-│       │   ├── upper_limb/      # static.png + movement.png
-│       │   ├── detached_hand/   # static.png + movement.png
-│       │   └── audit.json       # Original per-family provenance and image hashes
-│       └── validation.json      # Local archive verification result
+│   ├── accepted/                # LOCAL: original 480-family accepted dataset
+│   │   ├── _provenance/          # LOCAL: original masks and hash-bound parent records
+│   │   │   ├── inputs/           # 20 original desk_weight.png files
+│   │   │   └── diffusion_parents/ # 160 original result.json records
+│   │   ├── r12_birch_s9_warm/    # Example: reference 12, birch, seed 9, warm balance
+│   │   │   ├── full_body/       # static.png + movement.png
+│   │   │   ├── upper_limb/      # static.png + movement.png
+│   │   │   ├── detached_hand/   # rectangle: static.png + movement.png
+│   │   │   └── audit.json       # Original per-family provenance and image hashes
+│   │   └── validation.json      # Local archive verification result
+│   └── accepted_silhouette/     # LOCAL: <family>/detached_hand_silhouette/{static,movement}.png
 ├── docs/
 │   ├── project-guide.pdf        # Step-by-step method with actual before/after images
 │   ├── accepted-dataset.json    # Historical approval and hashes of all 2,880 PNGs
 │   ├── approval-receipt.json    # Acceptance scope and known reference-17 issue
+│   ├── accepted-silhouette.json # Hashes of the 960 archive silhouette PNGs
+│   ├── detached-hand-silhouette.md # Silhouette method, checks and residual defects
+│   ├── figures/                 # Silhouette review sheets
 │   ├── validation.md            # Validation scope, results and limitations
 │   ├── next-phase-plan.md       # Priorities and schedule to 18 December 2026
 │   ├── analysis-spec.md         # Endpoints, splits, models and success criteria
@@ -63,7 +78,11 @@ TRDP/
 Only code, configuration, compact metadata and documentation go to GitHub.
 The dataset, frozen input images and large review PDF stay local; no Git LFS is used.
 All condition images are **RGB PNG, 2048 × 2048**. Contexts keep their original positions;
-hidden regions are black. A family is six images, not six independent observations.
+hidden regions are black. Contexts: `full_body`, `upper_limb`, `detached_hand_silhouette`
+(primary detached hand: skin only, cut at the wrist, as in the paper) and `detached_hand`
+(the earlier rectangle with a desk patch, kept as a sensitivity condition). New runs export
+eight images per family; the historical archive has six plus the derived silhouette pair.
+A family's images are paired views, not independent observations.
 
 ## Review locally (Mac or Linux)
 
@@ -75,13 +94,16 @@ source .venv/bin/activate
 python -m unittest discover -s tests -v
 python scripts/dataset.py check
 python scripts/validate_dataset.py
+python scripts/silhouette.py check
+python scripts/silhouette.py verify-archive
 python analysis/human_target.py
 ```
 
 Tests need no dataset or GPU; the published-statistics test runs only when the OSF files
-are present. The last three commands require local data. This working
+are present. The last five commands require local data. This working
 copy contains the frozen inputs and full accepted archive. After cloning elsewhere,
-copy `data/sources/`, `data/inputs/`, `data/accepted/`, `data/human/` and optionally
+copy `data/sources/`, `data/inputs/`, `data/accepted/`, `data/accepted_silhouette/`,
+`data/human/` and optionally
 `docs/480-family-review.pdf` from this local copy into the same paths. Do not regenerate
 approximations of the frozen inputs. Archive validation checks hashes, image formats,
 approval, protected pixels under the original masks, action support and contexts; it writes
@@ -111,7 +133,7 @@ python scripts/models.py --download
 python scripts/generate.py canary --preflight   # checks only; no model loaded
 python scripts/run.py canary
 python scripts/dataset.py review-template > review-canary.json
-# Inspect all six PNGs per family; complete every check and explicit decision.
+# Inspect all eight PNGs per family; complete every check and explicit decision.
 python scripts/dataset.py review review-canary.json
 python scripts/run.py full --cooperative
 python scripts/dataset.py review-template > review-full.json

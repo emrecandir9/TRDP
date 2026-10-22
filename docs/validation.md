@@ -92,6 +92,19 @@ The refit verifies that the deposit matches the published analysis; it does not 
 analysis. Discrepancies with the paper's Methods are listed in
 [analysis-spec.md](analysis-spec.md) §4.2.
 
+## Detached-hand silhouette — 22 October 2026
+
+| Check | Result |
+| --- | --- |
+| Inputs | 20 hand mattes and 20 case geometries copied into `data/inputs/`; hashes equal `frozen_sources.json` |
+| Segmentation | SAM-HQ ViT-B, checkpoint SHA-256 verified, code at a pinned commit, CPU; 40 masks byte-identical across repeated runs; prompts and predicted IoU (0.972–0.989) in `data/hand_segmentation.json` |
+| Mattes | 40 mattes, deterministic; hashes in `data/silhouettes.json`, bound by `config/recipe.json`; static IoU with the earlier reviewed matte 0.978–0.993 |
+| Invariants | Movement and static mattes identical outside the changed region dilated by 9 px; nothing outside the crop or past the wrist line; area ratio 0.990–1.005 |
+| Archive export | 960 PNGs for 480 families; every image recomputed exactly from its full-body PNG by `verify-archive` |
+| Code paths | `dataset.py check` verifies the mattes; new runs export 8 PNGs per family; the archive validator still checks the historical 6 (sample of 24 families re-run on real data) |
+| Test suite | 23 CPU tests passed, including 6 for the silhouette (segmentation hash check and seam closing among them) |
+| Visual | Assistant inspected every fingertip, index web and finger valley of all 40 frames at 2×, suspicious spots at 4×; remaining observations are image content, listed in [detached-hand-silhouette.md](detached-hand-silhouette.md). Human review pending |
+
 ## Remaining limits
 
 No fresh CUDA inference or actual model download was run during this cleanup. No new

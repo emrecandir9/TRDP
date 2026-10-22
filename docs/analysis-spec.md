@@ -30,7 +30,7 @@ readout and a peripheral MEP; generalisation beyond the 20 source hands.
 | Left hand, index abduction, first-person view | 20 frozen left-hand static/movement pairs; image-plane abduction 10.5–24.7° (median 18.3°) | Synthetic photographs, not the authors' 360° stereo images |
 | Full body: 360° stereo photo of the lab, body co-located | Full first-person scene: desk, arm, torso, legs | Flat image; no co-location; no surrounding room |
 | Upper limb: 180° image of arm on table, black surround | Rows above the fitted desk edge kept, black below | Desk remains visible |
-| Detached hand: isolated hand, black surround | Fixed rectangle around both hand postures, black elsewhere | Desk patch and cut wrist visible; skin-only silhouette added as a control |
+| Detached hand: isolated hand, black surround | **Primary:** skin-only silhouette cut at the wrist, on black ([method](detached-hand-silhouette.md)). Sensitivity: the archive's rectangle with desk patch | Outline from SAM-HQ on the final frames; not hand-annotated ground truth |
 | Body blocks counterbalanced across participants | Six block orders cycled across model instances | — |
 | 60 s static familiarisation per block | 60 s of the static image at block start; model state carried | — |
 | 30 static + 30 movement trials per block, randomised | Same counts, randomised per block and instance | — |
@@ -49,12 +49,14 @@ readout and a peripheral MEP; generalisation beyond the 20 source hands.
 | Archive | `data/accepted`, historical accepted batch (original masks) |
 | Accepted manifest | `docs/accepted-dataset.json`, SHA-256 `f70a68c4…3ef` |
 | Frozen source manifest | `data/frozen_sources.json`, SHA-256 `2495d909…faf` |
-| Families / images | 480 / 2,880; sensitivity without reference 17: 456 / 2,736 |
-| Independent unit | Source lineage group: 20 groups, each with 24 appearance variants × 6 images |
+| Families / images | 480 / 2,880 archive PNGs + 960 derived silhouette PNGs; without reference 17: 456 families |
+| Detached-hand conditions | Primary `detached_hand_silhouette` (`docs/accepted-silhouette.json`, SHA-256 `bcff8067…c2`; mattes `data/silhouettes.json`, `b071f424…ff`; segmentation `data/hand_segmentation.json`, `e2b8b272…9d`); sensitivity `detached_hand` (rectangle) |
+| Independent unit | Source lineage group: 20 groups, each with 24 appearance variants × 8 images |
 | Repository commit at decision | `a58d936` |
 
-No new stimulus generation happens before the frozen evaluation. Control stimuli (§7.2) are
-masks over these frozen pixels and are not new generations.
+No new stimulus generation happens before the frozen evaluation. The silhouettes and the
+control stimuli (§7.2) are masks over these frozen pixels and are not new generations.
+Primary results use the silhouette; every result is repeated with the rectangle.
 
 **Open before freezing (owner: you).** Confirm where the 20 grayscale reference photos
 (`normal1–20`, `open1–20`) came from, and whether any person appears more than once.
@@ -175,7 +177,7 @@ is opened to rescue a criterion.
 | Baseline | Input | Definition |
 | --- | --- | --- |
 | Low-level | Full image | Visible area, mean luminance, RMS contrast, edge energy, and these statistics for the A − B difference |
-| Hand-only | `used_hand_box` crop of the full-body image | Identical pixels in every context, so the context effect is 0 by construction |
+| Hand-only | Silhouette hand, cropped to `used_hand_box` and shown at the same scale for every context | Identical input in every context, so the context effect is 0 by construction |
 | DINOv2 | Full image | ViT-L/14; summary token and patch tokens; checkpoint revision pinned at extraction |
 | OpenCLIP | Full image | ViT-bigG-14, `laion2b_s39b_b160k`; revision pinned at extraction |
 
@@ -226,7 +228,7 @@ No condition label enters any model, and no condition receives its own gain.
 | --- | --- |
 | Arm with a black gap across the wrist | Behaves like the detached hand |
 | Detached hand with a forearm stub | Behaves like the upper limb |
-| Skin-only hand silhouette | Behaves like the detached hand |
+| Rectangle with desk patch (archive `detached_hand`) | Behaves like the detached hand: a surface is not a body |
 | Equal-area windows, hand-centred vs arm-centred | Only the window containing a connected arm produces facilitation |
 | Block-scrambled context, hand intact | Behaves like the detached hand |
 
@@ -255,3 +257,5 @@ pixels are black, and A/B differences stay inside the action region.
 | Date | Change | Reason |
 | --- | --- | --- |
 | 22 Oct 2026 | Draft created | — |
+| 22 Oct 2026 (draft) | Primary detached hand changed from the rectangle to the skin-only silhouette; rectangle kept as sensitivity | Match the paper's isolated hand on black |
+| 22 Oct 2026 (draft) | Silhouette outlines re-derived with SAM-HQ on the final frames | First version clipped fingertips and left edge artifacts |

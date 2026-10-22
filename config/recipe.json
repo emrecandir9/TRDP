@@ -67,5 +67,6 @@
       "id": "madebyollin/sdxl-vae-fp16-fix",
       "revision": "207b116dae70ace3637169f1ddd2434b91b3a8cd"
     }
-  }
+  },
+  "silhouettes_sha256": "b071f424e711992a49caf50fe6443b17716f1044a49a5d49c4e9a2c6e012daff"
 }

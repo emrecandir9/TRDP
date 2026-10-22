@@ -1,0 +1,1132 @@
+{
+  "method": "Paper-matched detached-hand silhouettes: the hand on black, separated at the wrist.",
+  "parameters": {
+    "shaft_start_px": 40,
+    "shaft_width_section_px": [
+      80,
+      140
+    ],
+    "root_bend_step_px": 2,
+    "colour_band_px": 3,
+    "prior_pull_px": 4,
+    "web_reach_px": 15,
+    "histogram_bins": 24,
+    "desk_sample_reach_px": 120,
+    "colour_confidence": 1.0,
+    "boundary_smoothing_sigma_px": 1.5,
+    "root_closing_px": 3,
+    "ghost_zone_px": 8,
+    "ghost_opening_px": 2,
+    "movement_zone_px": 6,
+    "edge_spread_px": 3,
+    "seam_closing_px": 2,
+    "edge_sigma_px": 0.7,
+    "wrist_ramp_px": 2
+  },
+  "code_sha256": "400761df87153ab238e0dc13bec3ec0035c8448d00f0f06bdac1b34bbf721383",
+  "frozen_sources_sha256": "2495d9098ad6b7b8df014b7e56223c76ebf9cb5295fd88d0aa26c748c8e38faf",
+  "hand_segmentation_sha256": "e2b8b27230e9d57c8b8d65393217ddff636f33d054a48c43889558e44d0c639d",
+  "visual_review": "pending",
+  "sources": {
+    "p01_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9801216125488281,
+          "movement": 0.9763329029083252
+        },
+        "static_iou_with_reviewed_matte": 0.9877220896313975,
+        "movement_iou_with_prompt_mask": 0.9879306182971826
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 14.631625147108583,
+        "fitted_degrees": 14.623812647108583,
+        "fitted_shift_px": [
+          0.0,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.3128634385006277,
+        "changed_pixels": 37031,
+        "colour_decided_pixels": 6663,
+        "static_recovery_errors_before": 1379,
+        "static_recovery_errors_after": 485,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 37031,
+      "wrist_cut": {
+        "point": [
+          533.5228525400162,
+          642.4974905252457
+        ],
+        "normal": [
+          0.10431128626913669,
+          -0.9945446976163907
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        346,
+        198,
+        865,
+        717
+      ],
+      "area_px": {
+        "static": 74793,
+        "movement": 74866
+      },
+      "movement_to_static_area": 1.000976027168318,
+      "visible_fraction": {
+        "static": 0.018774986267089844,
+        "movement": 0.01880025863647461
+      },
+      "files": {
+        "silhouette_static.png": "d53431284b1611b6087a71fcfe1622ebca95f735bf4e50d716af6cc5339f6ba8",
+        "silhouette_movement.png": "561a37851771b421d004a8b2eedfa52b2071473e3ae59c0fddbc618065c05fdb"
+      }
+    },
+    "p02_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9890424013137817,
+          "movement": 0.9855605363845825
+        },
+        "static_iou_with_reviewed_matte": 0.9921408768384944,
+        "movement_iou_with_prompt_mask": 0.9888117873628222
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 18.888862208622403,
+        "fitted_degrees": 18.881049708622403,
+        "fitted_shift_px": [
+          0.0,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.7106769199427014,
+        "changed_pixels": 38690,
+        "colour_decided_pixels": 6700,
+        "static_recovery_errors_before": 1243,
+        "static_recovery_errors_after": 297,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 38690,
+      "wrist_cut": {
+        "point": [
+          593.3388706445694,
+          693.6022963523865
+        ],
+        "normal": [
+          -0.0036555490971611213,
+          -0.9999933184580776
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        359,
+        215,
+        918,
+        774
+      ],
+      "area_px": {
+        "static": 84627,
+        "movement": 84680
+      },
+      "movement_to_static_area": 1.0006262776655204,
+      "visible_fraction": {
+        "static": 0.02111959457397461,
+        "movement": 0.02119159698486328
+      },
+      "files": {
+        "silhouette_static.png": "aa78e09b21502cce04d406b66a778585814cd2c7bf89289d2c257e5204d162f9",
+        "silhouette_movement.png": "2dcf2fb6681322b149840b46517afcd3e69908d1bc30c6015cf5df8ed01dcbc4"
+      }
+    },
+    "p03_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9817107915878296,
+          "movement": 0.9754095673561096
+        },
+        "static_iou_with_reviewed_matte": 0.9873755765962612,
+        "movement_iou_with_prompt_mask": 0.9878961489580601
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 15.116756818960374,
+        "fitted_degrees": 15.163631818960374,
+        "fitted_shift_px": [
+          -0.125,
+          -0.0625
+        ],
+        "registration_mean_abs_rgb": 1.3366005553322267,
+        "changed_pixels": 41316,
+        "colour_decided_pixels": 8433,
+        "static_recovery_errors_before": 1589,
+        "static_recovery_errors_after": 579,
+        "ghost_pixels_removed_outside_changed": 1
+      },
+      "changed_pixels": 41316,
+      "wrist_cut": {
+        "point": [
+          606.071986079216,
+          649.9934769868851
+        ],
+        "normal": [
+          0.19064362136291557,
+          -0.9816593144434751
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        434,
+        170,
+        994,
+        730
+      ],
+      "area_px": {
+        "static": 86004,
+        "movement": 85214
+      },
+      "movement_to_static_area": 0.9908143807264779,
+      "visible_fraction": {
+        "static": 0.02124476432800293,
+        "movement": 0.021219730377197266
+      },
+      "files": {
+        "silhouette_static.png": "ec4b3670e57780cbeee4a89a4ea95c06ff9e3160bb6549adb176c829c6b51cd8",
+        "silhouette_movement.png": "f161a13881c5c51093c3843d69f3b5ed22cd939857acabec02ca6c9f00bf21b7"
+      }
+    },
+    "p04_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9787466526031494,
+          "movement": 0.9773350358009338
+        },
+        "static_iou_with_reviewed_matte": 0.9869708902591894,
+        "movement_iou_with_prompt_mask": 0.9883242214303105
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 16.902450401048206,
+        "fitted_degrees": 16.894637901048206,
+        "fitted_shift_px": [
+          0.0,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.0660995921652985,
+        "changed_pixels": 39544,
+        "colour_decided_pixels": 7112,
+        "static_recovery_errors_before": 1461,
+        "static_recovery_errors_after": 565,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 39544,
+      "wrist_cut": {
+        "point": [
+          531.0521539747715,
+          652.533863067627
+        ],
+        "normal": [
+          0.09572411691156496,
+          -0.9954079030435216
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        328,
+        193,
+        865,
+        730
+      ],
+      "area_px": {
+        "static": 78520,
+        "movement": 77967
+      },
+      "movement_to_static_area": 0.9929572083545594,
+      "visible_fraction": {
+        "static": 0.01947951316833496,
+        "movement": 0.019452333450317383
+      },
+      "files": {
+        "silhouette_static.png": "523e18b5e53140a09e82769eba4f50d03549cdf8dd32a1eb0fca8183f440758f",
+        "silhouette_movement.png": "4291be539b543f225101950eb0ab604b8f436bd6cd1b87b11bd9ee32446137ce"
+      }
+    },
+    "p05_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9800140261650085,
+          "movement": 0.97486412525177
+        },
+        "static_iou_with_reviewed_matte": 0.9783508319518635,
+        "movement_iou_with_prompt_mask": 0.9760539342993735
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 19.863051611941366,
+        "fitted_degrees": 19.863051611941366,
+        "fitted_shift_px": [
+          0.0,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.1844082929641735,
+        "changed_pixels": 43235,
+        "colour_decided_pixels": 7147,
+        "static_recovery_errors_before": 1504,
+        "static_recovery_errors_after": 600,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 43235,
+      "wrist_cut": {
+        "point": [
+          502.2613571882248,
+          696.6113967895508
+        ],
+        "normal": [
+          0.16064304627845066,
+          -0.9870125691612949
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        343,
+        231,
+        886,
+        774
+      ],
+      "area_px": {
+        "static": 80253,
+        "movement": 79427
+      },
+      "movement_to_static_area": 0.9897075498735249,
+      "visible_fraction": {
+        "static": 0.020009756088256836,
+        "movement": 0.019930124282836914
+      },
+      "files": {
+        "silhouette_static.png": "c79b2c9be428345aab51d6f567699a02cacd11015aa60bfdb347733b6261ce36",
+        "silhouette_movement.png": "0ceb167d655311528711e0420dc8f12b3eab9d4ed916bbcfc7de694fc2af3df9"
+      }
+    },
+    "p06_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.982166051864624,
+          "movement": 0.9808651208877563
+        },
+        "static_iou_with_reviewed_matte": 0.990673164362161,
+        "movement_iou_with_prompt_mask": 0.9866251005631537
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 21.230734341662153,
+        "fitted_degrees": 21.254171841662153,
+        "fitted_shift_px": [
+          -0.0625,
+          -0.0625
+        ],
+        "registration_mean_abs_rgb": 1.1508994764533378,
+        "changed_pixels": 47116,
+        "colour_decided_pixels": 7039,
+        "static_recovery_errors_before": 1505,
+        "static_recovery_errors_after": 247,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 47116,
+      "wrist_cut": {
+        "point": [
+          535.9477694630623,
+          706.073089838028
+        ],
+        "normal": [
+          0.07764758261231194,
+          -0.9969808688808749
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        323,
+        207,
+        906,
+        790
+      ],
+      "area_px": {
+        "static": 85167,
+        "movement": 85232
+      },
+      "movement_to_static_area": 1.000763206406237,
+      "visible_fraction": {
+        "static": 0.02128911018371582,
+        "movement": 0.02132129669189453
+      },
+      "files": {
+        "silhouette_static.png": "1e4479535bf94e68c25a97f0a3b8ea41ebea0d76975f690dba595cd04366d3b9",
+        "silhouette_movement.png": "412f10f0339541dfb9ee5a7c5529bc88e187f879b4769898dfb0600e7d5ba086"
+      }
+    },
+    "p07_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9818863868713379,
+          "movement": 0.9823731780052185
+        },
+        "static_iou_with_reviewed_matte": 0.9877431792954373,
+        "movement_iou_with_prompt_mask": 0.9860178914127311
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 15.551747914834987,
+        "fitted_degrees": 15.559560414834987,
+        "fitted_shift_px": [
+          -0.0625,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.7303674998276464,
+        "changed_pixels": 43344,
+        "colour_decided_pixels": 8634,
+        "static_recovery_errors_before": 1437,
+        "static_recovery_errors_after": 1294,
+        "ghost_pixels_removed_outside_changed": 3
+      },
+      "changed_pixels": 43344,
+      "wrist_cut": {
+        "point": [
+          538.6607415676117,
+          647.965579867363
+        ],
+        "normal": [
+          0.08063559681713865,
+          -0.9967436483499373
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        308,
+        155,
+        884,
+        731
+      ],
+      "area_px": {
+        "static": 84860,
+        "movement": 85111
+      },
+      "movement_to_static_area": 1.0029578128682537,
+      "visible_fraction": {
+        "static": 0.021292448043823242,
+        "movement": 0.021358966827392578
+      },
+      "files": {
+        "silhouette_static.png": "d28e84d03a9f9bd31bf74c09938b973f272d11103d2d9f84a284606291dab044",
+        "silhouette_movement.png": "6dfe32eb91f7ff01a280dbfcc485b15ab3b0a4e70ecb8886e692e574a32caf7c"
+      }
+    },
+    "p08_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9754960536956787,
+          "movement": 0.9722471237182617
+        },
+        "static_iou_with_reviewed_matte": 0.9865071655733124,
+        "movement_iou_with_prompt_mask": 0.9850794605473178
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 10.522092284322545,
+        "fitted_degrees": 10.514279784322545,
+        "fitted_shift_px": [
+          0.0,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.343580713589343,
+        "changed_pixels": 37247,
+        "colour_decided_pixels": 7949,
+        "static_recovery_errors_before": 1377,
+        "static_recovery_errors_after": 621,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 37247,
+      "wrist_cut": {
+        "point": [
+          531.6602654159069,
+          657.0772657394409
+        ],
+        "normal": [
+          0.09716542029491729,
+          -0.9952682458005541
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        327,
+        192,
+        870,
+        735
+      ],
+      "area_px": {
+        "static": 74338,
+        "movement": 74439
+      },
+      "movement_to_static_area": 1.001358659097635,
+      "visible_fraction": {
+        "static": 0.01869058609008789,
+        "movement": 0.018715381622314453
+      },
+      "files": {
+        "silhouette_static.png": "4a2e87d1987ff332e5e3e22abd8136998e113fb6aca74d568d0ceac7d0c8f206",
+        "silhouette_movement.png": "18e9da5b3c2b6d503030bdfd2dd31a8250b0937d3868fbfa71a9e88c2daf4f9a"
+      }
+    },
+    "p09_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9785202145576477,
+          "movement": 0.975927472114563
+        },
+        "static_iou_with_reviewed_matte": 0.9860660708165256,
+        "movement_iou_with_prompt_mask": 0.9789388277509228
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 17.500398524838435,
+        "fitted_degrees": 17.539461024838435,
+        "fitted_shift_px": [
+          -0.125,
+          -0.0625
+        ],
+        "registration_mean_abs_rgb": 1.666710964980463,
+        "changed_pixels": 42358,
+        "colour_decided_pixels": 7168,
+        "static_recovery_errors_before": 1378,
+        "static_recovery_errors_after": 1091,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 42358,
+      "wrist_cut": {
+        "point": [
+          530.8007366657257,
+          656.1489171981812
+        ],
+        "normal": [
+          0.09849520635743615,
+          -0.9951375253323563
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        332,
+        191,
+        875,
+        734
+      ],
+      "area_px": {
+        "static": 74870,
+        "movement": 75179
+      },
+      "movement_to_static_area": 1.0041271537331375,
+      "visible_fraction": {
+        "static": 0.018758773803710938,
+        "movement": 0.018845796585083008
+      },
+      "files": {
+        "silhouette_static.png": "cbdc21484cad627b594f0da95282e546233719b62d2953607bdac77a106a8c58",
+        "silhouette_movement.png": "c87e967dd8e9e8b0b60e82e923e641822c8b020a14a91e2073c919ef5974d35c"
+      }
+    },
+    "p10_seed123_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9834535121917725,
+          "movement": 0.9865318536758423
+        },
+        "static_iou_with_reviewed_matte": 0.9868396471198755,
+        "movement_iou_with_prompt_mask": 0.9870152166841364
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 17.304867421746746,
+        "fitted_degrees": 17.343929921746746,
+        "fitted_shift_px": [
+          -0.125,
+          -0.0625
+        ],
+        "registration_mean_abs_rgb": 1.6901848447781462,
+        "changed_pixels": 50217,
+        "colour_decided_pixels": 9631,
+        "static_recovery_errors_before": 1551,
+        "static_recovery_errors_after": 1140,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 50217,
+      "wrist_cut": {
+        "point": [
+          534.5474755764008,
+          698.6102640628815
+        ],
+        "normal": [
+          0.09704405474717205,
+          -0.995280086929417
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        293,
+        168,
+        912,
+        787
+      ],
+      "area_px": {
+        "static": 95849,
+        "movement": 95168
+      },
+      "movement_to_static_area": 0.9928950745443353,
+      "visible_fraction": {
+        "static": 0.02369523048400879,
+        "movement": 0.02364635467529297
+      },
+      "files": {
+        "silhouette_static.png": "d1e5a96126d536182e7eb6c4198d3c001aa19d90617dc6246f9393aca36ee1d2",
+        "silhouette_movement.png": "d9a81955a34e9148bdfcca6b3d8a67d8704d6d603a8b222a06e2af4f1ca049f1"
+      }
+    },
+    "p11_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9834739565849304,
+          "movement": 0.9801454544067383
+        },
+        "static_iou_with_reviewed_matte": 0.983526008242736,
+        "movement_iou_with_prompt_mask": 0.9844971300224606
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 24.672966422205803,
+        "fitted_degrees": 24.657341422205803,
+        "fitted_shift_px": [
+          0.0,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.5537656392180437,
+        "changed_pixels": 50296,
+        "colour_decided_pixels": 7530,
+        "static_recovery_errors_before": 1597,
+        "static_recovery_errors_after": 587,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 50296,
+      "wrist_cut": {
+        "point": [
+          538.8486246466637,
+          680.081331372261
+        ],
+        "normal": [
+          0.0598397733477053,
+          -0.9982079951221065
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        312,
+        175,
+        901,
+        764
+      ],
+      "area_px": {
+        "static": 86243,
+        "movement": 85899
+      },
+      "movement_to_static_area": 0.996011270479923,
+      "visible_fraction": {
+        "static": 0.021506309509277344,
+        "movement": 0.02151012420654297
+      },
+      "files": {
+        "silhouette_static.png": "85b2587c96e3aa2ecb86f640eaa9e3a823c98aa9a9b317b5415bf11268331e1a",
+        "silhouette_movement.png": "b56b81797cf23103de2d14a564beb71b88e9fedd033ecde955d43ff7c306e877"
+      }
+    },
+    "p12_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9808073043823242,
+          "movement": 0.9805269241333008
+        },
+        "static_iou_with_reviewed_matte": 0.9896219267930716,
+        "movement_iou_with_prompt_mask": 0.9861815245188209
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 18.370441986179877,
+        "fitted_degrees": 18.401691986179877,
+        "fitted_shift_px": [
+          -0.0625,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.396394280422516,
+        "changed_pixels": 49294,
+        "colour_decided_pixels": 8600,
+        "static_recovery_errors_before": 1503,
+        "static_recovery_errors_after": 161,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 49294,
+      "wrist_cut": {
+        "point": [
+          528.6418896913528,
+          693.3671954870224
+        ],
+        "normal": [
+          0.09597594497562176,
+          -0.9953836536662819
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        293,
+        165,
+        910,
+        782
+      ],
+      "area_px": {
+        "static": 95654,
+        "movement": 95490
+      },
+      "movement_to_static_area": 0.9982854872770611,
+      "visible_fraction": {
+        "static": 0.023717164993286133,
+        "movement": 0.023715734481811523
+      },
+      "files": {
+        "silhouette_static.png": "4057ea947b2d9436c9f8efcdd900ed8be0ec8538ed36e39e21d0aab460075efc",
+        "silhouette_movement.png": "38d9320dfb5e0768ceafbc99f8b5d34515dfa35f389fa636329b5dc32be51427"
+      }
+    },
+    "p13_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9807121753692627,
+          "movement": 0.9790929555892944
+        },
+        "static_iou_with_reviewed_matte": 0.9899062725306417,
+        "movement_iou_with_prompt_mask": 0.9848455429780789
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 23.685543345735415,
+        "fitted_degrees": 23.716793345735415,
+        "fitted_shift_px": [
+          -0.125,
+          -0.0625
+        ],
+        "registration_mean_abs_rgb": 1.530046566012293,
+        "changed_pixels": 49655,
+        "colour_decided_pixels": 7328,
+        "static_recovery_errors_before": 1492,
+        "static_recovery_errors_after": 1481,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 49655,
+      "wrist_cut": {
+        "point": [
+          533.4601533412933,
+          700.2815517187119
+        ],
+        "normal": [
+          0.06757553138221534,
+          -0.9977141612498096
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        322,
+        203,
+        902,
+        783
+      ],
+      "area_px": {
+        "static": 88076,
+        "movement": 88200
+      },
+      "movement_to_static_area": 1.0014078750170308,
+      "visible_fraction": {
+        "static": 0.021979808807373047,
+        "movement": 0.022037267684936523
+      },
+      "files": {
+        "silhouette_static.png": "8205db2d4b221219d39fbee578a9ba07a6936d65b4de8fdaaf409aaebf679d0f",
+        "silhouette_movement.png": "2faa5359e14edc4c2dedc9302226e7fe9b4cdd1b3ad39c996f2e6b17e8f60637"
+      }
+    },
+    "p14_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9802457094192505,
+          "movement": 0.9814298748970032
+        },
+        "static_iou_with_reviewed_matte": 0.9891921525629479,
+        "movement_iou_with_prompt_mask": 0.9867338485457166
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 18.232249756571353,
+        "fitted_degrees": 18.232249756571353,
+        "fitted_shift_px": [
+          0.0,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.2162415622577492,
+        "changed_pixels": 39560,
+        "colour_decided_pixels": 7124,
+        "static_recovery_errors_before": 1402,
+        "static_recovery_errors_after": 847,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 39560,
+      "wrist_cut": {
+        "point": [
+          535.6928281784058,
+          653.6135175228119
+        ],
+        "normal": [
+          0.10084836904422796,
+          -0.9949018074469054
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        339,
+        195,
+        874,
+        730
+      ],
+      "area_px": {
+        "static": 76057,
+        "movement": 76110
+      },
+      "movement_to_static_area": 1.0006968457867127,
+      "visible_fraction": {
+        "static": 0.019022703170776367,
+        "movement": 0.019054412841796875
+      },
+      "files": {
+        "silhouette_static.png": "a4d479b91b78c410d968b8c45200da4a7f8bbb1dc768f90c75cc3cc43f36aeaa",
+        "silhouette_movement.png": "e30b398c5c72a7b90ac6987aef9fcf11b38d02fa3543679791756f73d218e91f"
+      }
+    },
+    "p15_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9823659658432007,
+          "movement": 0.9834871292114258
+        },
+        "static_iou_with_reviewed_matte": 0.9900441200249475,
+        "movement_iou_with_prompt_mask": 0.9860900481073427
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 18.30628923283874,
+        "fitted_degrees": 18.32191423283874,
+        "fitted_shift_px": [
+          -0.0625,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.58265748991384,
+        "changed_pixels": 48559,
+        "colour_decided_pixels": 7349,
+        "static_recovery_errors_before": 1531,
+        "static_recovery_errors_after": 838,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 48559,
+      "wrist_cut": {
+        "point": [
+          537.7524361610413,
+          715.2602586150169
+        ],
+        "normal": [
+          0.05732139034742281,
+          -0.9983557773702912
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        314,
+        202,
+        913,
+        801
+      ],
+      "area_px": {
+        "static": 85941,
+        "movement": 86372
+      },
+      "movement_to_static_area": 1.005015068477211,
+      "visible_fraction": {
+        "static": 0.02154827117919922,
+        "movement": 0.021654129028320312
+      },
+      "files": {
+        "silhouette_static.png": "b252f302070d5f90289b53c8291990bc05c7595efdec7da6ffc06eab32429db9",
+        "silhouette_movement.png": "3042f2b398f08688adac795e9d8d6ff861f5ae0498f964e25e9c992f3dc7ddc5"
+      }
+    },
+    "p16_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9803204536437988,
+          "movement": 0.9801049828529358
+        },
+        "static_iou_with_reviewed_matte": 0.9900267880723906,
+        "movement_iou_with_prompt_mask": 0.989356960373974
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 21.83957507438208,
+        "fitted_degrees": 21.83176257438208,
+        "fitted_shift_px": [
+          -0.0625,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.477190032047851,
+        "changed_pixels": 43717,
+        "colour_decided_pixels": 6843,
+        "static_recovery_errors_before": 1394,
+        "static_recovery_errors_after": 486,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 43717,
+      "wrist_cut": {
+        "point": [
+          533.1687986850739,
+          652.072308421135
+        ],
+        "normal": [
+          0.11115361260725537,
+          -0.9938032372679997
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        326,
+        180,
+        877,
+        731
+      ],
+      "area_px": {
+        "static": 78868,
+        "movement": 79230
+      },
+      "movement_to_static_area": 1.0045899477608156,
+      "visible_fraction": {
+        "static": 0.019729137420654297,
+        "movement": 0.019828319549560547
+      },
+      "files": {
+        "silhouette_static.png": "29c30e902e628660a764f45a6d2c279401d93d6d1f73a3d0d3d956361016e587",
+        "silhouette_movement.png": "fc80519dba514fceda814486a9a5d0772fc1952d79e6ce3f839d24cd5d28fc37"
+      }
+    },
+    "p17_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9830623865127563,
+          "movement": 0.981128454208374
+        },
+        "static_iou_with_reviewed_matte": 0.9929579860520497,
+        "movement_iou_with_prompt_mask": 0.9846108490566038
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 20.23061992484799,
+        "fitted_degrees": 20.21499492484799,
+        "fitted_shift_px": [
+          0.0,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.8616231984492724,
+        "changed_pixels": 51359,
+        "colour_decided_pixels": 9604,
+        "static_recovery_errors_before": 1552,
+        "static_recovery_errors_after": 746,
+        "ghost_pixels_removed_outside_changed": 1
+      },
+      "changed_pixels": 51359,
+      "wrist_cut": {
+        "point": [
+          539.676555275917,
+          713.758138179779
+        ],
+        "normal": [
+          0.0534138600058488,
+          -0.9985724608456192
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        310,
+        195,
+        916,
+        801
+      ],
+      "area_px": {
+        "static": 87738,
+        "movement": 87880
+      },
+      "movement_to_static_area": 1.0016184549454057,
+      "visible_fraction": {
+        "static": 0.021982669830322266,
+        "movement": 0.02202010154724121
+      },
+      "files": {
+        "silhouette_static.png": "d242ba7eb817695a698b03b42a77233ca69309c298d05ea13d2e9066107e7d0a",
+        "silhouette_movement.png": "75491c6f5576b04c17c91d615245938c1a23048551a8c0a8d77a6b05a2f86085"
+      }
+    },
+    "p18_seed123_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9836453795433044,
+          "movement": 0.9827006459236145
+        },
+        "static_iou_with_reviewed_matte": 0.9925327038891708,
+        "movement_iou_with_prompt_mask": 0.9912254766378316
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 16.168887337437273,
+        "fitted_degrees": 16.168887337437273,
+        "fitted_shift_px": [
+          -0.0625,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.3847742843836641,
+        "changed_pixels": 49755,
+        "colour_decided_pixels": 7478,
+        "static_recovery_errors_before": 1502,
+        "static_recovery_errors_after": 494,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 49755,
+      "wrist_cut": {
+        "point": [
+          530.6735299825668,
+          679.9032638072968
+        ],
+        "normal": [
+          0.06510408412199695,
+          -0.9978784786889814
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        307,
+        173,
+        899,
+        765
+      ],
+      "area_px": {
+        "static": 90147,
+        "movement": 90261
+      },
+      "movement_to_static_area": 1.0012646011514525,
+      "visible_fraction": {
+        "static": 0.022469282150268555,
+        "movement": 0.02250504493713379
+      },
+      "files": {
+        "silhouette_static.png": "52d665d518fe28015eb617a391742ebb018f0a92c8bcbb27c6a330de441d346c",
+        "silhouette_movement.png": "57e3e81f75696b54c51b1947394f1cfd2c34df565ac1affa710a3ff81f1c5d92"
+      }
+    },
+    "p19_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9799903631210327,
+          "movement": 0.9737658500671387
+        },
+        "static_iou_with_reviewed_matte": 0.987107829137938,
+        "movement_iou_with_prompt_mask": 0.9891935950358899
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 18.970095698211093,
+        "fitted_degrees": 18.962283198211093,
+        "fitted_shift_px": [
+          0.0,
+          0.0
+        ],
+        "registration_mean_abs_rgb": 1.1683384078689243,
+        "changed_pixels": 45823,
+        "colour_decided_pixels": 7516,
+        "static_recovery_errors_before": 1533,
+        "static_recovery_errors_after": 143,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 45823,
+      "wrist_cut": {
+        "point": [
+          532.2773112654686,
+          673.0165077447891
+        ],
+        "normal": [
+          0.11363659601327583,
+          -0.9935223822574485
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        319,
+        183,
+        891,
+        755
+      ],
+      "area_px": {
+        "static": 97380,
+        "movement": 96952
+      },
+      "movement_to_static_area": 0.9956048469911686,
+      "visible_fraction": {
+        "static": 0.02411651611328125,
+        "movement": 0.024100065231323242
+      },
+      "files": {
+        "silhouette_static.png": "f4516c4d276884fc6c4a923e8eb4b3b65af7edf81a3657766f3c93fa6999ae1c",
+        "silhouette_movement.png": "f98ce2b9b5d30d44661e0bef80f06ecfae1ea0ebdba2ff92e132f17e5dbc0a54"
+      }
+    },
+    "p20_seed9_detailed": {
+      "segmentation": {
+        "predicted_iou": {
+          "static": 0.9788811206817627,
+          "movement": 0.9827959537506104
+        },
+        "static_iou_with_reviewed_matte": 0.9900615512773047,
+        "movement_iou_with_prompt_mask": 0.9874908610173565
+      },
+      "prompt_mask_diagnostics": {
+        "recorded_degrees": 13.308047796425521,
+        "fitted_degrees": 13.331485296425521,
+        "fitted_shift_px": [
+          -0.0625,
+          -0.0625
+        ],
+        "registration_mean_abs_rgb": 1.2619445224997186,
+        "changed_pixels": 46523,
+        "colour_decided_pixels": 7313,
+        "static_recovery_errors_before": 1516,
+        "static_recovery_errors_after": 538,
+        "ghost_pixels_removed_outside_changed": 0
+      },
+      "changed_pixels": 46523,
+      "wrist_cut": {
+        "point": [
+          526.9605916142464,
+          685.3252325057983
+        ],
+        "normal": [
+          0.09561161638726935,
+          -0.9954187153212529
+        ],
+        "ramp_px": 2
+      },
+      "crop": [
+        304,
+        183,
+        890,
+        769
+      ],
+      "area_px": {
+        "static": 85690,
+        "movement": 85830
+      },
+      "movement_to_static_area": 1.0016337962422686,
+      "visible_fraction": {
+        "static": 0.02153158187866211,
+        "movement": 0.021574974060058594
+      },
+      "files": {
+        "silhouette_static.png": "973b6f780fd1155168c430632fc9946e32c9a62ee588e998409a50bc9962de5d",
+        "silhouette_movement.png": "c21efd47d475432e9f6378917e806aa83d45d425439e56627fabc88d9ed90fda"
+      }
+    }
+  }
+}
