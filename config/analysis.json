@@ -1,5 +1,5 @@
 {
-  "status": "draft; open items resolved and success criteria approved on 2026-10-22; freeze by 2026-10-30 with docs/analysis-spec.md",
+  "status": "frozen on 2026-10-22 together with docs/analysis-spec.md; change only through the spec amendment log",
   "cohort": {
     "decision_date": "2026-10-22",
     "archive": "data/accepted",
@@ -128,5 +128,10 @@
       "ADM movement upper_limb - full_body": 2.93,
       "ADM movement upper_limb - detached_hand": 5.31
     }
+  },
+  "frozen_spec": {
+    "path": "docs/analysis-spec.md",
+    "sha256": "559c4a3f3e4ef978d89cb4e00bed041d4b82226482fd053505262fc656de69bb",
+    "date": "2026-10-22"
   }
 }

@@ -1,7 +1,7 @@
 # Analysis specification
 
-**Status: DRAFT — 22 October 2026; all open items resolved and §5.2 approved by the project
-owner on 22 October. Freeze on 30 October 2026 at the latest, before any model result exists.**
+**Status: FROZEN — 22 October 2026, by the project owner, before any model result exists.
+No model, baseline or feature extraction had been run.**
 After freezing, change this document only through the amendment log (§10), with a date and
 reason. Machine-readable values live in [`config/analysis.json`](../config/analysis.json).
 
@@ -298,6 +298,7 @@ pixels are black, and A/B differences stay inside the action region.
 | 22 Oct 2026 (draft) | Silhouette outlines re-derived with SAM-HQ on the final frames | First version clipped fingertips and left edge artifacts |
 | 22 Oct 2026 (draft) | Reference-image origin recorded (AI-generated, 20 distinct synthetic identities) | Resolves the §3 open item; restricts generalisation claims |
 | 22 Oct 2026 (draft) | §5 revised: hierarchical aggregation, 10 initialisations, primary model named, P2 and P3 added, S3 redefined as same-model low-level and hand-only controls, H2 fit target excludes upper limb, full-body-only training | Audit found undefined aggregation, a P1 loophole, a vacuous S3, partial circularity of S1 for H2 and unspecified training contexts; approved by the project owner |
+| 22 Oct 2026 | **Frozen** | Open items resolved, criteria approved; no model result exists |
 
 ## 11. References
 
