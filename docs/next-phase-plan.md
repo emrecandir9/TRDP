@@ -1,0 +1,168 @@
+# Next phase plan — 22 October to 18 December 2026
+
+The stimulus set is finished. The scientific work has not started: there is no
+human target, no baseline and no model yet. This plan moves effort from images to
+the target, controls and model, and ends with frozen results by **18 December**.
+January stays free for writing the report.
+
+## 1. Where the project stands
+
+| Area | Status |
+| --- | --- |
+| Stimuli | 480 accepted families from 20 V7 source pairs. Integrity checks pass; 10 CPU tests pass |
+| Action | Left index abduction, 10.5–24.7° (median 18.3°), matches the paper |
+| Effective sample size | **20 distinct movements**: desk, seed and white balance are nuisance variation |
+| Human target | Built: `analysis/human_target.py`; reproduces the paper's published statistics exactly ([analysis spec](analysis-spec.md) §4) |
+| Visual baselines | Not run on the index dataset |
+| Model | Not started |
+
+### Reanalysis of the paper's deposited data (22 October)
+
+The published Table 2 and every post-hoc z value in the Results are reproduced exactly from
+the deposit. They come from mixed models on **raw mV** (not the z-scored values the Methods
+describe) with only a participant random intercept, so ~11,000 single trials act as
+independent observations. At participant level (n = 32, paired tests, Methods z-scale):
+
+| Effect | Participant-level result | Use in this project |
+| --- | --- | --- |
+| FDI movement > static, full body | t = 4.4, p = .0001, 25/32 positive | Robust |
+| FDI movement > static, upper limb | t = 4.1, p = .0003, 23/32 positive | Robust |
+| FDI movement effect, detached hand | t = −0.4 (none) | Robust |
+| `C_FDI` (definition below) | t = 4.1, p = .0003; survives log scale | **Primary endpoint** |
+| ADM movement effect, upper limb | p = .07 to .015 depending on normalisation | Exploratory |
+| FDI full body / upper limb > detached hand, regardless of movement | p ≈ .02–.05; n.s. on log scale; confounded with block order | Exploratory |
+| FDI full body vs upper limb | t = 0.2 | Expected ≈ 0 |
+
+Questionnaire ratings follow full body ≫ upper limb ≈ detached hand, whereas MEPs
+follow full body ≈ upper limb ≫ detached hand. The robust motor effect therefore
+tracks a **visible** property, the hand being attached to an arm, more closely than
+reported ownership. This is the effect a vision-driven model should explain.
+
+### Measured low-level confounds (80 seed-9 neutral families)
+
+| | Full body | Upper limb | Detached hand |
+| --- | --- | --- | --- |
+| Visible (non-black) area | 100% | 62% | 7.8% |
+| Mean luminance | 0.49 | 0.30 | 0.04 |
+| Movement pixels / visible pixels | 1.1% | 1.7% | 13.6% |
+| Contrast-normalised A/B distance (64 px grey) | 3.8 | 2.3 | 4.6 |
+
+A generic image model sees the **largest** movement signal in the detached hand,
+opposite to the human result. Baselines must show this explicitly.
+
+## 2. Do first (22–25 October)
+
+1. **Stop stimulus work.** Do not run the fresh CUDA canary or new generation sweeps.
+   They are not on the critical path. Keep the corrected-mask code for later.
+   *Done 22 Oct: README updated; the roadmap on page 25 of the project guide is superseded.*
+2. **Freeze the analysis cohort.** Use the historical accepted archive: 480 families,
+   with every result repeated without reference 17 (456 families). Record the
+   decision and the archive manifest hash in the analysis spec.
+   *Done 22 Oct: `config/analysis.json` and [analysis spec](analysis-spec.md) §3.*
+3. **Build the human target in this repository** (`analysis/human_target.py`): the
+   12-cell participant table, all movement contrasts with paired bootstrap intervals,
+   and sensitivity versions (raw mV, log, within-muscle z, excluding < 50 µV).
+   It must reproduce the numbers above.
+   *Done 22 Oct: reproduces the numbers above and all 18 legible published statistics; 7 tests.*
+4. **Draft the analysis spec** (`docs/analysis-spec.md`): endpoints, splits, models,
+   gates and what counts as success or failure. Freeze it on 30 October, before any
+   model result exists.
+   *Drafted 22 Oct. Before freezing: confirm the origin of the 20 reference photos and
+   whether any person repeats (spec §3), review the success criteria (spec §5.2), and
+   commit the spec with `config/analysis.json`.*
+
+## 3. Issues to address
+
+| # | Issue | Action | When |
+| --- | --- | --- | --- |
+| 1 | Paper's statistics treat trials as independent and use raw mV despite the Methods; questionnaire z = −117 is implausible for n = 32 | Done: participant-level targets; discrepancies listed in [analysis spec](analysis-spec.md) §4.2. Contacting the authors is optional and your decision | W1 |
+| 2 | Only 20 independent movements | Leave-one-source-out (20 folds) for every evaluation; never split a source's 24 variants or six conditions. Report per-source results | All weeks |
+| 3 | Area, luminance and edge confounds between contexts | Control stimuli (§4.2) and low-level baselines; a continuity claim must survive them | W2–W3 |
+| 4 | Detached hand is a desk rectangle with a cut wrist, not an isolated hand | Add a skin-only silhouette variant; analyse both | W2 |
+| 5 | One unblinded reviewer accepted all images | Two naive raters score a fixed sample (20 sources × 3 contexts × 2 frames) for realism and visible artifacts; report agreement | W2–W4 |
+| 6 | Archive was produced with the earlier mask; hand-matte pixels changed in 6/20 checked exemplars | Count matte deviations for all 480 families; run a sensitivity analysis without the affected sources if counts are non-trivial | W2 |
+| 7 | No sex metadata per source (the paper sex-matched bodies) | Add a reviewed `apparent_sex` field to the source metadata; report its distribution | W1 |
+| 8 | `dataset.py review` accepts `assistant` as reviewer | State in the docs that only human decisions approve stimuli, or remove the option | W1 |
+
+## 4. New work to start
+
+### 4.1 Human target and analysis spec
+
+Built. Definitions, families, scales, reference values and model success criteria are in
+the [analysis spec](analysis-spec.md) §4–§5. Model outputs are compared on contrasts and
+scale-free ratios, never on absolute millivolts.
+
+### 4.2 Control stimuli (CPU only, built from frozen pixels)
+
+Every control is a mask over existing full-body pixels, so the action pixels stay
+identical:
+
+| Control | Question |
+| --- | --- |
+| Arm with a black gap across the wrist | Does a visual break in continuity remove the effect? (Tieri et al. 2015) |
+| Detached hand plus forearm stub | Is a short attached segment enough? |
+| Skin-only hand silhouette | Closer match to the paper's isolated hand |
+| Equal-area windows: hand-centred vs arm-centred | Does visible area alone explain the effect? |
+| Block-scrambled context, hand intact | Does any surround work, or only a body? |
+
+Each control gets the same tests as the contexts: visible pixels equal full-body
+pixels, hidden pixels black, A/B differences only in the action region.
+
+### 4.3 Visual baselines
+
+- Encoders: low-level statistics (area, luminance, edge energy), DINOv2 ViT-L/14 (summary and patch tokens), OpenCLIP, and hand-region-only features (no context effect by construction).
+- Per context and control: the movement signal, meaning the A/B feature distance relative to between-source spread.
+- Leave-one-source-out decoding of static vs movement within each context, plus train-on-full-body / test-on-detached-hand transfer.
+- Features are extracted once on GPU (Kaggle or cluster), cached with hashes and analysed on CPU.
+
+### 4.4 Temporal model
+
+- Trials follow the paper: static frame for 2,250–3,250 ms, then the same frame or the movement frame for 750 ms, with a common probe 250 ms after the second frame starts. FDI and ADM readout populations; state is not reset between the frames.
+- Frozen encoder → leaky integrate-and-fire network (snnTorch), plus a non-spiking twin with matched capacity.
+- Three hypotheses:
+  - **H0, no context:** readout uses hand features only.
+  - **H1, salience:** the movement signal is scaled by low-level visual change; expected to fail as described in §1.
+  - **H2, attachment gate:** a context pathway estimates whether the hand is connected to an arm and gates the visuomotor mapping.
+- Key tests: calibrate on full body and detached hand only, then **predict upper limb**. Under H2 the arm-gap control must behave like the detached hand. H2 can therefore fail on data it was not fitted to.
+- No condition labels enter the network, and no condition gets its own gain.
+
+## 5. Schedule
+
+| Week | Dates | Work | Deliverable |
+| --- | --- | --- | --- |
+| W0 | 22–23 Oct | Freeze cohort; human target module; draft analysis spec | Done 22 Oct |
+| W1 | 26–30 Oct | Resolve spec open items (reference provenance, criteria review); fix issues 7–8; **freeze analysis spec 30 Oct** | Frozen `docs/analysis-spec.md` and `config/analysis.json` |
+| W2 | 2–6 Nov | Build and test control stimuli; matte-deviation count; prepare rater sample | Control set with tests; rater sheet |
+| W3 | 9–13 Nov | Extract features; movement-signal and grouped decoding analyses; ratings collected | Baseline table and figure. **Gate 1, 13 Nov** |
+| W4 | 16–20 Nov | Trial simulator; feedforward LIF and non-spiking twin; rate and probe diagnostics | Working models with stable activity |
+| W5 | 23–27 Nov | H0/H1/H2; calibrate on full body + detached hand, predict upper limb; recurrent variant | First held-out predictions |
+| W6 | 30 Nov–4 Dec | Predictions for all controls; probe-strength sweep | Control predictions. **Gate 2, 4 Dec** |
+| W7 | 7–11 Dec | Ablations: spiking vs non-spiking, recurrent vs feedforward, final frame only vs sequence; 5 initialisations; without reference 17 | Ablation table; configurations frozen 11 Dec |
+| W8 | 14–18 Dec | Single frozen evaluation; final human vs model figures; methods and results draft; supervisor review | Interim results report |
+
+## 6. Decision gates
+
+**Gate 1 — 13 November: do visual baselines already produce `C_FDI`?**
+
+- If low-level or hand-only baselines reproduce it, the continuity explanation is in doubt. The report then focuses on that confound, and the model must beat those baselines.
+- If generic encoders show the reverse pattern (largest effect in the detached hand), H2 has a clean target. Continue as planned.
+
+**Gate 2 — 4 December: is the model scientifically usable?**
+
+- Stable, non-saturated activity; probe responses vary smoothly with strength; H0, H1 and H2 make different predictions for the controls.
+- If not, simplify: drop recurrence and spiking details, keep the non-spiking version and report the spiking attempt as a negative result. Do not add per-condition gains.
+
+## 7. Out of scope until after 18 December
+
+- Fresh CUDA canary or new stimulus generation
+- Reward-modulated STDP or other local learning rules
+- Little-finger stimuli for an independent ADM mapping, unless W7 ends early
+- Biophysical TMS → EMG modelling
+- Questionnaire modelling: the model has no ownership variable
+
+## 8. Rules that apply throughout
+
+- Leave-one-source-out splits; preprocessing fitted only on training folds.
+- Report human uncertainty across participants, image generalisation across sources and model stability across initialisations, kept separate.
+- Keep failed runs and negative results; open the held-out evaluation once.
+- "Not significant" is not "zero": state an equivalence margin before claiming one.

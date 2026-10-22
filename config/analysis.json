@@ -1,0 +1,107 @@
+{
+  "status": "draft; freeze on 2026-10-30 together with docs/analysis-spec.md",
+  "cohort": {
+    "decision_date": "2026-10-22",
+    "archive": "data/accepted",
+    "description": "Historical accepted archive, original masks; no fresh generation before the frozen evaluation",
+    "accepted_manifest": "docs/accepted-dataset.json",
+    "accepted_manifest_sha256": "f70a68c481649e9f081c3474afbdd18be087c2c1a7a8966efbf09ac8967fa3ef",
+    "frozen_sources_sha256": "2495d9098ad6b7b8df014b7e56223c76ebf9cb5295fd88d0aa26c748c8e38faf",
+    "local_validation_json_sha256": "cf0dcefdb3bcdf8839613e10ef238fe3e651f9cd12427530b90ba60283362320",
+    "repository_commit_at_decision": "a58d936ff596862870ac1cf943d043e679e3a2ed",
+    "families": 480,
+    "condition_pngs": 2880,
+    "split_unit": "source_lineage_group",
+    "source_groups": 20,
+    "sensitivity": {
+      "exclude_references": [
+        17
+      ],
+      "families": 456,
+      "condition_pngs": 2736,
+      "reason": "Accepted clothing issue flagged in docs/approval-receipt.json"
+    }
+  },
+  "human_data": {
+    "article": "https://doi.org/10.1038/s41598-025-97695-9",
+    "deposit": "https://osf.io/473wg/?view_only=c89faf2295bd4178a0446fab4027c1a5",
+    "accessed": "2026-09-26",
+    "directory": "data/human",
+    "files": {
+      "MEPs_amplitude.csv": "e7c760887a69ebe908ffe4e032e44eb2ab45afc2b7f21f3b65766ca32c034752",
+      "Embodiment_Quesionnaire.csv": "9ed951f9d1df774b56d54e3a1473d1de984ea7be7aeae95330d033496abc13c4",
+      "VR_Experience_and_Sickness.csv": "2dbb2d517c0b56d00484ac64e89e4b86440ca902dd1be93d8d530f36a0ec83db"
+    },
+    "design_trials_per_cell": 30,
+    "type_map": {
+      "0": "static",
+      "1": "movement"
+    },
+    "type_map_evidence": "Fitting the paper's mixed model with Type 1 as Movement reproduces every legible Table 2 coefficient, including the sign of Type x FDI"
+  },
+  "human_target": {
+    "primary_scale": "participant_z",
+    "scales": {
+      "participant_z": "Paper Methods: per participant, (MEP - participant mean) / participant SD over all retained MEPs, both muscles; SD with n - 1",
+      "raw_mv": "Deposited amplitude in mV; the scale of the paper's published mixed model (Table 2)",
+      "log": "Natural log of amplitude in microvolts; MEP amplitudes are right-skewed",
+      "participant_muscle_z": "As participant_z, but separately within each muscle",
+      "participant_z_min50": "MEPs below 50 microvolts removed first (the paper's stated cutoff), then participant_z"
+    },
+    "bootstrap_samples": 10000,
+    "bootstrap_seed": 20261022,
+    "interval": 0.95
+  },
+  "published_table2": {
+    "source": "Table 2, Sci Rep 15:13364; only values legible in the article are transcribed",
+    "model": "Linear mixed model on raw mV (not the z-scored values described in Methods), participant random intercept, fixed body x movement x muscle; references full body, static, ADM",
+    "coefficients": {
+      "fdi": {
+        "coef": 0.68,
+        "z": 18.42
+      },
+      "movement": {
+        "coef": 0.018,
+        "z": 0.5
+      },
+      "upper_limb": {
+        "z": -0.1,
+        "coef": -0.004
+      },
+      "detached_hand": {
+        "z": -1.28,
+        "coef": -0.047
+      },
+      "upper_limb:movement": {
+        "coef": 0.075,
+        "z": 1.44
+      },
+      "movement:fdi": {
+        "coef": 0.183,
+        "z": 3.52
+      },
+      "upper_limb:movement:fdi": {
+        "z": -1.27,
+        "coef": -0.094
+      },
+      "detached_hand:movement:fdi": {
+        "z": -2.67
+      }
+    }
+  },
+  "published_posthoc_abs_z": {
+    "source": "Results text; reproduced by separate random-intercept models on each subset. Table 3 differs for some cells (FDI movement 9.01 and 9.01, FDI static 5.59 and 4.89)",
+    "contrasts": {
+      "FDI full_body movement - static": 5.38,
+      "FDI upper_limb movement - static": 5.55,
+      "FDI detached_hand movement - static": 0.03,
+      "FDI movement full_body - detached_hand": 10.37,
+      "FDI movement upper_limb - detached_hand": 9.65,
+      "FDI static full_body - detached_hand": 5.51,
+      "FDI static upper_limb - detached_hand": 5.15,
+      "ADM upper_limb movement - static": 4.67,
+      "ADM movement upper_limb - full_body": 2.93,
+      "ADM movement upper_limb - detached_hand": 5.31
+    }
+  }
+}

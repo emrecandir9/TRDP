@@ -15,11 +15,14 @@ what was checked and what remains untested.
 ```text
 TRDP/
 ├── README.md                    # Start here: setup, commands and project status
-├── requirements.txt             # Small CPU review environment: NumPy and Pillow
+├── requirements.txt             # CPU environment: NumPy, Pillow, pandas, SciPy, statsmodels
 ├── .gitignore                   # Keeps data, models, environments and runs local
 ├── .gitattributes               # Treats PDFs as binary files; no Git LFS
 ├── config/
-│   └── recipe.json              # Parameters, prompts, pinned models and canary IDs
+│   ├── recipe.json              # Parameters, prompts, pinned models and canary IDs
+│   └── analysis.json            # Frozen cohort, human-data hashes, target settings
+├── analysis/
+│   └── human_target.py          # Participant-level human MEP target from the OSF deposit
 ├── scripts/
 │   ├── setup.sh                 # Creates .venv for review or Linux CUDA generation
 │   ├── models.py                # Downloads / resolves the three pinned models
@@ -28,11 +31,13 @@ TRDP/
 │   ├── dataset.py               # Source checks, composition, verification and review
 │   └── validate_dataset.py      # Checks the downloaded, historically accepted archive
 ├── tests/
-│   └── test_dataset.py          # CPU regression checks, including failure cases
+│   ├── test_dataset.py          # CPU regression checks, including failure cases
+│   └── test_human_target.py     # Human target checks; published-statistics reproduction
 ├── data/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
 │   ├── sources/                 # LOCAL: 20 approved V7 pairs in all three contexts
 │   ├── inputs/                  # LOCAL: source image, Canny control, desk mask/weight
+│   ├── human/                   # LOCAL: unchanged OSF files of the reference paper
 │   └── accepted/                # LOCAL: original 480-family accepted dataset
 │       ├── _provenance/          # LOCAL: original masks and hash-bound parent records
 │       │   ├── inputs/           # 20 original desk_weight.png files
@@ -48,6 +53,8 @@ TRDP/
 │   ├── accepted-dataset.json    # Historical approval and hashes of all 2,880 PNGs
 │   ├── approval-receipt.json    # Acceptance scope and known reference-17 issue
 │   ├── validation.md            # Validation scope, results and limitations
+│   ├── next-phase-plan.md       # Priorities and schedule to 18 December 2026
+│   ├── analysis-spec.md         # Endpoints, splits, models and success criteria
 │   └── 480-family-review.pdf    # LOCAL: unchanged original interactive review
 ├── .venv/                       # LOCAL: environment created by setup.sh
 └── output/                      # LOCAL: new runs, proposals, audits and review records
@@ -68,17 +75,30 @@ source .venv/bin/activate
 python -m unittest discover -s tests -v
 python scripts/dataset.py check
 python scripts/validate_dataset.py
+python analysis/human_target.py
 ```
 
-Tests need no dataset or GPU. The last two commands require local data. This working
+Tests need no dataset or GPU; the published-statistics test runs only when the OSF files
+are present. The last three commands require local data. This working
 copy contains the frozen inputs and full accepted archive. After cloning elsewhere,
-copy `data/sources/`, `data/inputs/`, `data/accepted/` and optionally
+copy `data/sources/`, `data/inputs/`, `data/accepted/`, `data/human/` and optionally
 `docs/480-family-review.pdf` from this local copy into the same paths. Do not regenerate
 approximations of the frozen inputs. Archive validation checks hashes, image formats,
 approval, protected pixels under the original masks, action support and contexts; it writes
 `data/accepted/validation.json`. It does not replace human visual review.
 
+## Human target
+
+`analysis/human_target.py` reads the unchanged OSF files of Matamala-Gomez et al. (2025),
+checks their hashes against `config/analysis.json`, and writes `output/human_target/`:
+participant cell means, the 12-cell table, all declared contrasts with paired bootstrap
+intervals on five scales, scale-free ratios, the questionnaire comparison and a refit of the
+paper's own mixed models. `summary.json` reports whether every published statistic was
+reproduced. Endpoints and their use are defined in the [analysis spec](docs/analysis-spec.md).
+
 ## Generate on CUDA
+
+Paused until after the December evaluation; see the [next-phase plan](docs/next-phase-plan.md).
 
 Linux, one NVIDIA GPU, at least 12,000 MiB free VRAM and 16 GiB free output space.
 Allow roughly 12 GB more for the Hugging Face model cache. CUDA setup uses the recorded
@@ -123,12 +143,15 @@ has a known clothing issue, accepted with that flag. The clean repository covers
 **final expansion from frozen V7 sources**; earlier exploratory runners remain in the
 original project folders. The guide explains their role and limitations.
 
-1. Validate a fresh CUDA canary before trusting newly generated outputs.
-2. Freeze the analysis cohort and audit upstream lineage. Keep related sources, all
-   variants and all six conditions together in evaluation splits. These are 20 source
-   groups with 24 appearances each; upstream groups may share earlier origins.
-3. Evaluate visual encoders with hand-only and low-level baselines, then assess the
-   intended motor-response model. Repeat analyses without reference 17: 456 families.
+Stimulus work is paused; the [next-phase plan](docs/next-phase-plan.md) sets the
+priorities and schedule to 18 December 2026:
+
+1. Freeze the accepted archive as the analysis cohort and build the participant-level
+   human MEP target and analysis spec.
+2. Build mask-based control stimuli; evaluate visual encoders against hand-only and
+   low-level baselines with leave-one-source-out splits (20 source groups).
+3. Build and test the temporal motor-response model. Repeat analyses without
+   reference 17: 456 families. A fresh CUDA canary is deferred.
 
 Image acceptance does not establish physiological or scientific replication.
 The guide details the project history and the remaining evaluation work.

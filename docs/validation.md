@@ -77,6 +77,21 @@ Current frozen-source manifest SHA-256:
 Local large-review PDF SHA-256:
 `bc53cede317c3733c5bd5078b310f7d7d650e41593539ef6fe6bc99f31841447`.
 
+## Human target — 22 October 2026
+
+| Check | Result |
+| --- | --- |
+| OSF files | `data/human/` hashes equal the 26 September download record |
+| Deposit audit | 11,280 MEPs, 32 participants; 240 missing of 11,520 designed (2.08%, as reported); 93 below 50 µV retained |
+| Published Table 2 | 8/8 legible coefficients and z values reproduced: raw mV, participant random intercept, maximum likelihood |
+| Published post-hoc z values | 10/10 values in the Results text reproduced by separate subset models |
+| Primary contrast `C_FDI` | 0.283 participant SD [0.147, 0.419], t(31) = 4.06; interval excludes 0 on all five scales |
+| Test suite | 17 CPU tests passed, including 7 for the human target |
+
+The refit verifies that the deposit matches the published analysis; it does not endorse that
+analysis. Discrepancies with the paper's Methods are listed in
+[analysis-spec.md](analysis-spec.md) §4.2.
+
 ## Remaining limits
 
 No fresh CUDA inference or actual model download was run during this cleanup. No new
