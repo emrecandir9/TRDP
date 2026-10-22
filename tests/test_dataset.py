@@ -92,6 +92,13 @@ class Guards(unittest.TestCase):
                 with self.assertRaisesRegex(ValueError, 'Changed frozen file'):
                     d.verify_family(output, job, source, cfg)
 
+    def test_only_human_reviews_are_recorded(self):
+        with tempfile.TemporaryDirectory() as temporary:
+            review = Path(temporary) / 'review.json'
+            d.write(review, dict(reviewer='assistant', identity=d.identity(), cases={}))
+            with self.assertRaisesRegex(ValueError, 'Only a human reviewer'):
+                d.record_review(Path(temporary), review)
+
     def test_missing_and_changed_frozen_files(self):
         with tempfile.TemporaryDirectory() as temporary:
             root = Path(temporary)

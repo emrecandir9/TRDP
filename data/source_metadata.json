@@ -1,0 +1,127 @@
+{
+  "schema": "trdp-source-metadata-v2",
+  "reference_sex": {
+    "field": "Sex label of each AI-generated reference image (normal/open pairs), as assigned in the earlier generation configuration",
+    "provenance": [
+      {
+        "path": "TRDP1_corrections/trdp_config.py",
+        "key": "prompt_gender",
+        "sha256": "6ab0199a88c47ad44f86dd4c71c36ccfbeb72d851594d32924ebdfb54a19d172"
+      },
+      {
+        "path": "TRDP1_corrections/trial_result/TRDP_generation_lab/notebook_code/reference_config.json",
+        "key": "prompt_gender",
+        "sha256": "9eda2fa5c8bdc6cf043db1c2524ee06fcd9a442530ce68d7c4939670b74459f4"
+      }
+    ],
+    "agreement": "Both configuration files give identical labels for all 20 references",
+    "v7_generation_prompt": "Sex-neutral: \"First-person photograph of a seated adult ...\" (pilot_improvement_2026_10_10/prepare_prompt_experiment.py, variant detailed, sha256 50926e64c4095a6a16a378ee6254704521d94553d886f2fb035c9eae0f2f8de8); the label was not used to generate the V7 sources",
+    "apparent_sex_status": "confirmed by the project owner on 2026-10-22 after viewing every V7 full-body image with its label (output/source_review/reference_sex_labels.jpg): all 20 match"
+  },
+  "counts": {
+    "female": 10,
+    "male": 10
+  },
+  "sources": {
+    "p01_seed9_detailed": {
+      "reference": 1,
+      "reference_sex": "male",
+      "apparent_sex": "male"
+    },
+    "p02_seed9_detailed": {
+      "reference": 2,
+      "reference_sex": "male",
+      "apparent_sex": "male"
+    },
+    "p03_seed9_detailed": {
+      "reference": 3,
+      "reference_sex": "male",
+      "apparent_sex": "male"
+    },
+    "p04_seed9_detailed": {
+      "reference": 4,
+      "reference_sex": "male",
+      "apparent_sex": "male"
+    },
+    "p05_seed9_detailed": {
+      "reference": 5,
+      "reference_sex": "female",
+      "apparent_sex": "female"
+    },
+    "p06_seed9_detailed": {
+      "reference": 6,
+      "reference_sex": "female",
+      "apparent_sex": "female"
+    },
+    "p07_seed9_detailed": {
+      "reference": 7,
+      "reference_sex": "female",
+      "apparent_sex": "female"
+    },
+    "p08_seed9_detailed": {
+      "reference": 8,
+      "reference_sex": "female",
+      "apparent_sex": "female"
+    },
+    "p09_seed9_detailed": {
+      "reference": 9,
+      "reference_sex": "female",
+      "apparent_sex": "female"
+    },
+    "p10_seed123_detailed": {
+      "reference": 10,
+      "reference_sex": "male",
+      "apparent_sex": "male"
+    },
+    "p11_seed9_detailed": {
+      "reference": 11,
+      "reference_sex": "female",
+      "apparent_sex": "female"
+    },
+    "p12_seed9_detailed": {
+      "reference": 12,
+      "reference_sex": "male",
+      "apparent_sex": "male"
+    },
+    "p13_seed9_detailed": {
+      "reference": 13,
+      "reference_sex": "male",
+      "apparent_sex": "male"
+    },
+    "p14_seed9_detailed": {
+      "reference": 14,
+      "reference_sex": "female",
+      "apparent_sex": "female"
+    },
+    "p15_seed9_detailed": {
+      "reference": 15,
+      "reference_sex": "female",
+      "apparent_sex": "female"
+    },
+    "p16_seed9_detailed": {
+      "reference": 16,
+      "reference_sex": "male",
+      "apparent_sex": "male"
+    },
+    "p17_seed9_detailed": {
+      "reference": 17,
+      "reference_sex": "female",
+      "apparent_sex": "female"
+    },
+    "p18_seed123_detailed": {
+      "reference": 18,
+      "reference_sex": "male",
+      "apparent_sex": "male"
+    },
+    "p19_seed9_detailed": {
+      "reference": 19,
+      "reference_sex": "male",
+      "apparent_sex": "male"
+    },
+    "p20_seed9_detailed": {
+      "reference": 20,
+      "reference_sex": "female",
+      "apparent_sex": "female"
+    }
+  }
+}

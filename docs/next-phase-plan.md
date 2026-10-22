@@ -81,9 +81,9 @@ Baselines must show this explicitly.
 | 3 | Area, luminance and edge confounds between contexts | Control stimuli (§4.2) and low-level baselines; a continuity claim must survive them | W2–W3 |
 | 4 | Detached hand is a desk rectangle with a cut wrist, not an isolated hand | Done 22 Oct: skin-only silhouette cut at the wrist is the primary condition; rectangle kept as sensitivity ([method](detached-hand-silhouette.md)). Visually approved 22 Oct ([record](silhouette-approval.json)) | W1 |
 | 5 | One unblinded reviewer accepted all images | Two naive raters score a fixed sample (20 sources × 4 contexts × 2 frames, both detached-hand versions) for realism and visible artifacts; report agreement | W2–W4 |
-| 6 | Archive was produced with the earlier mask; hand-matte pixels changed in 6/20 checked exemplars | Count matte deviations for all 480 families; run a sensitivity analysis without the affected sources if counts are non-trivial | W2 |
-| 7 | No sex metadata per source (the paper sex-matched bodies) | Add a reviewed `apparent_sex` field to the source metadata (the references are AI-generated synthetic people); report its distribution | W1 |
-| 8 | `dataset.py review` accepts `assistant` as reviewer | State in the docs that only human decisions approve stimuli, or remove the option | W1 |
+| 6 | Archive was produced with the earlier mask; desk generation changed some hand pixels | Done 22 Oct: 144/480 families (all variants of references 10, 11, 12, 16, 18, 20), at most 645 pixels = 0.65% of the visible hand, largest difference 6/255, identical in both frames; located at the outer palm edge near the wrist. **Decision 22 Oct: keep all 480 families, no exclusion** (see validation) | W1 |
+| 7 | No sex metadata per source (the paper sex-matched bodies) | Done 22 Oct: `data/source_metadata.json` records the reference sex labels (10 female, 10 male) from the generation configuration; V7 images were generated sex-neutral; you confirmed on 22 Oct that all 20 look like their label, recorded as `apparent_sex` | W1 |
+| 8 | `dataset.py review` accepts `assistant` as reviewer | Done 22 Oct: only `reviewer: human_user` decisions are recorded; test added | W1 |
 
 ## 4. New work to start
 
@@ -138,7 +138,7 @@ pixels, hidden pixels black, A/B differences only in the action region.
 | W4 | 16–20 Nov | Trial simulator; feedforward LIF and non-spiking twin; rate and probe diagnostics | Working models with stable activity |
 | W5 | 23–27 Nov | H0/H1/H2; calibrate on full body + detached hand, predict upper limb; recurrent variant | First held-out predictions |
 | W6 | 30 Nov–4 Dec | Predictions for all controls; probe-strength sweep | Control predictions. **Gate 2, 4 Dec** |
-| W7 | 7–11 Dec | Ablations: spiking vs non-spiking, recurrent vs feedforward, final frame only vs sequence; 5 initialisations; without reference 17 | Ablation table; configurations frozen 11 Dec |
+| W7 | 7–11 Dec | Ablations: spiking vs non-spiking, recurrent vs feedforward, final frame only vs sequence; 10 initialisations (spec §5.1); without reference 17 | Ablation table; configurations frozen 11 Dec |
 | W8 | 14–18 Dec | Single frozen evaluation; final human vs model figures; methods and results draft; supervisor review | Interim results report |
 
 ## 6. Decision gates

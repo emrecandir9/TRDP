@@ -45,6 +45,7 @@ TRDP/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
 │   ├── hand_segmentation.json   # Tracked SAM-HQ provenance, prompts and mask hashes
 │   ├── silhouettes.json         # Tracked matte hashes, parameters and per-source diagnostics
+│   ├── source_metadata.json     # Reference and confirmed apparent sex per source, with provenance
 │   ├── sources/                 # LOCAL: 20 approved V7 pairs in all three contexts
 │   ├── inputs/                  # LOCAL: source image, Canny control, desk mask/weight,
 │   │                            #        hand matte, case geometry, SAM-HQ masks, mattes
@@ -97,11 +98,12 @@ python scripts/dataset.py check
 python scripts/validate_dataset.py
 python scripts/silhouette.py check
 python scripts/silhouette.py verify-archive
+python scripts/validate_dataset.py --hand-deviation
 python analysis/human_target.py
 ```
 
 Tests need no dataset or GPU; the published-statistics test runs only when the OSF files
-are present. The last five commands require local data. This working
+are present. The last six commands require local data. This working
 copy contains the frozen inputs and full accepted archive. After cloning elsewhere,
 copy `data/sources/`, `data/inputs/`, `data/accepted/`, `data/accepted_silhouette/`,
 `data/human/` and optionally
@@ -144,7 +146,8 @@ python scripts/dataset.py verify
 ```
 
 Full generation requires all ten canaries to pass visual review. Numeric checks alone
-never approve realism. `output/accepted.json` records the new reviewers and decisions;
+never approve realism, and only decisions recorded as `reviewer: human_user` are accepted:
+automated checks and assistant inspections are advisory. `output/accepted.json` records the decisions;
 the historical records in `docs/` do not approve a new run.
 
 Workers use low CPU priority. Cooperative full runs wait for 60 seconds of continuous

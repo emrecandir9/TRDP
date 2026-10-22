@@ -105,6 +105,31 @@ analysis. Discrepancies with the paper's Methods are listed in
 | Test suite | 23 CPU tests passed, including 6 for the silhouette (segmentation hash check and seam closing among them) |
 | Visual | Assistant inspected every fingertip, index web and finger valley of all 40 frames at 2×, suspicious spots at 4×; remaining observations are image content, listed in [detached-hand-silhouette.md](detached-hand-silhouette.md). Approved by the project owner on 22 October ([record](silhouette-approval.json)) |
 
+## Archive hand pixels under the silhouette — 22 October 2026
+
+`python scripts/validate_dataset.py --hand-deviation` compares every archive full-body image
+with its frozen V7 source after the same white balance, inside the silhouette mattes.
+
+| Measure | Result |
+| --- | --- |
+| Affected families | 144 / 480: every variant of references 10, 11, 12, 16, 18 and 20 |
+| Deviating visible pixels per image | median 0; maximum 645 (0.65% of the visible hand) |
+| Largest difference | 6 of 255 levels; no pixel differs by more than 10 |
+| Static vs movement | Deviations identical in both frames, so the movement contrast is unaffected |
+| Location | Outer palm edge on the little-finger side near the wrist, away from the moving index |
+
+Cause: the historical desk masks reached into the hand; the diffusion blend there was faint.
+**Decision (project owner, 22 October 2026): keep all 480 families, with no exclusion or
+sensitivity analysis for these deviations.** Reason: they are below 2.4% of the intensity
+range, cover under 1% of the hand, sit away from the action and cancel exactly in every
+static/movement comparison. This is consistent with the frozen cohort; no spec amendment is
+needed.
+
+## Review rules — 22 October 2026
+
+`dataset.py review` records only `reviewer: human_user`; assistant inspections and numeric
+checks are advisory. A regression test rejects an assistant review file.
+
 ## Remaining limits
 
 No fresh CUDA inference or actual model download was run during this cleanup. No new

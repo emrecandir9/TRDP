@@ -6,6 +6,7 @@ import numpy as np
 from PIL import Image
 from dataset import (ROOT, HISTORICAL_CONTEXTS, read, write, sha, require, plan, check_sources,
                      frozen_files, check_family_pixels, rgb, lighting)
+import silhouette
 
 MANIFEST = ROOT / 'docs/accepted-dataset.json'
 
@@ -104,10 +105,54 @@ def validate(directory):
     return report
 
 
+def hand_deviation(directory, output):
+    """Archive hand pixels that differ from the frozen V7 source, within the silhouette mattes.
+
+    The historical desk masks could reach into the hand; these pixels are what the silhouette
+    condition shows. Writes one row per family and frame; does not touch validation.json.
+    """
+    cfg, sources, jobs = plan()
+    frames = silhouette.FRAMES
+    mattes = {(sid, f): silhouette.load(source, f) for sid, source in sources.items() for f in frames}
+    originals = {sid: {f: rgb(ROOT / 'data/sources' / source['source_directory'] / f'full_body/{f}.png') for f in frames}
+                 for sid, source in sources.items()}
+    rows = []
+    for job in jobs:
+        residuals = []
+        for frame in frames:
+            alpha = mattes[(job['source_id'], frame)]
+            residual = rgb(directory / job['id'] / f'full_body/{frame}.png').astype(int) - \
+                lighting(originals[job['source_id']][frame], cfg['lighting'][job['light_id']])
+            residuals.append(residual)
+            size = np.abs(residual).max(axis=2)
+            visible = alpha > 0
+            rows.append(dict(family=job['id'], reference=sources[job['source_id']]['reference'], frame=frame,
+                             visible_pixels=int(visible.sum()), deviating_pixels=int((size[visible] > 0).sum()),
+                             deviating_opaque_pixels=int((size[alpha >= 250] > 0).sum()),
+                             largest_difference=int(size[visible].max())))
+        visible = (mattes[(job['source_id'], 'static')] > 0) | (mattes[(job['source_id'], 'movement')] > 0)
+        rows[-1]['identical_in_both_frames'] = rows[-2]['identical_in_both_frames'] = bool(
+            np.array_equal(residuals[0][visible], residuals[1][visible]))
+    output.parent.mkdir(parents=True, exist_ok=True)
+    columns = list(rows[0])
+    output.write_text('\n'.join([','.join(columns)] + [','.join(str(r[c]) for c in columns) for r in rows]) + '\n')
+    affected = sorted({r['reference'] for r in rows if r['deviating_pixels']})
+    return dict(families=len(jobs), affected_families=len({r['family'] for r in rows if r['deviating_pixels']}),
+                affected_references=affected, max_deviating_pixels=max(r['deviating_pixels'] for r in rows),
+                max_fraction_of_visible=max(r['deviating_pixels'] / r['visible_pixels'] for r in rows),
+                largest_difference=max(r['largest_difference'] for r in rows),
+                identical_in_both_frames=all(r['identical_in_both_frames'] for r in rows))
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument('--data', type=Path, default=ROOT / 'data/accepted')
+    parser.add_argument('--hand-deviation', type=Path, nargs='?', const=ROOT / 'output/hand_pixel_deviation.csv',
+                        help='Only count archive hand-pixel deviations under the silhouette mattes; write this CSV')
     args = parser.parse_args()
+    if args.hand_deviation:
+        print(hand_deviation(args.data, args.hand_deviation))
+        raise SystemExit
     result = validate(args.data)
     print(f"PASS historical integrity: {result['families_checked']} families / {result['condition_pngs_checked']} PNGs / 480 audits")
     if not result['current_guard_conformant']:

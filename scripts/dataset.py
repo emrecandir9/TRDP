@@ -255,7 +255,8 @@ def verify(output, family=None):
 
 def record_review(output, path):
     supplied = read(path)
-    require(supplied['reviewer'] in ('human_user', 'assistant'), 'Name the actual reviewer')
+    # Only a human decision approves a stimulus; automated checks and assistant inspections are advisory.
+    require(supplied['reviewer'] == 'human_user', 'Only a human reviewer can approve stimuli (reviewer: human_user)')
     require(supplied['identity'] == identity(), 'Review applies to changed code or recipe')
     _, sources, jobs = plan()
     check_sources(sources)

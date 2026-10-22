@@ -45,6 +45,19 @@
       "identities": "20 different synthetic people; no person repeats",
       "lineage_groups": 20,
       "limit": "Independent in identity only: one generator, one scene template and one camera geometry; no claim about real people's hands"
+    },
+    "source_metadata": {
+      "path": "data/source_metadata.json",
+      "sha256": "a667d9057a724e23a5e24f9a05f30b93e382100f3ffdd7c5318de07119ed0b59",
+      "reference_sex": "10 female / 10 male; apparent sex of the V7 images confirmed to match by the project owner on 2026-10-22"
+    },
+    "hand_pixel_deviation": {
+      "check": "python scripts/validate_dataset.py --hand-deviation",
+      "result": "144/480 families (references 10, 11, 12, 16, 18, 20); at most 645 visible pixels (0.65% of the hand); largest difference 6/255; identical in static and movement frames",
+      "decision": "Keep all 480 families; no exclusion or sensitivity analysis for these deviations",
+      "decided_by": "project owner",
+      "date": "2026-10-22",
+      "spec_impact": "None: consistent with the frozen cohort definition; no amendment required"
     }
   },
   "human_data": {
