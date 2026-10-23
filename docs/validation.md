@@ -142,6 +142,16 @@ checks are advisory. A regression test rejects an assistant review file.
 | Tests | 28 CPU tests passed, including 4 for the controls |
 | Visual | Assistant inspected all 20 sources; approved by the project owner on 22 October ([record](controls-approval.json)) |
 
+## Reproduction on CREMI and Gate 1 baselines — 23 October 2026
+
+| Check | Result |
+| --- | --- |
+| Transfer | Working copy `/net/travail/mucandy/TRDP` on CREMI: all 5,276 files (excluding environments and caches) hash-identical to this copy; git at the same commit as GitHub |
+| Linux reproduction (Python 3.13, `daniel`) | 28 tests; `dataset.py check`; `validate_dataset.py` (480 families, rerun identical to the frozen `validation.json` except its timestamp, which was restored); `silhouette.py check` and `verify-archive`; `controls.py check`; hand-pixel deviation CSV byte-identical; human target identical within 4 × 10⁻¹³ (floating-point library differences) |
+| Baseline inputs | 10,560 condition images rendered from the hash-checked archive, each hashed in `output/features/index.csv`; rendered controls equal `controls.render` (test) |
+| Encoders | DINOv2 and OpenCLIP at pinned revisions, float32 with TF32 off; noise floor ≤ 1.2 × 10⁻⁵ of the feature norm, at least 700 times below the smallest movement |
+| Tests | 44 CPU tests, including 16 for the baselines (statistics, leakage-free decoding, rendering) |
+
 ## Remaining limits
 
 No fresh CUDA inference or actual model download was run during this cleanup. No new

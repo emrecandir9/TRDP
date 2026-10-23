@@ -201,12 +201,17 @@ Done on 22 October:
 - The [analysis spec](docs/analysis-spec.md) is frozen, before any model result.
 - The detached-hand silhouette and the six control stimuli are built and visually approved.
 
+Done on 23 October:
+
+- **Gate 1, visual baselines** ([method and results](docs/baselines.md)): low-level, pixel,
+  hand-only, DINOv2 and OpenCLIP baselines on all 10,560 condition images. None reproduces
+  the human pattern; every one shows the reverse (the largest movement signal for the
+  detached hand). Frozen encoders show no attachment variable beyond a pixel cue.
+
 Next:
 
 1. Rater validation of a fixed image sample by two naive raters.
-2. Visual baselines (low-level, hand-only, DINOv2, OpenCLIP) for every context and control,
-   with leave-one-source-out splits (20 source groups); Gate 1 on 13 November.
-3. Build and test the temporal motor-response model; Gate 2 on 4 December, single held-out
+2. Build and test the temporal motor-response model; Gate 2 on 4 December, single held-out
    evaluation 14–18 December. Every analysis is repeated without reference 17 (456 families).
    A fresh CUDA canary is deferred.
 

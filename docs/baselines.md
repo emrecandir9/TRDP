@@ -6,8 +6,10 @@ encoders), [`analysis/baselines.py`](../analysis/baselines.py) (analysis),
 [analysis spec](analysis-spec.md) §6.1 and Gate 1 (§8) and the baseline plan in the
 [next-phase plan](next-phase-plan.md) §4.3.
 
-**Status.** The method below was written and committed on 23 October 2026, **before any
-feature was extracted or any baseline number was seen**. It makes the operational choices
+**Status.** Completed 23 October 2026: **Gate 1 passed in the "clean target" branch; every
+baseline shows the reverse of the human pattern** ([results](#results)). The method below was
+written and committed on 23 October 2026, **before any feature was extracted or any baseline
+number was seen**. It makes the operational choices
 that the spec leaves open (resolution, distance, spread, decoder, latent-space tests). The
 spec itself is unchanged. Any later change to this method is listed in the change log at the
 end, with its reason.
@@ -190,7 +192,246 @@ source (smoke test).
 
 ## Results
 
-Pending: no feature has been extracted at the time of writing.
+Run on 23 October 2026 on `daniel` (NVIDIA RTX 4000 Ada), code at commit `e3f087c`; tables in
+`output/baselines/`, provenance in `output/features/manifest.json` and
+`output/baselines/summary.json`. All 10,560 images were rendered from the hash-checked
+archive. Pinned models: DINOv2 `facebook/dinov2-large` revision `47b73ee…`, OpenCLIP
+`laion/CLIP-ViT-bigG-14-laion2B-39B-b160k` revision `743c27b…` (weights SHA-256
+`db71bd27…ec34`). **Noise floor:** re-encoding one image at a time changed any feature by at
+most 1.2 × 10⁻⁵ of its norm. The smallest static → movement change of any family is 0.9–2.8% of
+the feature norm, 700–2,300 times the noise floor, so precision does not affect any result.
+
+![What the encoders see](figures/baselines-inputs.png)
+
+*One family in every condition. Top: the static frame as the encoders receive it (224 px).
+Bottom: the luminance change between frames at full resolution, inside the hand box. The finger
+change is identical in every display (except where the silhouette or a control cuts it); what
+differs is what surrounds it.*
+
+### R1. Gate 1 outcome: every baseline shows the reverse of the human pattern
+
+| Representation | `C = (FB + UL)/2 − DH` [95% CI] | Sources with C > 0 | Meets P1 | DH / connected (human −0.11 [−0.67, 0.38]) | UL / FB (human 0.77 [0.34, 1.78]) |
+| --- | --- | --- | --- | --- | --- |
+| Low-level statistics | −0.146 [−0.198, −0.103] | 0 / 20 | No | 7.98 [5.37, 11.80] | 1.92 [1.79, 2.01] |
+| Pixels 64 × 64 | −0.694 [−0.737, −0.648] | 0 / 20 | No | 7.87 [6.85, 9.17] | 1.53 (fixed, see R2) |
+| DINOv2 summary token | −0.494 [−0.531, −0.458] | 0 / 20 | No | 5.18 [4.76, 5.64] | 2.02 [1.91, 2.13] |
+| DINOv2 mean patch token | −0.424 [−0.455, −0.392] | 0 / 20 | No | 4.97 [4.52, 5.47] | 1.56 [1.47, 1.65] |
+| OpenCLIP bigG | −0.713 [−0.757, −0.668] | 0 / 20 | No | 4.79 [4.53, 5.03] | 1.52 [1.46, 1.57] |
+| DINOv2 summary, 448 px | −0.315 [−0.345, −0.285] | 0 / 20 | No | 4.88 [4.40, 5.40] | 1.88 [1.78, 1.97] |
+| DINOv2 patch mean, 448 px | −0.213 [−0.232, −0.194] | 0 / 20 | No | 4.15 [3.66, 4.72] | 1.34 [1.24, 1.44] |
+| Hand-only (any representation) | 0 by construction | — | No | — | — |
+
+Normalised movement signal, primary DH (silhouette), all 20 sources.
+
+**No baseline meets P1.** The image representations carry the *largest* movement signal for
+the detached hand and the smallest for the full body, in every one of the 20 sources and every
+representation. Following spec §8, this is the branch in which "H2 has a clean target": the
+human pattern is the opposite of what the inputs provide, so a model can reproduce it only by
+suppressing the stronger detached-hand signal, not by inheriting image statistics. S3 (the
+same network on low-level and hand-only input) stays required. No baseline is compatible with
+the human `DH / connected` ratio (S1): the baselines give 4–8 where humans give about 0.
+
+![Gate 1](figures/baselines-gate1.png)
+
+**Sensitivity.** Of 76 contrast cells (7 representations × normalised, raw and cosine
+distances × all sources or without reference 17 × silhouette or rectangle DH), 72 show the
+reverse pattern with intervals below 0. The other 4 are null and none is positive: raw pixel
+distance with the rectangle DH is exactly 0 (with and without reference 17), and the cosine
+distance of the DINOv2 448-px patch mean with the rectangle DH is −0.00004 [−0.0001, 0.000005].
+Excluding reference 17 changes no conclusion.
+
+### R2. Where the reverse pattern comes from
+
+![Movement signal](figures/baselines-movement-signal.png)
+
+*Top: the declared normalised signal. Bottom: raw distance in each representation's own units.*
+
+- **The pixel change is the same; its surround is not.** Full body, upper limb, rectangle and
+  window displays change the same 1.07% of the image by the same amount (mean |Δluminance| 0.078
+  on changed pixels). In the silhouette, stubs and hand-only views the finger moves against
+  black, so the changed pixels change three times as much (0.242), and they are 29% of the
+  visible image instead of 1.1% (`output/baselines/differences.csv`). With the rectangle DH,
+  whose finger moves over desk, the raw pixel distance is identical in all three paper
+  displays and C is exactly 0.
+- **The reverse pattern is not an artefact of the normalisation.** In raw distances, every
+  encoder still reverses (raw C: DINOv2 summary −4.28, patch mean −1.89, OpenCLIP −3.83). The
+  normalisation adds a second, smaller effect: the between-source spread is largest for full
+  body (more of each person is visible), which divides its signal further. For pixels, the raw
+  change is identical in full body and upper limb, so their ratio (1.534 with a zero-width
+  interval) is just the ratio of the two spreads; its S2 "compatibility" means nothing.
+- **Context dilutes the movement for the encoders.** The encoders' signals order the displays
+  by how much the hand dominates the image: full body < upper limb < windows and stubs < detached
+  hand (silhouette). The scrambled view is the exception (next section).
+
+### R3. Matched controls
+
+Normalised signal; positive = the connected member changes more.
+
+| Representation | stub − gap stub | arm window − hand window | UL − scrambled | UL − occluded wrist |
+| --- | --- | --- | --- | --- |
+| Low-level | 0.015 [0.010, 0.021] | 0.010 [0.005, 0.015] | 0.019 [0.013, 0.026] | 0.000 [0.000, 0.000] |
+| Pixels | 0.073 [0.068, 0.078] | −0.003 [−0.004, −0.003] | 0.034 [0.028, 0.040] | 0.002 [0.002, 0.002] |
+| DINOv2 summary | 0.031 [0.016, 0.045] | −0.042 [−0.069, −0.017] | −0.517 [−0.571, −0.462] | −0.004 [−0.011, 0.002] |
+| DINOv2 patch mean | −0.015 [−0.037, 0.008] | 0.020 [−0.003, 0.041] | −0.490 [−0.542, −0.439] | −0.003 [−0.008, 0.001] |
+| OpenCLIP | 0.134 [0.095, 0.173] | −0.019 [−0.047, 0.006] | −0.419 [−0.470, −0.371] | −0.007 [−0.015, 0.002] |
+
+- **Within the matched pairs, the normalised differences are mostly spread differences.** The
+  pixel and low-level codes also differ within pairs, although their raw change is identical
+  by construction (raw pixel difference exactly 0 for both pairs): the two members of a pair
+  have slightly different between-source spreads. In **raw** distance, which compares the two
+  displays in the same space, most encoder differences vanish. Two exceptions remain, in
+  different encoders and pairs: OpenCLIP stub − gap stub +0.38 [0.10, 0.66] (17/20 sources) and
+  DINOv2 patch mean arm window − hand window +0.25 [0.11, 0.38] (16/20). They are exploratory,
+  uncorrected for multiplicity and not consistent across encoders, so they are no evidence of an
+  attachment code.
+- **Scrambling the surround raises the encoders' movement signal sharply** (UL − scrambled
+  ≈ −0.5), although the pixels and their change are identical (pixels: +0.03). A scrambled
+  surround seems to stop being "scene" for the encoders and leaves the intact hand as the
+  dominant object. This argues against treating scrambled as a low-level control for the
+  encoders: it is low-level-matched but not matched in how the encoders segment the image.
+- The occluding band changes nothing (all |differences| ≤ 0.01).
+
+### R4. Linear decoding of static vs movement
+
+![Decoding](figures/baselines-decoding.png)
+
+- **Paired accuracy is at ceiling.** For every encoder and display, the movement frame scores
+  above the static frame in every held-out family (1.00), including after training on full
+  body only. Pixels reach 0.95 and low-level statistics 0.75–0.95. The movement is therefore
+  linearly available everywhere; paired accuracy cannot separate displays.
+- **Single-image accuracy reproduces the reverse ordering.** Without the matched static frame,
+  the full body is the hardest display (DINOv2 summary 0.59 [0.53, 0.67], patch mean 0.57
+  [0.50, 0.65], OpenCLIP 0.81 [0.72, 0.90]), the upper limb next (0.71, 0.70, 0.96) and the
+  silhouette DH the easiest (1.00, 1.00, 0.93). Low-level statistics are at chance (0.50–0.57).
+
+| Single-image accuracy | FB | UL | DH | stub | gap stub | arm window | hand window | scrambled |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Pixels | 0.85 | 0.85 | 0.93 | 0.93 | 0.90 | 0.87 | 0.86 | 0.88 |
+| DINOv2 summary | 0.59 | 0.71 | 1.00 | 0.95 | 0.95 | 0.89 | 0.97 | 0.91 |
+| DINOv2 patch mean | 0.57 | 0.70 | 1.00 | 0.94 | 0.92 | 0.85 | 0.95 | 0.93 |
+| OpenCLIP | 0.81 | 0.96 | 0.93 | 0.93 | 0.90 | 0.95 | 0.93 | 0.90 |
+
+Intervals in `output/baselines/decoding_single.csv`.
+
+**Transfer gain** (exploratory, added after the smoke test). How far the movement moves each
+display along the axis learned from full body:
+
+![Transfer gain](figures/baselines-transfer-gain.png)
+
+| Representation | FB | UL | DH | C on gain [95% CI] |
+| --- | --- | --- | --- | --- |
+| Pixels | 0.96 | 0.96 | 2.40 | −1.44 [−1.78, −1.09] |
+| DINOv2 summary | 0.93 | 1.39 | 1.24 | −0.08 [−0.29, 0.13] |
+| DINOv2 patch mean | 0.93 | 1.14 | 1.35 | −0.32 [−0.46, −0.19] |
+| OpenCLIP | 0.94 | 1.06 | 1.75 | −0.75 [−0.85, −0.64] |
+
+Along a readout learned from full body, OpenCLIP and the DINOv2 patch mean still give the
+reverse pattern; the DINOv2 summary token gives no context effect in either direction. For
+the low-level statistics the gain is degenerate: the full-body training shift is tiny, so
+gains reach 10–100 and are not interpreted.
+
+### R5. Do frozen encoders carry an attachment variable? No evidence beyond pixel layout
+
+![Attachment decoding](figures/baselines-attachment.png)
+
+- **Within each task, every representation separates connected from disconnected perfectly**,
+  including pixels and low-level statistics. The matched pairs are matched in area, luminance
+  and movement, but not in *where* the pixels are, and a pixel code sees that.
+- **The pixel code transfers best between pairs**: stub → window 1.00, window → stub 0.90. In
+  both pairs the connected member has pixels directly below the wrist, so "attachment" at the
+  image level is partly a spatial pixel cue. The encoders transfer less: DINOv2 summary 0.58
+  and 0.66 (intervals include 0.5), patch mean 0.80 and 0.86, OpenCLIP 0.24 and 0.18 (below
+  chance, which suggests that its two pairs separate along opposite directions).
+- **The FB + UL vs DH decoder fails on the stub pair for every representation** (0.00–0.45):
+  it labels the gap stub as the more "connected" display. What separates the paper's displays
+  in these spaces is the amount and extent of context, not connection.
+- A context pathway for H2 therefore cannot simply be read out of a frozen encoder, and any
+  learned attachment signal must be checked against the pixel cue (spec S3).
+
+### R6. Representational geometry (RSA)
+
+![RSA](figures/baselines-rsa.png)
+
+Correlation of each representation's RDM with the attachment model, mean over sources:
+
+| Representation | Spearman | Partial (area, luminance removed) | Sources > 0 (partial) |
+| --- | --- | --- | --- |
+| Low-level | −0.073 [−0.080, −0.066] | −0.063 [−0.077, −0.047] | 1 / 20 |
+| Pixels | −0.015 [−0.021, −0.009] | 0.027 [0.010, 0.043] | 16 / 20 |
+| DINOv2 summary | 0.022 [0.009, 0.036] | 0.066 [0.048, 0.086] | 20 / 20 |
+| DINOv2 patch mean | 0.023 [0.010, 0.035] | 0.085 [0.063, 0.108] | 20 / 20 |
+| OpenCLIP | 0.043 [0.030, 0.057] | 0.105 [0.086, 0.125] | 20 / 20 |
+
+Once area and luminance are removed, the encoders' geometry is consistently but only weakly
+aligned with attachment (partial ρ ≈ 0.07–0.11, positive in every source), more than the pixel
+code (0.03). Their geometry is dominated by which surround is present: full body and the
+scrambled view lie far from everything else, and the black-background displays cluster
+together. Shape cues besides area and luminance are not removed, so this weak alignment is an
+upper bound on any attachment-specific structure.
+
+### R7. Direction of the movement in latent space
+
+![Movement directions](figures/baselines-alignment.png)
+
+- **Pixels encode the same change in every context** (cosine with the full-body direction 1.00
+  wherever the finger moves over the same pixels, 0.75 for the black-background displays).
+- **The encoders do not.** The movement direction in the upper limb has cosine ≈ 0.5 with the
+  full-body direction (≈ 0.4–0.5 also for the occluded wrist, an upper-limb view), and in every
+  other display 0.05–0.25. The same finger movement is
+  encoded in largely different directions depending on the surround. A readout trained on full
+  body only (spec §6.3) still transfers (R4), because the full-body direction keeps a component
+  of the change, but its strength varies by display for reasons unrelated to attachment.
+- Directions are partly shared across sources within a display (mean cosine 0.35–0.65), most
+  for the black-background displays.
+
+### R8. Where the change appears (DINOv2 patches)
+
+![Patch maps](figures/baselines-patch-maps.png)
+
+The finger movement changes the hand patches most, but 60–73% of the patch-change energy lies
+outside the hand in every intact display (full body 0.60 [0.55, 0.65], upper limb 0.69, DH
+0.73). Only the rectangle DH confines it more (0.33). Global attention spreads the change over
+the whole image, including black regions. Connection barely matters: arm − hand window +0.04
+[0.006, 0.083], stub − gap stub +0.014 [−0.000, 0.029], UL − scrambled +0.014 [−0.04, 0.06].
+
+### R9. Variance decomposition
+
+For pixels and low-level statistics the movement signal depends on the source only (100%;
+desk, seed and white balance < 0.04%). The desk generation protected the pixels the finger
+sweeps over, so the change is identical in all 24 variants up to white balance. For the
+encoders, source explains 52% (DINOv2 summary), 40% (patch mean) and 80% (OpenCLIP) in full
+body and ≥ 87% in the upper-limb and DH views. Desk, seed and white balance as main effects
+explain ≤ 3.3%; the rest is source × variant interaction. The 24 variants are not independent
+replicates, which supports source-level inference (spec §3).
+
+### Conclusions
+
+1. **Gate 1 is passed in the "clean target" branch.** No low-level, pixel, hand-only or generic
+   encoder baseline reproduces `C_FDI` > 0; all show the reverse, robustly. The human
+   facilitation pattern cannot be explained by the visual change available in these images.
+2. **A salience model (H1) is expected to fail in the reverse direction**, as the next-phase
+   plan predicted: the more visible the movement, the *more* the detached hand would win.
+3. **Attachment is not available off the shelf.** Frozen encoders separate connected from
+   disconnected displays only as well as a pixel code does, and do not generalise it across
+   matched pairs. H2's context pathway must compute it, and S3 must show it is not the pixel
+   cue.
+4. **Context changes the direction, not only the size, of the encoded movement.** A full-body-
+   trained readout will vary across displays for reasons unrelated to attachment; the model
+   evaluation should report the transfer gain per display alongside the MEP-analogue contrasts.
+5. **Paired decoding accuracy is uninformative here** (ceiling); single-image accuracy, transfer
+   gain and the movement signal are not.
+
+### Limits of these results
+
+- Baselines describe information in image representations, not motor excitability; no human
+  data were fitted.
+- Twenty synthetic sources from one generator and scene template.
+- The matched-control comparisons, RSA, patch maps and transfer gain are exploratory and not
+  corrected for multiplicity.
+- The scrambled control is low-level-matched but changes how the encoders segment the scene
+  (R3).
+- Two encoders and two low-level codes; other architectures (e.g. video or hand-pose models)
+  could behave differently.
 
 ## Change log
 
@@ -201,3 +442,4 @@ Pending: no feature has been extracted at the time of writing.
 | 23 Oct 2026, after the smoke test | Statistics without between-source spread left out of the low-level distance (§4) | Full-body visible area is 1 in every image; the declared formula divided 0 by 0 |
 | 23 Oct 2026, after the smoke test | Transfer gain added (§6), labelled exploratory | Paired accuracy saturated at 1.00 for all encoders, so the declared metric cannot separate displays |
 | 23 Oct 2026, after the smoke test | Figure layout corrected; no change to any computation besides the two rows above | Overlapping labels |
+| 23 Oct 2026, after the full run | Single-image accuracy given intervals and a figure panel; raw distances given a figure row | Both were declared (§5, §6) but only stored; single-image accuracy is the decoding metric that does not saturate |

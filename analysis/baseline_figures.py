@@ -86,19 +86,30 @@ def inputs(data, path):
 
 
 def movement_signal(table, path, representations=b.PRIMARY):
-    t = table.query("measure == 'normalised' and cohort == 'all' and detached_hand == 'detached_hand_silhouette'")
-    fig, axes = plt.subplots(1, len(representations), figsize=(3.3 * len(representations), 3.6))
-    for ax, name in zip(axes, representations):
-        g = t[t.representation == name].set_index('statistic')
-        rows = [g.loc[f'delta_{b.SHORT[c]}'] for c in fx.CONDITIONS]
-        dots(ax, [b.SHORT[c] for c in fx.CONDITIONS], [r.estimate for r in rows], [r.ci_low for r in rows],
-             [r.ci_high for r in rows], [ROLE[role(c)][0] for c in fx.CONDITIONS], [ROLE[role(c)][1] for c in fx.CONDITIONS])
-        ax.set_title(b.LABEL[name])
-        ax.set_ylim(bottom=0)
-    axes[0].set_ylabel('Movement signal (distance / between-source spread)')
-    legend(axes[-1], loc='upper right')
+    """Normalised signal (declared primary) above, raw distance in the representation's own units below."""
+    fig, axes = plt.subplots(2, len(representations), figsize=(3.3 * len(representations), 7.4))
+    for k, (measure, ylabel) in enumerate((('normalised', 'distance / between-source spread'),
+                                           ('raw', 'raw distance (representation units)'))):
+        t = table.query("measure == @measure and cohort == 'all' and detached_hand == 'detached_hand_silhouette'")
+        for ax, name in zip(axes[k], representations):
+            g = t[t.representation == name].set_index('statistic')
+            if g.empty:
+                ax.axis('off')
+                ax.text(.5, .5, 'undefined for mixed units', ha='center', va='center', color=MUTED,
+                        transform=ax.transAxes)
+                continue
+            rows = [g.loc[f'delta_{b.SHORT[c]}'] for c in fx.CONDITIONS]
+            dots(ax, [b.SHORT[c] for c in fx.CONDITIONS], [r.estimate for r in rows], [r.ci_low for r in rows],
+                 [r.ci_high for r in rows], [ROLE[role(c)][0] for c in fx.CONDITIONS],
+                 [ROLE[role(c)][1] for c in fx.CONDITIONS])
+            ax.set_ylim(bottom=0)
+            if k == 0:
+                ax.set_title(b.LABEL[name])
+                ax.tick_params(labelbottom=False)
+        axes[k, 0].set_ylabel(ylabel)
+    legend(axes[0, -1], loc='upper right')
     fig.suptitle('Static -> movement distance per display; mean over 20 sources, 95% source-bootstrap interval',
-                 x=.01, ha='left', fontweight='bold', y=1.03)
+                 x=.01, ha='left', fontweight='bold', y=1.0)
     fig.savefig(path)
     plt.close(fig)
 
@@ -146,18 +157,21 @@ def heatmap(ax, values, rows, columns, vmin, vmax, fmt='{:.2f}'):
     return image
 
 
-def decoding(table, path, representations=b.PRIMARY):
+def decoding(table, single, path, representations=b.PRIMARY):
     within = table[table.train == table.test]
     transfer = table[table.train == 'full_body']
-    fig, axes = plt.subplots(1, 2, figsize=(14, 3.2), sharey=True)
-    for ax, t, title in ((axes[0], within, 'Trained and tested on the same display'),
-                         (axes[1], transfer, 'Trained on full body, tested on each display')):
-        values = np.array([[t[(t.representation == r) & (t.test == c)]['mean'].iloc[0] for c in fx.CONDITIONS]
+    panels = ((within, 'mean', 'Paired accuracy, same display'),
+              (single, 'mean', 'Single-image accuracy, same display'),
+              (transfer, 'mean', 'Paired accuracy, trained on full body'))
+    fig, axes = plt.subplots(1, 3, figsize=(20, 3.3), sharey=True)
+    for ax, (t, value, title) in zip(axes, panels):
+        values = np.array([[t[(t.representation == r) & (t.test == c)][value].iloc[0] for c in fx.CONDITIONS]
                            for r in representations])
         image = heatmap(ax, values, [b.LABEL[r] for r in representations], [b.SHORT[c] for c in fx.CONDITIONS], .5, 1)
         ax.set_title(title)
-    axes[1].tick_params(labelleft=False)
-    fig.colorbar(image, ax=axes, shrink=.8, label='paired accuracy (chance 0.5)')
+    for ax in axes[1:]:
+        ax.tick_params(labelleft=False)
+    fig.colorbar(image, ax=axes, shrink=.8, label='accuracy (chance 0.5)')
     fig.suptitle('Static vs movement: linear decoding, leave one source out (mean over 20 held-out sources)',
                  x=.01, ha='left', fontweight='bold', y=1.05)
     fig.savefig(path)
@@ -183,7 +197,7 @@ def attachment(table, path, representations=b.PRIMARY):
         ax.set_xlabel('paired accuracy')
     handles = [plt.Line2D([], [], color=ROLE['connected'][0], marker='o', ls='', label='within task'),
                plt.Line2D([], [], color=ROLE['disconnected'][0], marker='s', ls='', label='transfer to another task')]
-    fig.legend(handles=handles, loc='lower center', ncol=2, bbox_to_anchor=(.5, -.08))
+    fig.legend(handles=handles, loc='lower center', ncol=2, bbox_to_anchor=(.5, -.16))
     fig.suptitle('Connected vs disconnected displays: linear decoding of attachment, leave one source out',
                  x=.01, ha='left', fontweight='bold', y=1.04)
     fig.savefig(path)
@@ -289,6 +303,6 @@ def all_figures(tables, matrices, rsa_conditions, maps, data, directory, represe
     if maps is not None:
         patch_maps(maps, directory / 'baselines-patch-maps.png', len(data.families))
     if 'decoding' in tables:
-        decoding(tables['decoding'], directory / 'baselines-decoding.png', representations)
+        decoding(tables['decoding'], tables['decoding_single'], directory / 'baselines-decoding.png', representations)
         attachment(tables['attachment'], directory / 'baselines-attachment.png', representations)
         transfer_gain(tables['transfer_gain'], directory / 'baselines-transfer-gain.png', representations)

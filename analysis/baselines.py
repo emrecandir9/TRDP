@@ -467,6 +467,8 @@ def run(directory=FEATURES, output=OUTPUT, figures=FIGURES, jobs=-1, decode=True
         tables['decoding_folds'], tables['attachment_folds'] = movement, attachment
         tables['decoding'] = summarise_folds(movement, ('representation', 'train', 'test'))
         tables['transfer_gain'] = gain_table(movement)
+        tables['decoding_single'] = summarise_folds(movement[movement.train == movement.test],
+                                                    ('representation', 'test'), 'single')
         tables['attachment'] = summarise_folds(attachment, ('representation', 'train', 'test'))
     for name, frame in tables.items():
         frame.to_csv(output / f'{name}.csv', index=False)

@@ -5,9 +5,11 @@ controls and model, and ends with frozen results by **18 December**. January sta
 free for writing the report.
 
 *Status 23 Oct:* the human target, the frozen analysis spec, the silhouette and the
-control stimuli were all completed on 22 October, ahead of schedule. No baseline,
-feature extraction or model has been run. Next: the rater sample (issue 5) and the
-visual baselines for Gate 1 on 13 November.
+control stimuli were completed on 22 October; **Gate 1 (visual baselines) was completed on
+23 October, three weeks early: no baseline reproduces `C_FDI`, and every one shows the
+reverse pattern**, so H2 has a clean target ([baselines](baselines.md)). No model has been
+run. Next: the rater sample (issue 5) and the trial simulator and spiking model (W4).
+GPU work runs on the CREMI lab PC `daniel` (RTX 4000 Ada, 20 GB).
 
 ## 1. Where the project stands
 
@@ -20,7 +22,7 @@ visual baselines for Gate 1 on 13 November.
 | Analysis spec | Frozen 22 Oct; one logged amendment (§7.2 controls) before any result |
 | Control stimuli | Six controls for all 20 sources, approved 22 Oct ([controls](controls.md)) |
 | Rater validation | Not started (issue 5) |
-| Visual baselines | Method fixed 23 Oct before any extraction ([baselines](baselines.md)); features not yet extracted |
+| Visual baselines | Done 23 Oct ([baselines](baselines.md)): method fixed before extraction; 10,560 images; every baseline shows the reverse pattern (largest movement signal for the detached hand), 0/20 sources positive; Gate 1 passed |
 | Model | Not started |
 
 ### Reanalysis of the paper's deposited data (22 October)
@@ -111,7 +113,9 @@ pixels but scatters the arm; `occluded_wrist` is exploratory. Visually approved 
 
 ### 4.3 Visual baselines
 
-*Method fixed and committed 23 Oct, before any feature extraction: [baselines](baselines.md).*
+*Done 23 Oct: method committed before any feature extraction, then run on all 480 families;
+results and figures in [baselines](baselines.md). Paired decoding accuracy saturates at 1.00, so
+single-image accuracy and an exploratory transfer gain are reported instead.*
 
 - Encoders: low-level statistics (area, luminance, edge energy), DINOv2 ViT-L/14 (summary and patch tokens), OpenCLIP, and hand-region-only features (no context effect by construction).
 - Per context and control: the movement signal, meaning the A/B feature distance relative to between-source spread.
@@ -136,7 +140,7 @@ pixels but scatters the arm; `occluded_wrist` is exploratory. Visually approved 
 | W0 | 22–23 Oct | Freeze cohort; human target module; draft analysis spec | Done 22 Oct |
 | W1 | 26–30 Oct | Issues 6–8 and spec freeze, all done 22 Oct; start the rater sample | Done 22 Oct: frozen `docs/analysis-spec.md` and `config/analysis.json` |
 | W2 | 2–6 Nov | Prepare rater sample including both detached-hand versions (controls already built and approved 22 Oct) | Rater sheet |
-| W3 | 9–13 Nov | Extract features; movement-signal and grouped decoding analyses; ratings collected | Baseline table and figure. **Gate 1, 13 Nov** |
+| W3 | 9–13 Nov | Ratings collected (features, baselines and Gate 1 done 23 Oct) | Rater agreement. **Gate 1 passed 23 Oct** |
 | W4 | 16–20 Nov | Trial simulator; feedforward LIF and non-spiking twin; rate and probe diagnostics | Working models with stable activity |
 | W5 | 23–27 Nov | H0/H1/H2; calibrate on full body + detached hand, predict upper limb; recurrent variant | First held-out predictions |
 | W6 | 30 Nov–4 Dec | Predictions for all controls; probe-strength sweep | Control predictions. **Gate 2, 4 Dec** |
@@ -149,6 +153,11 @@ pixels but scatters the arm; `occluded_wrist` is exploratory. Visually approved 
 
 - If low-level or hand-only baselines reproduce it, the continuity explanation is in doubt. The report then focuses on that confound, and the model must beat those baselines.
 - If generic encoders show the reverse pattern (largest effect in the detached hand), H2 has a clean target. Continue as planned.
+
+*Outcome 23 Oct: the second branch, for every low-level, pixel, hand-only and encoder baseline
+(72 of 76 sensitivity cells reversed, 4 null, none positive). Frozen encoders also show no
+attachment variable beyond a pixel cue, so H2's context pathway has to compute it
+([baselines](baselines.md) R5).*
 
 **Gate 2 — 4 December: is the model scientifically usable?**
 
