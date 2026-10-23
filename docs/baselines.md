@@ -433,6 +433,100 @@ replicates, which supports source-level inference (spec §3).
 - Two encoders and two low-level codes; other architectures (e.g. video or hand-pose models)
   could behave differently.
 
+## Addendum A: hand-centred views (exploratory, added after the Gate 1 results)
+
+Code: [`analysis/handview.py`](../analysis/handview.py), tests in
+[`tests/test_handview.py`](../tests/test_handview.py).
+
+**Status.** This method was written on 24 October 2026, **after the Gate 1 results above were
+known** and before any hand-centred feature was extracted; it was committed before the
+extraction, so the commit dates the method. It is **exploratory**: it tests one caveat of the
+results and does not change the Gate 1 outcome, which stays as declared in §1–§5 and reported
+in R1.
+
+**Why.** Every Gate 1 encoder received the whole 2048 × 2048 scene resized to 224 px. The
+hand box (`used_hand_box`, 481–548 px wide and 605–653 px tall) then spans about 53–60 × 66–71
+px of the encoder input in every display, and the surround fills the rest. Human observers
+look *at* the hand. The question is whether the reverse pattern persists when every display is
+seen through the same hand-centred window, so that the hand is larger and only the nearby
+context differs between displays.
+
+### A.1 Views
+
+- **Window.** For each source, a square centred on the centre of its `used_hand_box`
+  (`data/frozen_sources.json`, `[x, y, right, bottom]`), with side `s × max(box width, box
+  height)` for **s ∈ {2, 4}**. When the centre falls between two pixels the corner is rounded
+  down (centre off by at most 0.5 px). Pixels outside the 2048-px image are black. The **same
+  window** is applied to every condition and to both frames of every family of that source.
+- **Geometry of these sources.** Every box is taller than wide, so the side is `s ×` box
+  height: 1,210–1,306 px at s = 2 and 2,420–2,612 px at s = 4. At **s = 2** the box fills half
+  the window (112 px of the 224-px input in height, against 66–71 px in Gate 1); the window
+  ends 90–204 px above the upper-limb cut, and the upper-limb archive image equals the
+  full-body image above that cut, so the full-body and upper-limb views are expected to be
+  pixel-identical. At **s = 4** the window is larger than the image, so the hand is slightly
+  *smaller* than in Gate 1 (56 px); s = 4 differs from Gate 1 by centring the hand, adding black
+  above and to the left, and removing the lowest 236–373 rows of the scene. Only s = 2 enlarges
+  the hand.
+- **Conditions.** The ten context conditions of `analysis/features.py` (`MAIN +
+  controls.CONTROLS`: everything except `hand_only`, which has no context), rendered with
+  `features.Renderer` from the hash-checked archive, then cropped. 480 families × 10 conditions
+  × 2 frames × 2 scales = 19,200 images; each crop is hashed.
+- **FB = UL check.** For every family and scale, whether the full-body and upper-limb crops are
+  pixel-identical in both frames, reported per source. Where they are, `m_FB = m_UL` exactly
+  and `C = m_FB − m_DH`; this is reported, not hidden.
+
+### A.2 Representations
+
+- `lowlevel` (the four statistics of §3) and `pixels64` (luminance box-averaged to 64 × 64),
+  computed on the full-resolution crop, black padding included. The padding is identical in
+  both frames, so it enters the movement signal only through the between-source spread.
+- `dinov2_cls`, `dinov2_patchmean` and `openclip`: the crop resized to 224 px with
+  `features.resized` (PIL bicubic, antialiased; no centre crop), then exactly the encoders,
+  pinned revisions, normalisation and float32 / TF32-off settings of `features.Encoders`
+  (reused unchanged). The extraction refuses to run unless the Hub revisions and the OpenCLIP
+  weight hash equal those of the Gate 1 run (`output/features/manifest.json`). No 448-px pass,
+  and patch tokens are not stored (no patch analysis is declared here). A small noise floor is
+  measured as in §3 on the first family (its 40 images re-encoded one at a time in reverse).
+
+### A.3 Analysis
+
+Identical to the declared primary analysis of §4–§5, run **separately for each scale** with the
+functions of `analysis/baselines.py` (`spread`, `movement_signal`, `source_means`,
+`bootstrap_index`, `summarise_signal`, `contrasts`, `signal_tables`, `gate1`): normalised
+movement signal (between-source spread per condition and scale, from the static crops), raw and
+cosine distances as sensitivity; `C = (m_FB + m_UL)/2 − m_DH` with the silhouette DH primary and
+the rectangle DH as sensitivity; every per-condition signal, `FB − UL` and the matched-control
+differences of §5; ratios; all sources and without reference 17; source-level percentile
+bootstrap, 10,000 resamples, seed 20261022. Decoding, RSA, patch maps and the 448-px pass are
+not repeated.
+
+**Interpretation rule (declared in advance).** Applied to each representation in the primary
+analysis (normalised signal, silhouette DH, all sources):
+
+- if `C` stays negative with its interval below 0 **at both scales**, the reversal does not
+  depend on the hand being small (with the caveat above that only s = 2 enlarges the hand);
+- if `C` becomes positive (interval above 0, the P1 rule of §5) at either scale, the Gate 1
+  conclusion depends on viewing geometry and must be stated as such;
+- any other outcome (an interval that includes 0, or different outcomes at the two scales) is
+  reported per representation and scale, without a general claim.
+
+### A.4 Reproduce
+
+```sh
+python analysis/handview.py extract     # CUDA machine; 19,200 images; writes output/handview/
+python analysis/handview.py analyse     # CPU; tables, summary and docs/figures/baselines-handview.png
+python -m unittest tests.test_handview
+```
+
+`extract --limit 2 --output <dir>` runs two appearance variants of every source (smoke test).
+The same GPU job also encodes one all-black 2048 × 2048 image (the fixation-trial display) with
+the same encoders and preprocessing, for the next project phase:
+`output/features_extra/black.npz` and its `manifest.json`. It is not part of this analysis.
+
+### A.5 Results
+
+Not yet run.
+
 ## Change log
 
 | Date | Change | Reason |
@@ -443,3 +537,5 @@ replicates, which supports source-level inference (spec §3).
 | 23 Oct 2026, after the smoke test | Transfer gain added (§6), labelled exploratory | Paired accuracy saturated at 1.00 for all encoders, so the declared metric cannot separate displays |
 | 23 Oct 2026, after the smoke test | Figure layout corrected; no change to any computation besides the two rows above | Overlapping labels |
 | 23 Oct 2026, after the full run | Single-image accuracy given intervals and a figure panel; raw distances given a figure row | Both were declared (§5, §6) but only stored; single-image accuracy is the decoding metric that does not saturate |
+| 24 Oct 2026, after the Gate 1 results | Addendum A (hand-centred views, s = 2 and 4) written and committed before its feature extraction; exploratory | The Gate 1 encoders saw the whole scene at 224 px, so the hand was small, while observers look at the hand |
+| 24 Oct 2026, before the Addendum A commit | Code test of `analysis/handview.py` on one appearance variant (20 families) with a placeholder CPU encoder. It also computed the real low-level and pixel signals of those 20 families, which were seen; the Addendum A method text had been written before and was not changed afterwards | Check the extraction, analysis and figure code before the GPU run |
