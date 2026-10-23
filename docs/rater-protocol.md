@@ -89,7 +89,7 @@ stays in the sample, and every result is repeated without it, as for every analy
 
 | Path | Content | Given to raters |
 | --- | --- | --- |
-| `output/raters/packet/images/img_001.png` … `img_160.png` | The 160 images | Yes |
+| `output/raters/packet/images/img_001.png` … `img_160.png` | The 160 images |
 | `output/raters/packet/rate.html` | Offline rating form | Yes |
 | `output/raters/key.csv` | Code → family, source, context, frame, original and exported SHA-256, positions in both orders | **No** |
 | `output/raters/manifest.json` | Code hash, seed, sample, balance, orders, every file hash, package versions | **No** |
@@ -130,10 +130,8 @@ In both orders the mean position of each context and each frame lies between 79.
 
 ## Instructions
 
-The experimenter reads the instructions aloud in the rater's language; the form shows the same
+The experimenter reads the instructions aloud; the form shows the same
 text before the first picture and the questions beside every picture.
-
-**English**
 
 > You will see 160 pictures, one at a time. Some show a whole scene; others show only part of
 > it, and the rest of the picture is black. The black areas and the cropping are intentional and
@@ -154,46 +152,22 @@ text before the first picture and the questions beside every picture.
 > about 10 to 15 seconds per picture is typical, and you may take a short break at any time. At
 > the end, download your ratings and give the file to the experimenter.
 
-**Français**
-
-> Vous allez voir 160 images, une à la fois. Certaines montrent une scène entière ; d’autres
-> n’en montrent qu’une partie, et le reste de l’image est noir. Les zones noires et le recadrage
-> sont voulus et ne sont pas des erreurs en eux-mêmes : jugez l’aspect de la partie visible.
->
-> Pour chaque image, répondez à deux questions. D’abord : À quel point cette photographie paraît-elle réaliste ?
-> Répondez de 1 à 7, où 1 signifie clairement artificielle et 7 impossible à distinguer d’une
-> vraie photographie. Les sept valeurs peuvent toutes être utilisées.
->
-> Ensuite : Voyez-vous une erreur ou un artefact visible (par ex. doigts déformés, peau qui paraît étalée ou floue, mauvais nombre de doigts, contours non naturels) ?
-> Répondez aucun, mineur ou majeur. Mineur signifie un petit défaut que l’on ne remarque qu’en
-> regardant attentivement. Majeur signifie une erreur évidente, ou qui donne à l’image un aspect
-> faux.
->
-> Vous pouvez ajouter un commentaire, par exemple pour indiquer où se trouve une erreur. Il n’y a
-> pas de bonne ou de mauvaise réponse : nous voulons votre impression personnelle. Beaucoup
-> d’images se ressemblent ; évaluez chacune pour elle-même.
->
-> Vous pouvez cliquer sur une image pour l’agrandir, et revenir en arrière pour modifier une
-> réponse. Travaillez à un rythme régulier (comptez en général 10 à 15 secondes par image) ; vous
-> pouvez faire une courte pause à tout moment. À la fin, téléchargez vos réponses et remettez le
-> fichier à l’expérimentateur.
-
 Beside every picture the form shows (no answer is preselected; *Next* stays disabled until both
 questions are answered):
 
-| Field | English | Français |
-| --- | --- | --- |
-| Question 1 | How realistic does this photograph look? | À quel point cette photographie paraît-elle réaliste ? |
-| Scale | Buttons 1–7; 1 = clearly artificial; 7 = indistinguishable from a real photograph | Boutons 1–7 ; 1 = clairement artificielle ; 7 = impossible à distinguer d’une vraie photographie |
-| Question 2 | Do you see any visible error or artifact (e.g. distorted fingers, smeared skin, wrong number of fingers, unnatural edges)? | Voyez-vous une erreur ou un artefact visible (par ex. doigts déformés, peau qui paraît étalée ou floue, mauvais nombre de doigts, contours non naturels) ? |
-| None / Aucun | No visible error | Aucune erreur visible |
-| Minor / Mineur | A small flaw, noticed only when looking closely | Un petit défaut, remarqué seulement en regardant attentivement |
-| Major / Majeur | An obvious error, or one that makes the picture look wrong | Une erreur évidente, ou qui donne à l’image un aspect faux |
-| Comment | Comment (optional), for example where the error is | Commentaire (facultatif), par exemple où se trouve l’erreur |
+| Field | Text |
+| --- | --- |
+| Question 1 | How realistic does this photograph look? |
+| Scale | Buttons 1–7; 1 = clearly artificial; 7 = indistinguishable from a real photograph |
+| Question 2 | Do you see any visible error or artifact (e.g. distorted fingers, smeared skin, wrong number of fingers, unnatural edges)? |
+| None | No visible error |
+| Minor | A small flaw, noticed only when looking closely |
+| Major | An obvious error, or one that makes the picture look wrong |
+| Comment | Comment (optional), for example where the error is |
 
 **Questions from raters.** The experimenter answers only by repeating the instructions. Questions
 about how the pictures were made, what they are for, or whether some are edited get: "I can tell
-you after the session" / « Je pourrai vous le dire après la séance ».
+you after the session".
 
 ## Procedure
 
@@ -210,7 +184,7 @@ Steps:
 
 1. Before the first session, run `python scripts/raters.py check` and copy **only**
    `output/raters/packet/` to the rating computer. The key never leaves the project computer.
-2. Open `rate.html`, choose the rater's letter and language on the start screen, and press
+2. Open `rate.html`, choose the rater's letter on the start screen, and press
    Continue. The experimenter chooses the letter; the rater does not need to know what it means.
 3. Read the instructions aloud; the rater then reads them on screen and starts.
 4. Progress is saved in the browser after every picture; if the window closes, reopening
@@ -224,7 +198,6 @@ Steps:
 | Session record | A | B |
 | --- | --- | --- |
 | Date, start and end time | | |
-| Language | | |
 | Computer, screen size and resolution, browser | | |
 | Naive criteria confirmed (table above) | | |
 | Experience with photography, image editing, AI images | | |
@@ -250,7 +223,7 @@ and again without reference 17 (19 sources).
 
 | Quantity | Definition | File |
 | --- | --- | --- |
-| Per image | Both raters' realism, artifact, comment and position; mean realism; difference A − B; major by either | `images.csv` |
+| Per image | Both raters' realism, artifact, comment and position; mean realism; difference A − B; major by either |
 | Mean realism per context | Per image, the mean of the two raters; per source, the mean of its two frames; then the mean over sources, with interval. Also per rater | `contexts.csv` |
 | Artifact rates per context | Share of ratings that are minor or major (any artifact), and major; same aggregation and interval; also per rater | `contexts.csv` |
 | Movement − static per context | Per source, the movement frame's value minus the static frame's, for realism, any-artifact and major rates (raters averaged, and each rater); mean over sources with interval; number of sources with a higher, lower or equal value for movement | `frames.csv` |
@@ -357,4 +330,5 @@ key (with the recorded NumPy and Pillow versions); a test checks this against th
 
 | Date | Change | Reason |
 | --- | --- | --- |
-| 24 Oct 2026 | Protocol, sample, packet and analysis prepared | Issue 5; no rating exists |
+| 24 Oct 2026 | Protocol, sample, packet and analysis prepared |
+| 24 Oct 2026 | Form and instructions in English only; French version removed | Project owner's decision; raters will be given the English form |

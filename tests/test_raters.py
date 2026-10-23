@@ -171,7 +171,7 @@ class Packet(unittest.TestCase):
         protocol = flat(re.sub(r'(?m)^> ?', '', PROTOCOL.read_text(encoding='utf-8')))
         decode = lambda literal: flat(json.loads('"' + literal + '"'))
         html = r.rate_html(self.orders, 'test')
-        for language in ('en', 'fr'):
+        for language in ('en',):
             block = re.search(language + r': \{(.*?)\n    \}', html, re.S).group(1)
             for name in ('q1', 'q2', 'anchorLow', 'anchorHigh', 'noneHint', 'minorHint', 'majorHint'):
                 literal = re.search(name + r": '((?:[^'\\]|\\.)*)'", block).group(1)

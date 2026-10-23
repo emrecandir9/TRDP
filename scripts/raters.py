@@ -847,11 +847,6 @@ textarea { width: 100%; font: inherit; color: var(--text); background: var(--fie
       <label><input type="radio" name="rater" value="A"> A</label>
       <label><input type="radio" name="rater" value="B"> B</label>
     </fieldset>
-    <fieldset class="inline">
-      <legend data-t="langLegend"></legend>
-      <label><input type="radio" name="lang" value="en" checked> English</label>
-      <label><input type="radio" name="lang" value="fr"> Français</label>
-    </fieldset>
     <p id="startMessage" class="warning" hidden></p>
     <p id="resumeNote" hidden></p>
     <p id="storageNote" class="warning" data-t="storageNote" hidden></p>
@@ -925,7 +920,6 @@ textarea { width: 100%; font: inherit; color: var(--text); background: var(--fie
     en: {
       title: 'Image rating',
       raterLegend: 'Rater letter (given to you by the experimenter)',
-      langLegend: 'Language',
       start: 'Continue',
       resume: 'Resume',
       restart: 'Start again',
@@ -963,48 +957,6 @@ textarea { width: 100%; font: inherit; color: var(--text); background: var(--fie
       showDataHelp: 'If the download does not work: select all the text below, copy it and send it to the experimenter.',
       review: 'Back to the last picture',
       leave: 'Your ratings have not been downloaded yet.'
-    },
-    fr: {
-      title: 'Évaluation d’images',
-      raterLegend: 'Lettre d’évaluateur (donnée par l’expérimentateur)',
-      langLegend: 'Langue',
-      start: 'Continuer',
-      resume: 'Reprendre',
-      restart: 'Recommencer',
-      chooseRater: 'Veuillez choisir votre lettre d’évaluateur.',
-      resumeNote: 'Progression enregistrée dans ce navigateur\u00a0: {n} images sur {total} déjà évaluées.',
-      restartConfirm: 'Effacer les réponses enregistrées dans ce navigateur et recommencer à la première image\u00a0?',
-      storageNote: 'Ce navigateur ne peut pas enregistrer votre progression. Ne fermez pas et ne rechargez pas cette page avant d’avoir téléchargé vos réponses à la fin.',
-      introTitle: 'Consignes',
-      instructions: [
-        'Vous allez voir {total} images, une à la fois. Certaines montrent une scène entière\u00a0; d’autres n’en montrent qu’une partie, et le reste de l’image est noir. Les zones noires et le recadrage sont voulus et ne sont pas des erreurs en eux-mêmes\u00a0: jugez l’aspect de la partie visible.',
-        'Pour chaque image, répondez à deux questions. D’abord\u00a0: À quel point cette photographie paraît-elle réaliste\u00a0? Répondez de 1 à 7, où 1 signifie clairement artificielle et 7 impossible à distinguer d’une vraie photographie. Les sept valeurs peuvent toutes être utilisées.',
-        'Ensuite\u00a0: Voyez-vous une erreur ou un artefact visible (par ex. doigts déformés, peau qui paraît étalée ou floue, mauvais nombre de doigts, contours non naturels)\u00a0? Répondez aucun, mineur ou majeur. Mineur signifie un petit défaut que l’on ne remarque qu’en regardant attentivement. Majeur signifie une erreur évidente, ou qui donne à l’image un aspect faux.',
-        'Vous pouvez ajouter un commentaire, par exemple pour indiquer où se trouve une erreur. Il n’y a pas de bonne ou de mauvaise réponse\u00a0: nous voulons votre impression personnelle. Beaucoup d’images se ressemblent\u00a0; évaluez chacune pour elle-même.',
-        'Vous pouvez cliquer sur une image pour l’agrandir, et revenir en arrière pour modifier une réponse. Travaillez à un rythme régulier (comptez en général 10 à 15 secondes par image)\u00a0; vous pouvez faire une courte pause à tout moment. À la fin, téléchargez vos réponses et remettez le fichier à l’expérimentateur.'
-      ],
-      begin: 'Commencer',
-      continueRating: 'Reprendre l’évaluation',
-      q1: 'À quel point cette photographie paraît-elle réaliste\u00a0?',
-      anchorLow: '1 = clairement artificielle',
-      anchorHigh: '7 = impossible à distinguer d’une vraie photographie',
-      q2: 'Voyez-vous une erreur ou un artefact visible (par ex. doigts déformés, peau qui paraît étalée ou floue, mauvais nombre de doigts, contours non naturels)\u00a0?',
-      none: 'Aucun', noneHint: 'Aucune erreur visible',
-      minor: 'Mineur', minorHint: 'Un petit défaut, remarqué seulement en regardant attentivement',
-      major: 'Majeur', majorHint: 'Une erreur évidente, ou qui donne à l’image un aspect faux',
-      commentLabel: 'Commentaire (facultatif), par exemple où se trouve l’erreur',
-      back: 'Précédent', next: 'Suivant', finish: 'Terminer',
-      progress: 'Image {i} sur {total}',
-      zoomHint: 'Cliquez sur l’image pour l’agrandir\u00a0; cliquez à nouveau pour l’ajuster à l’écran.',
-      imageError: 'Cette image n’a pas pu être chargée. Vérifiez que le dossier «\u00a0images\u00a0» se trouve à côté de rate.html, puis rechargez la page.',
-      endTitle: 'Merci',
-      endText: 'Vous avez évalué les {total} images. Cliquez sur le bouton ci-dessous pour enregistrer vos réponses dans un fichier, puis remettez ce fichier à l’expérimentateur.',
-      download: 'Télécharger les réponses (CSV)',
-      downloaded: 'Enregistré sous le nom {file} (en général dans le dossier Téléchargements).',
-      showData: 'Afficher les données sous forme de texte',
-      showDataHelp: 'Si le téléchargement ne fonctionne pas\u00a0: sélectionnez tout le texte ci-dessous, copiez-le et envoyez-le à l’expérimentateur.',
-      review: 'Revenir à la dernière image',
-      leave: 'Vos réponses n’ont pas encore été téléchargées.'
     }
   };
 
@@ -1217,9 +1169,6 @@ textarea { width: 100%; font: inherit; color: var(--text); background: var(--fie
     renderItem();
   }
 
-  document.querySelectorAll('input[name="lang"]').forEach(function (input) {
-    input.addEventListener('change', function () { state.lang = input.value; applyTexts(); });
-  });
   document.querySelectorAll('input[name="rater"]').forEach(function (input) {
     input.addEventListener('change', function () { $('startMessage').hidden = true; updateStart(); });
   });
@@ -1243,8 +1192,6 @@ textarea { width: 100%; font: inherit; color: var(--text); background: var(--fie
       return t('leave');
     }
   });
-  var preset = checkedValue('lang');
-  state.lang = preset === 'fr' ? 'fr' : 'en';
   applyTexts();
 })();
 </script>
