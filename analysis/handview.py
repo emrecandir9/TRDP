@@ -32,7 +32,7 @@ sys.path.insert(0, str(ROOT / 'analysis'))
 import baselines as b  # noqa: E402
 import features as fx  # noqa: E402
 
-SCALES = (2, 4)
+SCALES = (1.5, 2, 3)
 CONDITIONS = b.CONTEXTS   # the ten displays with a context; hand_only has none
 SIZE = fx.SIZES['dinov2']
 OUTPUT = ROOT / 'output/handview'
@@ -49,7 +49,8 @@ require(fx.SIZES['dinov2'] == fx.SIZES['openclip'] == 224, 'Both encoders are ex
 
 def window(box, scale):
     """(left, top, side) of the square centred on box = [x, y, right, bottom], side = scale x
-    the longer side of the box. A centre between two pixels is rounded down (off by <= 0.5 px)."""
+    the longer side of the box, rounded down to whole pixels. A centre between two pixels is
+    rounded down (off by <= 0.5 px)."""
     x, y, right, bottom = (int(v) for v in box)
     side = int(scale * max(right - x, bottom - y))
     return (x + right - side) // 2, (y + bottom - side) // 2, side
@@ -304,10 +305,10 @@ def reading(gate):
     """The interpretation rule declared in Addendum A, per representation (primary analysis)."""
     out = {}
     for name, g in gate.groupby('representation', sort=False):
-        state = {int(r.scale): 'reverse' if r.C_high < 0 else 'positive' if r.C_low > 0 else 'interval includes 0'
+        state = {f'{r.scale:g}': 'reverse' if r.C_high < 0 else 'positive' if r.C_low > 0 else 'interval includes 0'
                  for r in g.itertuples()}
         if all(v == 'reverse' for v in state.values()):
-            verdict = 'reverse at both scales: the reversal does not depend on the hand being small'
+            verdict = 'reverse at every scale: the reversal does not depend on the hand being small'
         elif any(v == 'positive' for v in state.values()):
             verdict = 'positive at some scale: the Gate 1 conclusion depends on viewing geometry'
         else:
@@ -354,7 +355,7 @@ def analyse(directory=OUTPUT, output=OUTPUT, figure_path=FIGURE):
 
 def figure(table, families=None, path=FIGURE, gate1=b.OUTPUT / 'gate1.csv'):
     """(a) one family's static frames as the encoders receive them: whole scene (Gate 1, with the
-    two windows outlined) and both windows; (b) movement signal per condition and scale; (c) C
+    windows outlined) and every window; (b) movement signal per condition and scale; (c) C
     per representation and view."""
     import baseline_figures as bf   # shared style and palette
     plt = bf.plt
@@ -362,7 +363,7 @@ def figure(table, families=None, path=FIGURE, gate1=b.OUTPUT / 'gate1.csv'):
     images = fx.Renderer().render(family)
     shown = views(images, family['source'], SCALES, fx.MAIN)
     order = sorted(SCALES, reverse=True)   # field of view shrinks downwards, so the hand grows
-    fig = plt.figure(figsize=(16.5, 12.6))
+    fig = plt.figure(figsize=(16.5, 16))
     top, bottom = fig.subfigures(2, 1, height_ratios=[1, 1.2], hspace=.02)
     left, right = top.subfigures(1, 2, width_ratios=[1.15, 1], wspace=.02)
 
@@ -374,7 +375,7 @@ def figure(table, families=None, path=FIGURE, gate1=b.OUTPUT / 'gate1.csv'):
             image = images[condition][0] if scale is None else shown[scale][condition][0]
             ax.imshow(fx.resized(image, SIZE))
             if scale is None:
-                for s, style in zip(SCALES, ('-', '--')):
+                for s, style in zip(SCALES, ('-', '--', ':')):
                     l, t, side = window(family['source']['used_hand_box'], s)
                     ax.add_patch(plt.Rectangle((l * scale_to_224, t * scale_to_224), side * scale_to_224,
                                                side * scale_to_224, fill=False, ec='white', lw=1, ls=style))
@@ -387,8 +388,8 @@ def figure(table, families=None, path=FIGURE, gate1=b.OUTPUT / 'gate1.csv'):
         label = 'whole scene (Gate 1)' if scale is None else f'window s = {scale}'
         axes[i, 0].set_ylabel(label, fontsize=8.5)
     left.suptitle(f'(a) Static frame as the encoders receive it (224 px); reference 1, {family["desk"]} desk, '
-                  f'seed {family["seed"]}, {family["balance"]} balance.\n     Top row: window s = 2 solid, '
-                  's = 4 dashed (larger than the image); black outside the image',
+                  f'seed {family["seed"]}, {family["balance"]} balance.\n     Top row: windows s = 1.5 solid, '
+                  's = 2 dashed, s = 3 dotted; black outside the image',
                   x=.01, ha='left', fontweight='bold', fontsize=9)
 
     ax = right.subplots()
@@ -396,7 +397,7 @@ def figure(table, families=None, path=FIGURE, gate1=b.OUTPUT / 'gate1.csv'):
                           "detached_hand == 'detached_hand_silhouette' and statistic == 'C'")
     names = list(REPRESENTATIONS)
     series = [(f'window s = {s}', primary[primary.scale == s].set_index('representation'), mk, col)
-              for s, mk, col in zip(order, ('s', 'D'), (bf.MUTED, bf.INK))]
+              for s, mk, col in zip(order, ('^', 'D', 's'), ('#86b6ef', '#2a78d6', '#0d366b'))]   # lighter = wider view
     if Path(gate1).is_file():
         reference = pd.read_csv(gate1).set_index('representation').rename(columns=dict(C='estimate', C_low='ci_low',
                                                                                        C_high='ci_high'))
@@ -428,9 +429,10 @@ def figure(table, families=None, path=FIGURE, gate1=b.OUTPUT / 'gate1.csv'):
                     [r.ci_high for r in rows], [bf.ROLE[bf.role(c)][0] for c in CONDITIONS],
                     [bf.ROLE[bf.role(c)][1] for c in CONDITIONS])
             ceiling[name] = max(ceiling.get(name, 0), max(r.ci_high for r in rows))
-            ax.set_ylim(0, 1.06 * ceiling[name])   # shared within a column: both scales on one axis
+            ax.set_ylim(0, 1.06 * ceiling[name])   # shared within a column: all scales on one axis
             if k == 0:
                 ax.set_title(b.LABEL[name])
+            if k < len(order) - 1:
                 ax.tick_params(labelbottom=False)
         axes[k, 0].set_ylabel(f'window s = {scale}\ndistance / between-source spread')
     handles = [plt.Line2D([], [], color=c, marker=m, linestyle='', markersize=6, label=r) for r, (c, m) in bf.ROLE.items()]

@@ -455,22 +455,20 @@ context differs between displays.
 
 - **Window.** For each source, a square centred on the centre of its `used_hand_box`
   (`data/frozen_sources.json`, `[x, y, right, bottom]`), with side `s × max(box width, box
-  height)` for **s ∈ {2, 4}**. When the centre falls between two pixels the corner is rounded
+  height)` for **s ∈ {1.5, 2, 3}**. When the centre falls between two pixels the corner is rounded
   down (centre off by at most 0.5 px). Pixels outside the 2048-px image are black. The **same
   window** is applied to every condition and to both frames of every family of that source.
 - **Geometry of these sources.** Every box is taller than wide, so the side is `s ×` box
-  height: 1,210–1,306 px at s = 2 and 2,420–2,612 px at s = 4. At **s = 2** the box fills half
-  the window (112 px of the 224-px input in height, against 66–71 px in Gate 1); the window
-  ends 90–204 px above the upper-limb cut, and the upper-limb archive image equals the
-  full-body image above that cut, so the full-body and upper-limb views are expected to be
-  pixel-identical. At **s = 4** the window is larger than the image, so the hand is slightly
-  *smaller* than in Gate 1 (56 px); s = 4 differs from Gate 1 by centring the hand, adding black
-  above and to the left, and removing the lowest 236–373 rows of the scene. Only s = 2 enlarges
-  the hand.
+  height (605–653 px). In the 224-px encoder input the hand box is then **149 px tall at
+  s = 1.5, 112 px at s = 2 and 75 px at s = 3**, against 66–71 px in Gate 1: a graded
+  enlargement of the hand, from near-foveal to about the Gate 1 size but centred. The window
+  reaches below the upper-limb cut only for s > 2.3–2.7 (by source), so at **s = 1.5 and 2** the
+  full-body and upper-limb views are expected to be pixel-identical (the upper-limb archive image
+  equals the full-body image above the cut), and at **s = 3** they differ for every source.
 - **Conditions.** The ten context conditions of `analysis/features.py` (`MAIN +
   controls.CONTROLS`: everything except `hand_only`, which has no context), rendered with
   `features.Renderer` from the hash-checked archive, then cropped. 480 families × 10 conditions
-  × 2 frames × 2 scales = 19,200 images; each crop is hashed.
+  × 2 frames × 3 scales = 28,800 images; each crop is hashed.
 - **FB = UL check.** For every family and scale, whether the full-body and upper-limb crops are
   pixel-identical in both frames, reported per source. Where they are, `m_FB = m_UL` exactly
   and `C = m_FB − m_DH`; this is reported, not hidden.
@@ -503,17 +501,17 @@ not repeated.
 **Interpretation rule (declared in advance).** Applied to each representation in the primary
 analysis (normalised signal, silhouette DH, all sources):
 
-- if `C` stays negative with its interval below 0 **at both scales**, the reversal does not
-  depend on the hand being small (with the caveat above that only s = 2 enlarges the hand);
-- if `C` becomes positive (interval above 0, the P1 rule of §5) at either scale, the Gate 1
+- if `C` stays negative with its interval below 0 **at every scale**, the reversal does not
+  depend on the hand being small;
+- if `C` becomes positive (interval above 0, the P1 rule of §5) at any scale, the Gate 1
   conclusion depends on viewing geometry and must be stated as such;
-- any other outcome (an interval that includes 0, or different outcomes at the two scales) is
+- any other outcome (an interval that includes 0, or different outcomes at different scales) is
   reported per representation and scale, without a general claim.
 
 ### A.4 Reproduce
 
 ```sh
-python analysis/handview.py extract     # CUDA machine; 19,200 images; writes output/handview/
+python analysis/handview.py extract     # CUDA machine; 28,800 images; writes output/handview/
 python analysis/handview.py analyse     # CPU; tables, summary and docs/figures/baselines-handview.png
 python -m unittest tests.test_handview
 ```
@@ -539,3 +537,4 @@ Not yet run.
 | 23 Oct 2026, after the full run | Single-image accuracy given intervals and a figure panel; raw distances given a figure row | Both were declared (§5, §6) but only stored; single-image accuracy is the decoding metric that does not saturate |
 | 24 Oct 2026, after the Gate 1 results | Addendum A (hand-centred views, s = 2 and 4) written and committed before its feature extraction; exploratory | The Gate 1 encoders saw the whole scene at 224 px, so the hand was small, while observers look at the hand |
 | 24 Oct 2026, before the Addendum A commit | Code test of `analysis/handview.py` on one appearance variant (20 families) with a placeholder CPU encoder. It also computed the real low-level and pixel signals of those 20 families, which were seen; the Addendum A method text had been written before and was not changed afterwards | Check the extraction, analysis and figure code before the GPU run |
+| 24 Oct 2026, after the Addendum A commit, before any hand-centred feature was extracted | Scales changed from {2, 4} to {1.5, 2, 3} | At s = 4 the window is larger than the image, so the hand is smaller than in Gate 1 and the scale cannot test the caveat; the new scales enlarge the hand in steps (149, 112, 75 px against 66–71) and s = 3 is the first to include the upper-limb cut. No GPU feature existed when this was changed |

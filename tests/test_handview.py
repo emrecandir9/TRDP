@@ -15,7 +15,7 @@ BOX = [384, 163, 866, 768]   # used_hand_box of reference 1: 482 x 605 px
 class Window(unittest.TestCase):
     def test_side_is_scale_times_longer_side(self):
         for scale in h.SCALES:
-            self.assertEqual(h.window(BOX, scale)[2], scale * 605)
+            self.assertEqual(h.window(BOX, scale)[2], int(scale * 605))
         self.assertEqual(h.window([0, 0, 50, 10], 2)[2], 100)   # wider than tall
 
     def test_window_is_centred_on_the_box(self):
@@ -117,7 +117,7 @@ class Analysis(unittest.TestCase):
         self.assertEqual(sorted(gate.scale), sorted(h.SCALES))
         self.assertTrue((gate.C < 0).all() and gate.reverse_pattern.all())
         reading = h.reading(gate)['dinov2_cls']
-        self.assertTrue(reading['reading'].startswith('reverse at both scales'))
+        self.assertTrue(reading['reading'].startswith('reverse at every scale'))
         data = h.scale_data(families, dict(dinov2_cls=x), 2)
         cells = h.b.source_means(h.b.movement_signal(data.x['dinov2_cls'], data.variant), data.source)
         expected = {r['statistic']: r for r in h.b.summarise_signal(cells, h.b.bootstrap_index(len(cells)))}['C']
@@ -135,7 +135,7 @@ class Analysis(unittest.TestCase):
                              dict(representation='c', scale=2, C_low=-.1, C_high=.3),
                              dict(representation='c', scale=4, C_low=-.2, C_high=-.05)])
         r = h.reading(gate)
-        self.assertTrue(r['a']['reading'].startswith('reverse at both scales'))
+        self.assertTrue(r['a']['reading'].startswith('reverse at every scale'))
         self.assertTrue(r['b']['reading'].startswith('positive'))
         self.assertTrue(r['c']['reading'].startswith('other'))
 
