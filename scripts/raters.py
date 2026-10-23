@@ -850,6 +850,7 @@ textarea { width: 100%; font: inherit; color: var(--text); background: var(--fie
     <p id="startMessage" class="warning" hidden></p>
     <p id="resumeNote" hidden></p>
     <p id="storageNote" class="warning" data-t="storageNote" hidden></p>
+    <p id="openNote" class="warning" data-t="openNote" hidden></p>
     <button type="submit" id="startButton" class="primary"></button>
     <button type="button" id="restartButton" data-t="restart" hidden></button>
   </form>
@@ -948,7 +949,8 @@ textarea { width: 100%; font: inherit; color: var(--text); background: var(--fie
       back: 'Back', next: 'Next', finish: 'Finish',
       progress: 'Picture {i} of {total}',
       zoomHint: 'Click the picture to enlarge it; click again to fit it to the screen.',
-      imageError: 'This picture could not be loaded. Check that the folder "images" is next to rate.html, then reload the page.',
+      imageError: 'This picture could not be loaded. Open rate.html directly from its folder (double-click it in Finder or File Explorer) in Chrome or Safari, with the folder "images" next to it. Previews, for example in an email, a chat or a code editor, cannot load the pictures.',
+      openNote: 'This page is open in a preview, so the pictures cannot load. Close it, open the folder that contains rate.html and the folder "images", and double-click rate.html to open it in Chrome or Safari.',
       endTitle: 'Thank you',
       endText: 'You have rated all {total} pictures. Click the button below to save your ratings as a file, then give the file to the experimenter.',
       download: 'Download ratings (CSV)',
@@ -1022,6 +1024,7 @@ textarea { width: 100%; font: inherit; color: var(--text); background: var(--fie
     $('restartButton').hidden = count === 0;
     $('startButton').textContent = count ? t('resume') : t('start');
     $('storageNote').hidden = storageOk;
+    $('openNote').hidden = /^(file|https?):$/.test(window.location.protocol);
   }
 
   function startSession(event) {

@@ -184,7 +184,9 @@ Steps:
 
 1. Before the first session, run `python scripts/raters.py check` and copy **only**
    `output/raters/packet/` to the rating computer. The key never leaves the project computer.
-2. Open `rate.html`, choose the rater's letter on the start screen, and press
+2. Open `rate.html` by double-clicking it in its folder, so it opens in Chrome or Safari (a
+   preview, e.g. in an email, a chat or a code editor, cannot load the pictures; the form then
+   says so). Check that the first picture appears, choose the rater's letter on the start screen, and press
    Continue. The experimenter chooses the letter; the rater does not need to know what it means.
 3. Read the instructions aloud; the rater then reads them on screen and starts.
 4. Progress is saved in the browser after every picture; if the window closes, reopening
@@ -332,3 +334,4 @@ key (with the recorded NumPy and Pillow versions); a test checks this against th
 | --- | --- | --- |
 | 24 Oct 2026 | Protocol, sample, packet and analysis prepared |
 | 24 Oct 2026 | Form and instructions in English only; French version removed | Project owner's decision; raters will be given the English form |
+| 24 Oct 2026 | Form tells the user when it is opened in a preview that cannot load the pictures; procedure says to open it from its folder | The form was opened in a preview, where no picture loads |
