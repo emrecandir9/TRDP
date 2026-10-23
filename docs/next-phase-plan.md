@@ -20,7 +20,7 @@ visual baselines for Gate 1 on 13 November.
 | Analysis spec | Frozen 22 Oct; one logged amendment (§7.2 controls) before any result |
 | Control stimuli | Six controls for all 20 sources, approved 22 Oct ([controls](controls.md)) |
 | Rater validation | Not started (issue 5) |
-| Visual baselines | Not run on the index dataset |
+| Visual baselines | Method fixed 23 Oct before any extraction ([baselines](baselines.md)); features not yet extracted |
 | Model | Not started |
 
 ### Reanalysis of the paper's deposited data (22 October)
@@ -110,6 +110,8 @@ pixels but scatters the arm; `occluded_wrist` is exploratory. Visually approved 
 ([record](controls-approval.json)).
 
 ### 4.3 Visual baselines
+
+*Method fixed and committed 23 Oct, before any feature extraction: [baselines](baselines.md).*
 
 - Encoders: low-level statistics (area, luminance, edge energy), DINOv2 ViT-L/14 (summary and patch tokens), OpenCLIP, and hand-region-only features (no context effect by construction).
 - Per context and control: the movement signal, meaning the A/B feature distance relative to between-source spread.

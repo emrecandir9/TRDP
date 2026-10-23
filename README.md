@@ -22,7 +22,9 @@ what was checked and what remains untested.
 ```text
 TRDP/
 ├── README.md                    # Start here: setup, commands and project status
-├── requirements.txt             # CPU environment: NumPy, Pillow, pandas, SciPy, statsmodels
+├── requirements.txt             # CPU environment: NumPy, Pillow, pandas, SciPy, statsmodels,
+│                                #   scikit-learn, matplotlib
+├── requirements-features.txt    # GPU feature extraction: torch (CUDA 12.8), transformers, open_clip
 ├── requirements-segmentation.txt # Optional: torch, timm, pinned SAM-HQ for segment_hands.py
 ├── .gitignore                   # Keeps data, models, environments and runs local
 ├── .gitattributes               # Treats PDFs as binary files; no Git LFS
@@ -30,7 +32,10 @@ TRDP/
 │   ├── recipe.json              # Parameters, prompts, pinned models and canary IDs
 │   └── analysis.json            # Frozen cohort, human-data hashes, target settings
 ├── analysis/
-│   └── human_target.py          # Participant-level human MEP target from the OSF deposit
+│   ├── human_target.py          # Participant-level human MEP target from the OSF deposit
+│   ├── features.py              # Gate 1 inputs: rendering, low-level statistics, DINOv2/OpenCLIP (GPU)
+│   ├── baselines.py             # Gate 1 baselines: movement signal, decoding, latent-space analyses
+│   └── baseline_figures.py      # Figures of docs/baselines.md
 ├── scripts/
 │   ├── setup.sh                 # Creates .venv for review or Linux CUDA generation
 │   ├── models.py                # Downloads / resolves the three pinned models
@@ -46,7 +51,8 @@ TRDP/
 │   ├── test_dataset.py          # CPU regression checks, including failure cases
 │   ├── test_silhouette.py       # Silhouette geometry, registration, seams, wrist cut, frozen mattes
 │   ├── test_controls.py         # Control geometry, equal areas, scramble, frozen controls
-│   └── test_human_target.py     # Human target checks; published-statistics reproduction
+│   ├── test_human_target.py     # Human target checks; published-statistics reproduction
+│   └── test_baselines.py        # Baseline statistics, leave-one-source-out decoding, rendering
 ├── data/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
 │   ├── hand_segmentation.json   # Tracked SAM-HQ provenance, prompts and mask hashes
@@ -82,6 +88,7 @@ TRDP/
 │   ├── validation.md            # Validation scope, results and limitations
 │   ├── next-phase-plan.md       # Priorities and schedule to 18 December 2026
 │   ├── analysis-spec.md         # Endpoints, splits, models and success criteria
+│   ├── baselines.md             # Gate 1 baselines: method fixed before results, then results
 │   └── 480-family-review.pdf    # LOCAL: unchanged original interactive review
 ├── .venv/                       # LOCAL: environment created by setup.sh
 └── output/                      # LOCAL: new runs, proposals, audits and review records
@@ -112,6 +119,9 @@ python scripts/controls.py check
 python scripts/validate_dataset.py --hand-deviation
 python analysis/human_target.py
 ```
+
+Gate 1 baselines ([method and results](docs/baselines.md)): `python analysis/features.py`
+on a CUDA machine (`pip install -r requirements-features.txt`), then `python analysis/baselines.py`.
 
 Tests need no dataset or GPU; the published-statistics test runs only when the OSF files
 are present. The last seven commands require local data. This working
