@@ -10,8 +10,11 @@ the same full-body pixels.
 
 Read the [illustrated project guide](docs/project-guide.pdf) for the complete workflow:
 original references, source generation, hand and clothing repairs, V7 approval, masks,
-final expansion, earlier methods and next steps. The guide predates the silhouette: its page 17
-shows the rectangular detached hand, now the sensitivity condition. [Validation](docs/validation.md) records
+final expansion and earlier methods. The guide dates from 11 October and is partly superseded:
+it predates the human target, the [analysis spec](docs/analysis-spec.md), the silhouette and the
+[control stimuli](docs/controls.md). Its page 17 shows the rectangular detached hand, now the
+sensitivity condition, and its roadmap on page 25 is replaced by the
+[next-phase plan](docs/next-phase-plan.md). [Validation](docs/validation.md) records
 what was checked and what remains untested.
 
 ## Directory map
@@ -67,7 +70,7 @@ TRDP/
 │   │   └── validation.json      # Local archive verification result
 │   └── accepted_silhouette/     # LOCAL: <family>/detached_hand_silhouette/{static,movement}.png
 ├── docs/
-│   ├── project-guide.pdf        # Step-by-step method with actual before/after images
+│   ├── project-guide.pdf        # Stimulus method with before/after images (11 Oct; partly superseded)
 │   ├── accepted-dataset.json    # Historical approval and hashes of all 2,880 PNGs
 │   ├── approval-receipt.json    # Acceptance scope and known reference-17 issue
 │   ├── accepted-silhouette.json # Hashes of the 960 archive silhouette PNGs
@@ -178,17 +181,26 @@ has a known clothing issue, accepted with that flag. The clean repository covers
 original project folders. The guide explains their role and limitations.
 
 Stimulus work is paused; the [next-phase plan](docs/next-phase-plan.md) sets the
-priorities and schedule to 18 December 2026:
+priorities and schedule to 18 December 2026.
 
-1. Freeze the accepted archive as the analysis cohort and build the participant-level
-   human MEP target and analysis spec.
-2. Build mask-based control stimuli; evaluate visual encoders against hand-only and
-   low-level baselines with leave-one-source-out splits (20 source groups).
-3. Build and test the temporal motor-response model. Repeat analyses without
-   reference 17: 456 families. A fresh CUDA canary is deferred.
+Done on 22 October:
+
+- The accepted archive is frozen as the analysis cohort.
+- The participant-level human MEP target is built and reproduces the paper's published
+  statistics.
+- The [analysis spec](docs/analysis-spec.md) is frozen, before any model result.
+- The detached-hand silhouette and the six control stimuli are built and visually approved.
+
+Next:
+
+1. Rater validation of a fixed image sample by two naive raters.
+2. Visual baselines (low-level, hand-only, DINOv2, OpenCLIP) for every context and control,
+   with leave-one-source-out splits (20 source groups); Gate 1 on 13 November.
+3. Build and test the temporal motor-response model; Gate 2 on 4 December, single held-out
+   evaluation 14–18 December. Every analysis is repeated without reference 17 (456 families).
+   A fresh CUDA canary is deferred.
 
 Image acceptance does not establish physiological or scientific replication.
-The guide details the project history and the remaining evaluation work.
 
 Models retain their own licenses: [RealVisXL](https://huggingface.co/SG161222/RealVisXL_V4.0),
 [Xinsir Canny](https://huggingface.co/xinsir/controlnet-canny-sdxl-1.0),

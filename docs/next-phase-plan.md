@@ -1,18 +1,25 @@
 # Next phase plan — 22 October to 18 December 2026
 
-The stimulus set is finished. The scientific work has not started: there is no
-human target, no baseline and no model yet. This plan moves effort from images to
-the target, controls and model, and ends with frozen results by **18 December**.
-January stays free for writing the report.
+The stimulus set is finished. This plan moves effort from images to the target,
+controls and model, and ends with frozen results by **18 December**. January stays
+free for writing the report.
+
+*Status 23 Oct:* the human target, the frozen analysis spec, the silhouette and the
+control stimuli were all completed on 22 October, ahead of schedule. No baseline,
+feature extraction or model has been run. Next: the rater sample (issue 5) and the
+visual baselines for Gate 1 on 13 November.
 
 ## 1. Where the project stands
 
 | Area | Status |
 | --- | --- |
-| Stimuli | 480 accepted families from 20 V7 source pairs. Integrity checks pass; 10 CPU tests pass |
+| Stimuli | 480 accepted families from 20 V7 source pairs, plus the approved detached-hand silhouette. Integrity checks pass; 28 CPU tests pass |
 | Action | Left index abduction, 10.5–24.7° (median 18.3°), matches the paper |
 | Effective sample size | **20 distinct movements**: desk, seed and white balance are nuisance variation |
 | Human target | Built: `analysis/human_target.py`; reproduces the paper's published statistics exactly ([analysis spec](analysis-spec.md) §4) |
+| Analysis spec | Frozen 22 Oct; one logged amendment (§7.2 controls) before any result |
+| Control stimuli | Six controls for all 20 sources, approved 22 Oct ([controls](controls.md)) |
+| Rater validation | Not started (issue 5) |
 | Visual baselines | Not run on the index dataset |
 | Model | Not started |
 
@@ -125,8 +132,8 @@ pixels but scatters the arm; `occluded_wrist` is exploratory. Visually approved 
 | Week | Dates | Work | Deliverable |
 | --- | --- | --- | --- |
 | W0 | 22–23 Oct | Freeze cohort; human target module; draft analysis spec | Done 22 Oct |
-| W1 | 26–30 Oct | Fix issues 7–8 (analysis spec already frozen 22 Oct) | Frozen `docs/analysis-spec.md` and `config/analysis.json` |
-| W2 | 2–6 Nov | Control stimuli built and approved early (22 Oct); matte-deviation count done; prepare rater sample including both detached-hand versions | Rater sheet |
+| W1 | 26–30 Oct | Issues 6–8 and spec freeze, all done 22 Oct; start the rater sample | Done 22 Oct: frozen `docs/analysis-spec.md` and `config/analysis.json` |
+| W2 | 2–6 Nov | Prepare rater sample including both detached-hand versions (controls already built and approved 22 Oct) | Rater sheet |
 | W3 | 9–13 Nov | Extract features; movement-signal and grouped decoding analyses; ratings collected | Baseline table and figure. **Gate 1, 13 Nov** |
 | W4 | 16–20 Nov | Trial simulator; feedforward LIF and non-spiking twin; rate and probe diagnostics | Working models with stable activity |
 | W5 | 23–27 Nov | H0/H1/H2; calibrate on full body + detached hand, predict upper limb; recurrent variant | First held-out predictions |
