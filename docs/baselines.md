@@ -80,7 +80,10 @@ For representation R, condition c and family i with frames A (static) and B (mov
 - **Movement signal:** `m = d / σ_c`, computed per condition. A value of 0.1 means the finger
   movement moves the representation by a tenth of the typical difference between two people
   photographed in the same scene. For `lowlevel`, whose four statistics have different units,
-  each statistic is divided by its own between-source SD before the Euclidean distance.
+  each statistic is divided by its own between-source SD before the Euclidean distance. A
+  statistic with no between-source spread is left out of that distance; this happens only for
+  visible area in the full-body view (1 in every image), and the code refuses to proceed if
+  such a statistic changed between the frames.
 - **Sensitivity measures:** raw distance `d` (embeddings share units across conditions) and
   cosine distance `1 − cos(R(A), R(B))`; not defined for `lowlevel`.
 
@@ -119,6 +122,14 @@ whose movement frame scores higher than its static frame (chance 0.5); single-im
 is also reported. Each decoder is tested on every display of the held-out source, which gives
 the full transfer matrix; the declared transfer is **trained on full body, tested on each
 display**. Mean over held-out sources, source-bootstrap interval.
+
+**Transfer gain (exploratory; added after the smoke test).** For each fold, the mean
+static → movement shift of the decoder's score on a held-out display, divided by the mean
+shift on the training display and sources: 1 means the movement moves the representation
+along the learned full-body axis as much as in full-body training, 0 means not at all. It is
+summarised per display and passed through the same contrasts as the movement signal. It was
+added because paired accuracy reached 1.00 for every encoder in the smoke test, so accuracy
+cannot show differences between displays.
 
 **Attachment (exploratory).** Can a linear readout of a frozen encoder tell a connected from a
 disconnected display when low-level properties are matched? Three tasks, same pipeline, both
@@ -185,4 +196,8 @@ Pending: no feature has been extracted at the time of writing.
 
 | Date | Change | Reason |
 | --- | --- | --- |
-| 23 Oct 2026 | Method written and committed before any feature extraction | — |
+| 23 Oct 2026 | Method written and committed before any feature extraction (commit `9d65ecc`) | — |
+| 23 Oct 2026 | Smoke test: one appearance variant (20 families) through the whole pipeline | Check the code on real data before the full extraction |
+| 23 Oct 2026, after the smoke test | Statistics without between-source spread left out of the low-level distance (§4) | Full-body visible area is 1 in every image; the declared formula divided 0 by 0 |
+| 23 Oct 2026, after the smoke test | Transfer gain added (§6), labelled exploratory | Paired accuracy saturated at 1.00 for all encoders, so the declared metric cannot separate displays |
+| 23 Oct 2026, after the smoke test | Figure layout corrected; no change to any computation besides the two rows above | Overlapping labels |

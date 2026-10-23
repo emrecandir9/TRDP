@@ -90,14 +90,25 @@ def spread(static, variant, per_dimension=False):
     return np.sqrt(mean / 2) if per_dimension else float(np.sqrt(mean.sum() / 2))
 
 
+def scaled_change(a, b, variant, per_dimension):
+    """(b - a) divided by the between-source spread. A statistic without between-source spread
+    (visible area in the full-body view, 1 in every image) is left out; it must then also be
+    constant between the frames, otherwise the signal is undefined and this raises."""
+    scale = spread(a, variant, per_dimension)
+    if not per_dimension:
+        return (b - a) / scale
+    flat = scale == 0
+    require(not np.any((b - a)[:, flat]), 'A statistic without between-source spread changes with the movement')
+    return np.divide(b - a, scale, out=np.zeros_like(b - a), where=~flat)
+
+
 def movement_signal(x, variant, per_dimension=False, measure='normalised'):
     """Per family and condition: static -> movement distance. x: [family, condition, frame, dim]."""
     a, b = x[:, :, 0], x[:, :, 1]
     out = np.empty(a.shape[:2])
     for c in range(a.shape[1]):
         if measure == 'normalised':
-            scale = spread(a[:, c], variant, per_dimension)
-            out[:, c] = np.linalg.norm((b[:, c] - a[:, c]) / scale, axis=1)
+            out[:, c] = np.linalg.norm(scaled_change(a[:, c], b[:, c], variant, per_dimension), axis=1)
         elif measure == 'raw':
             out[:, c] = np.linalg.norm(b[:, c] - a[:, c], axis=1)
         elif measure == 'cosine':
@@ -240,11 +251,15 @@ def movement_decoding_fold(x, source, held_out, train_condition):
     xt = np.concatenate([x[train, c, 0], x[train, c, 1]])
     y = np.r_[np.zeros(train.sum()), np.ones(train.sum())]
     model = fit_fold(xt, y, np.r_[source[train], source[train]])
+    # Transfer gain (added after the smoke test, see docs/baselines.md change log): the mean
+    # static -> movement shift along the learned axis on a held-out display, relative to the
+    # shift on the training display and sources. Unlike accuracy it does not saturate.
+    reference = np.mean(model.decision_function(x[train, c, 1]) - model.decision_function(x[train, c, 0]))
     out = []
     for j, condition in enumerate(fx.CONDITIONS):
         a, b = model.decision_function(x[test, j, 0]), model.decision_function(x[test, j, 1])
         out.append(dict(source=int(held_out), train=train_condition, test=condition, paired=paired_accuracy(b, a),
-                        single=float(((a < 0).mean() + (b > 0).mean()) / 2),
+                        single=float(((a < 0).mean() + (b > 0).mean()) / 2), gain=float(np.mean(b - a) / reference),
                         C=float(model.best_params_['logisticregression__C'])))
     return out
 
@@ -293,13 +308,25 @@ def summarise_folds(folds, keys, value='paired'):
     return pd.DataFrame(rows)
 
 
+def gain_table(folds):
+    """Transfer gain of the full-body decoder per display, and the spec §4.3 contrast on it."""
+    rows = []
+    fb = folds[folds.train == 'full_body']
+    for name, group in fb.groupby('representation', sort=False):
+        cells = group.pivot(index='source', columns='test', values='gain')[list(fx.CONDITIONS)].to_numpy()
+        boot = bootstrap_index(len(cells))
+        for r in summarise_signal(cells, boot):
+            if r['kind'] == 'contrast':
+                rows.append(dict(representation=name, **r))
+    return pd.DataFrame(rows)
+
+
 # ---------- latent-space geometry ----------
 
 def directions(x, variant, per_dimension):
     """Unit static -> movement vectors [family, condition, dim]."""
-    d = x[:, :, 1] - x[:, :, 0]
-    if per_dimension:
-        d = d / np.stack([spread(x[:, c, 0], variant, True) for c in range(x.shape[1])], 1)
+    d = np.stack([scaled_change(x[:, c, 0], x[:, c, 1], variant, True) for c in range(x.shape[1])], 1) \
+        if per_dimension else x[:, :, 1] - x[:, :, 0]
     return d / np.linalg.norm(d, axis=-1, keepdims=True)
 
 
@@ -439,6 +466,7 @@ def run(directory=FEATURES, output=OUTPUT, figures=FIGURES, jobs=-1, decode=True
         movement, attachment = decoding_tables(data, primary, jobs=jobs)
         tables['decoding_folds'], tables['attachment_folds'] = movement, attachment
         tables['decoding'] = summarise_folds(movement, ('representation', 'train', 'test'))
+        tables['transfer_gain'] = gain_table(movement)
         tables['attachment'] = summarise_folds(attachment, ('representation', 'train', 'test'))
     for name, frame in tables.items():
         frame.to_csv(output / f'{name}.csv', index=False)

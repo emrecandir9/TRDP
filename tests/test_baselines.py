@@ -44,6 +44,16 @@ class Signal(unittest.TestCase):
         cosine = b.movement_signal(x + 50, variant, measure='cosine')
         self.assertTrue((cosine >= 0).all() and (cosine < .01).all())
 
+    def test_statistic_without_spread_is_left_out(self):
+        x, _, variant = synthetic()
+        x[:, :, :, 0] = 1                      # like visible area in the full-body view
+        one = b.movement_signal(x, variant, per_dimension=True)
+        self.assertTrue(np.isfinite(one).all())
+        x[0, 0, 1, 0] = 2                      # ...but if it changed between frames, refuse
+        with self.assertRaises(ValueError):
+            b.movement_signal(x, variant, per_dimension=True)
+        self.assertTrue(np.isfinite(b.directions(x[1:], variant[1:], True)).all())
+
     def test_contrasts_and_intervals(self):
         cells = np.ones((20, CONDITIONS))
         cells[:, fx.CONDITIONS.index('full_body')] = 3
@@ -96,6 +106,7 @@ class Decoding(unittest.TestCase):
         self.assertNotIn(3, seen[0])
         self.assertEqual(len(rows), CONDITIONS)
         self.assertGreater(min(r['paired'] for r in rows), .95)   # the same movement vector in every condition
+        self.assertTrue(all(abs(r['gain'] - 1) < .2 for r in rows))
 
     def test_no_movement_is_chance(self):
         x, source, _ = synthetic(movement=0.)

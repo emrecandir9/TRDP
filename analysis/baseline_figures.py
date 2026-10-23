@@ -20,6 +20,7 @@ import features as fx  # noqa: E402
 SURFACE, INK, MUTED, GRID = '#fcfcfb', '#0b0b0b', '#52514e', '#e4e3df'
 ROLE = dict(connected=('#2a78d6', 'o'), disconnected=('#eb6834', 's'), other=('#1baf7a', 'D'))
 RAMP = LinearSegmentedColormap.from_list('blue', ['#cde2fb', '#86b6ef', '#3987e5', '#256abf', '#184f95', '#0d366b'])
+CHANGE = LinearSegmentedColormap.from_list('change', [SURFACE, '#86b6ef', '#2a78d6', '#0d366b'])
 HUMAN_BAND = '#f0efec'
 plt.rcParams.update({'figure.facecolor': SURFACE, 'axes.facecolor': SURFACE, 'savefig.facecolor': SURFACE,
                      'axes.edgecolor': GRID, 'axes.labelcolor': INK, 'text.color': INK, 'xtick.color': MUTED,
@@ -58,22 +59,26 @@ def dots(ax, labels, mean, low, high, colors, markers, horizontal=False):
 
 
 def inputs(data, path):
-    """One family (reference 1) at encoder resolution: static frame and |movement - static|."""
+    """One family (reference 1): static frame at encoder resolution, and the luminance change
+    between frames at full resolution, cropped to the hand box (the whole image for hand only)."""
     family = next(f for f in data.families if f['reference'] == 1)
     images = fx.Renderer().render(family)
-    fig, axes = plt.subplots(2, len(fx.CONDITIONS), figsize=(16, 3.4))
+    x, y, right, bottom = family['source']['used_hand_box']
+    fig, axes = plt.subplots(2, len(fx.CONDITIONS), figsize=(16, 3.6))
     for k, condition in enumerate(fx.CONDITIONS):
-        a, m = (fx.resized(image, 224) for image in images[condition])
-        axes[0, k].imshow(a)
+        a, m = images[condition]
+        axes[0, k].imshow(fx.resized(a, 224))
         change = np.abs(fx.luminance(m) - fx.luminance(a))
-        axes[1, k].imshow(change, cmap=RAMP, vmin=0, vmax=max(change.max(), 1e-6))
+        if condition != 'hand_only':
+            change = change[y:bottom, x:right]
+        axes[1, k].imshow(change, cmap=CHANGE, vmin=0, vmax=max(change.max(), 1e-6))
         axes[0, k].set_title(b.SHORT[condition], fontsize=8, loc='center')
         for ax in axes[:, k]:
             ax.set_xticks([]), ax.set_yticks([]), ax.grid(False)
             for spine in ax.spines.values():
                 spine.set_visible(False)
     axes[0, 0].set_ylabel('static, 224 px', fontsize=8)
-    axes[1, 0].set_ylabel('|movement - static|', fontsize=8)
+    axes[1, 0].set_ylabel('|change|, hand box', fontsize=8)
     fig.suptitle('What the encoders see (reference 1, beech desk, seed 9, neutral balance)', x=.01, ha='left',
                  fontweight='bold')
     fig.savefig(path)
@@ -112,7 +117,8 @@ def gate(table, path):
             human = b.HUMAN[statistic]
             ax.axvspan(human[1], human[2], color=HUMAN_BAND, zorder=0)
             ax.axvline(human[0], color=MUTED, lw=1, ls='--', zorder=1)
-            ax.text(human[0], -.9, 'human 95% interval', color=MUTED, fontsize=7.5, ha='center')
+            ax.text((human[1] + human[2]) / 2, .99, 'human\n95% CI', color=MUTED, fontsize=7, ha='center',
+                    va='top', transform=ax.get_xaxis_transform())
         else:
             ax.axvline(0, color=MUTED, lw=1, zorder=1)
         dots(ax, [b.LABEL[n] for n in names], g.estimate, g.ci_low, g.ci_high, colors, markers, horizontal=True)
@@ -143,13 +149,14 @@ def heatmap(ax, values, rows, columns, vmin, vmax, fmt='{:.2f}'):
 def decoding(table, path, representations=b.PRIMARY):
     within = table[table.train == table.test]
     transfer = table[table.train == 'full_body']
-    fig, axes = plt.subplots(1, 2, figsize=(14, 3.2))
+    fig, axes = plt.subplots(1, 2, figsize=(14, 3.2), sharey=True)
     for ax, t, title in ((axes[0], within, 'Trained and tested on the same display'),
                          (axes[1], transfer, 'Trained on full body, tested on each display')):
         values = np.array([[t[(t.representation == r) & (t.test == c)]['mean'].iloc[0] for c in fx.CONDITIONS]
                            for r in representations])
         image = heatmap(ax, values, [b.LABEL[r] for r in representations], [b.SHORT[c] for c in fx.CONDITIONS], .5, 1)
         ax.set_title(title)
+    axes[1].tick_params(labelleft=False)
     fig.colorbar(image, ax=axes, shrink=.8, label='paired accuracy (chance 0.5)')
     fig.suptitle('Static vs movement: linear decoding, leave one source out (mean over 20 held-out sources)',
                  x=.01, ha='left', fontweight='bold', y=1.05)
@@ -176,7 +183,7 @@ def attachment(table, path, representations=b.PRIMARY):
         ax.set_xlabel('paired accuracy')
     handles = [plt.Line2D([], [], color=ROLE['connected'][0], marker='o', ls='', label='within task'),
                plt.Line2D([], [], color=ROLE['disconnected'][0], marker='s', ls='', label='transfer to another task')]
-    axes[-1].legend(handles=handles, loc='lower right')
+    fig.legend(handles=handles, loc='lower center', ncol=2, bbox_to_anchor=(.5, -.08))
     fig.suptitle('Connected vs disconnected displays: linear decoding of attachment, leave one source out',
                  x=.01, ha='left', fontweight='bold', y=1.04)
     fig.savefig(path)
@@ -184,20 +191,21 @@ def attachment(table, path, representations=b.PRIMARY):
 
 
 def rsa(table, matrices, conditions, path, shown=('pixels64', 'dinov2_cls', 'openclip')):
-    fig, axes = plt.subplots(1, len(shown) + 2, figsize=(4 * (len(shown) + 2), 3.6),
-                             gridspec_kw=dict(width_ratios=[1] * (len(shown) + 1) + [1.2]))
+    fig = plt.figure(figsize=(4 * (len(shown) + 1), 7.6))
+    grid = fig.add_gridspec(2, len(shown) + 1, height_ratios=[1, .75], hspace=.55, wspace=.35)
     labels = [b.SHORT[c] for c in conditions]
     attached = np.array([c in b.CONNECTED for c in conditions], float)
     model = (attached[:, None] != attached[None]).astype(float)
-    for ax, (name, m) in zip(axes, [(n, matrices[n]) for n in shown] + [('attachment model', model)]):
+    for k, (name, m) in enumerate([(n, matrices[n]) for n in shown] + [('attachment model', model)]):
+        ax = fig.add_subplot(grid[0, k])
         heatmap(ax, m / np.nanmax(m), labels, labels, 0, 1, fmt='')
         ax.set_title(b.LABEL.get(name, 'Attachment model RDM'))
         ax.tick_params(labelsize=7)
-    ax = axes[-1]
+    ax = fig.add_subplot(grid[1, 1:len(shown)])
     t = table.set_index(['representation', 'measure'])
     names = list(dict.fromkeys(table.representation))
-    for k, (measure, color, marker, shift) in enumerate((('spearman', ROLE['connected'][0], 'o', -.15),
-                                                          ('partial', ROLE['disconnected'][0], 's', .15))):
+    for measure, color, marker, shift in (('spearman', ROLE['connected'][0], 'o', -.15),
+                                          ('partial', ROLE['disconnected'][0], 's', .15)):
         for i, n in enumerate(names):
             row = t.loc[(n, measure)]
             ax.plot([row.ci_low, row.ci_high], [i + shift] * 2, color=color, lw=2)
@@ -207,15 +215,16 @@ def rsa(table, matrices, conditions, path, shown=('pixels64', 'dinov2_cls', 'ope
     ax.axvline(0, color=MUTED, lw=1)
     ax.set_yticks(range(len(names)), [b.LABEL[n] for n in names])
     ax.invert_yaxis()
-    ax.set_title('Correlation with attachment RDM')
-    ax.legend(loc='lower right', fontsize=7)
+    ax.set_xlabel('rank correlation with the attachment RDM (mean over sources, 95% interval)')
+    ax.set_title('Does the geometry separate connected from disconnected displays?')
+    ax.legend(loc='upper left', bbox_to_anchor=(1.01, 1))
     fig.suptitle('Representational geometry of the static displays (RDMs scaled to their maximum; mean over sources)',
-                 x=.01, ha='left', fontweight='bold', y=1.04)
+                 x=.01, ha='left', fontweight='bold', y=.98)
     fig.savefig(path)
     plt.close(fig)
 
 
-def patch_maps(maps, path):
+def patch_maps(maps, path, families):
     shown = [c for c in fx.CONDITIONS if c != 'hand_only']
     fig, axes = plt.subplots(2, 5, figsize=(12, 5.2))
     vmax = np.quantile(maps[[fx.CONDITIONS.index(c) for c in shown]], .995)
@@ -224,7 +233,7 @@ def patch_maps(maps, path):
         ax.set_title(b.SHORT[condition], loc='center')
         ax.set_xticks([]), ax.set_yticks([]), ax.grid(False)
     fig.colorbar(image, ax=axes, shrink=.7, label='mean |patch token change| (DINOv2, 16 x 16 patches)')
-    fig.suptitle('Where the representation changes when the index finger moves (mean over 480 families)',
+    fig.suptitle(f'Where the representation changes when the index finger moves (mean over {families} families)',
                  x=.01, ha='left', fontweight='bold')
     fig.savefig(path)
     plt.close(fig)
@@ -241,10 +250,29 @@ def alignment(table, path, representations=b.PRIMARY):
             ax.axhline(0, color=MUTED, lw=1)
             if k == 0:
                 ax.set_title(b.LABEL[r])
+                ax.tick_params(labelbottom=False)
         axes[k, 0].set_ylabel(ylabel)
     legend(axes[0, -1], loc='lower left')
     fig.suptitle('Direction of the movement in latent space: shared with full body? shared across sources?',
                  x=.01, ha='left', fontweight='bold', y=1.01)
+    fig.savefig(path)
+    plt.close(fig)
+
+
+def transfer_gain(table, path, representations=b.PRIMARY):
+    fig, axes = plt.subplots(1, len(representations), figsize=(3.3 * len(representations), 3.6))
+    for ax, name in zip(axes, representations):
+        g = table[table.representation == name].set_index('statistic')
+        rows = [g.loc[f'delta_{b.SHORT[c]}'] for c in fx.CONDITIONS]
+        ax.axhline(1, color=MUTED, lw=1, ls='--')
+        ax.axhline(0, color=MUTED, lw=1)
+        dots(ax, [b.SHORT[c] for c in fx.CONDITIONS], [r.estimate for r in rows], [r.ci_low for r in rows],
+             [r.ci_high for r in rows], [ROLE[role(c)][0] for c in fx.CONDITIONS], [ROLE[role(c)][1] for c in fx.CONDITIONS])
+        ax.set_title(b.LABEL[name])
+    axes[0].set_ylabel('shift along the full-body movement axis\n(1 = as in full-body training)')
+    legend(axes[-1], loc='upper right')
+    fig.suptitle('Transfer gain of the full-body movement decoder (exploratory, added after the smoke test)',
+                 x=.01, ha='left', fontweight='bold', y=1.03)
     fig.savefig(path)
     plt.close(fig)
 
@@ -259,7 +287,8 @@ def all_figures(tables, matrices, rsa_conditions, maps, data, directory, represe
     shown = tuple(r for r in ('pixels64', 'dinov2_cls', 'openclip') if r in representations)
     rsa(tables['rsa'], matrices, rsa_conditions, directory / 'baselines-rsa.png', shown)
     if maps is not None:
-        patch_maps(maps, directory / 'baselines-patch-maps.png')
+        patch_maps(maps, directory / 'baselines-patch-maps.png', len(data.families))
     if 'decoding' in tables:
         decoding(tables['decoding'], directory / 'baselines-decoding.png', representations)
         attachment(tables['attachment'], directory / 'baselines-attachment.png', representations)
+        transfer_gain(tables['transfer_gain'], directory / 'baselines-transfer-gain.png', representations)
