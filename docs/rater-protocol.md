@@ -4,7 +4,9 @@
 [`tests/test_raters.py`](../tests/test_raters.py). Outputs: `output/raters/` (local). Addresses
 issue 5 of the [next-phase plan](next-phase-plan.md) §3.
 
-**Status.** Prepared on 24 October 2026, **before any rating exists**. The sample, the
+**Status: not run.** On 24 October 2026 the project owner decided to skip the rater validation,
+because recruiting naive raters was not feasible. The package below is complete and can still be
+used unchanged if raters become available. Prepared on 24 October 2026, **before any rating exists**. The sample, the
 presentation orders, the instructions and the analysis below are fixed now. Any change before
 the first session is listed in the change log at the end, with its reason; nothing changes after
 the first session. **This document is for the experimenter: do not show it to the raters.**
@@ -335,3 +337,4 @@ key (with the recorded NumPy and Pillow versions); a test checks this against th
 | 24 Oct 2026 | Protocol, sample, packet and analysis prepared |
 | 24 Oct 2026 | Form and instructions in English only; French version removed | Project owner's decision; raters will be given the English form |
 | 24 Oct 2026 | Form tells the user when it is opened in a preview that cannot load the pictures; procedure says to open it from its folder | The form was opened in a preview, where no picture loads |
+| 24 Oct 2026 | Validation not run | Project owner's decision: naive raters could not be recruited; single unblinded review stays a limitation |

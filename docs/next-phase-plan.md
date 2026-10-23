@@ -8,7 +8,8 @@ free for writing the report.
 control stimuli were completed on 22 October; **Gate 1 (visual baselines) was completed on
 23 October, three weeks early: no baseline reproduces `C_FDI`, and every one shows the
 reverse pattern**, so H2 has a clean target ([baselines](baselines.md)). No model has been
-run. Next: the rater sample (issue 5) and the trial simulator and spiking model (W4).
+run. The rater validation (issue 5) is prepared but not run: the project owner decided on 24 Oct
+to skip it. Next: the trial simulator (built 24 Oct) and the spiking model (W4).
 GPU work runs on the CREMI lab PC `daniel` (RTX 4000 Ada, 20 GB).
 
 ## 1. Where the project stands
@@ -21,7 +22,7 @@ GPU work runs on the CREMI lab PC `daniel` (RTX 4000 Ada, 20 GB).
 | Human target | Built: `analysis/human_target.py`; reproduces the paper's published statistics exactly ([analysis spec](analysis-spec.md) §4) |
 | Analysis spec | Frozen 22 Oct; one logged amendment (§7.2 controls) before any result |
 | Control stimuli | Six controls for all 20 sources, approved 22 Oct ([controls](controls.md)) |
-| Rater validation | Not started (issue 5) |
+| Rater validation | Package prepared 24 Oct ([protocol](rater-protocol.md)); **not run**, by the project owner's decision (24 Oct): recruiting naive raters was not feasible. Single unblinded review remains a stated limitation |
 | Visual baselines | Done 23 Oct ([baselines](baselines.md)): method fixed before extraction; 10,560 images; every baseline shows the reverse pattern (largest movement signal for the detached hand), 0/20 sources positive; Gate 1 passed |
 | Model | Not started |
 
@@ -89,7 +90,7 @@ Baselines must show this explicitly.
 | 2 | Only 20 independent movements | Leave-one-source-out (20 folds) for every evaluation; never split a source's 24 variants or six conditions. Report per-source results | All weeks |
 | 3 | Area, luminance and edge confounds between contexts | Control stimuli (§4.2) and low-level baselines; a continuity claim must survive them | W2–W3 |
 | 4 | Detached hand is a desk rectangle with a cut wrist, not an isolated hand | Done 22 Oct: skin-only silhouette cut at the wrist is the primary condition; rectangle kept as sensitivity ([method](detached-hand-silhouette.md)). Visually approved 22 Oct ([record](silhouette-approval.json)) | W1 |
-| 5 | One unblinded reviewer accepted all images | Two naive raters score a fixed sample (20 sources × 4 contexts × 2 frames, both detached-hand versions) for realism and visible artifacts; report agreement | W2–W4 |
+| 5 | One unblinded reviewer accepted all images | Two naive raters score a fixed sample (20 sources × 4 contexts × 2 frames, both detached-hand versions) for realism and visible artifacts; report agreement. **Decision 24 Oct (project owner): not run**; the package stays available, and the report states that one unblinded reviewer accepted all images | — |
 | 6 | Archive was produced with the earlier mask; desk generation changed some hand pixels | Done 22 Oct: 144/480 families (all variants of references 10, 11, 12, 16, 18, 20), at most 645 pixels = 0.65% of the visible hand, largest difference 6/255, identical in both frames; located at the outer palm edge near the wrist. **Decision 22 Oct: keep all 480 families, no exclusion** (see validation) | W1 |
 | 7 | No sex metadata per source (the paper sex-matched bodies) | Done 22 Oct: `data/source_metadata.json` records the reference sex labels (10 female, 10 male) from the generation configuration; V7 images were generated sex-neutral; you confirmed on 22 Oct that all 20 look like their label, recorded as `apparent_sex` | W1 |
 | 8 | `dataset.py review` accepts `assistant` as reviewer | Done 22 Oct: only `reviewer: human_user` decisions are recorded; test added | W1 |
@@ -139,8 +140,8 @@ single-image accuracy and an exploratory transfer gain are reported instead.*
 | --- | --- | --- | --- |
 | W0 | 22–23 Oct | Freeze cohort; human target module; draft analysis spec | Done 22 Oct |
 | W1 | 26–30 Oct | Issues 6–8 and spec freeze, all done 22 Oct; start the rater sample | Done 22 Oct: frozen `docs/analysis-spec.md` and `config/analysis.json` |
-| W2 | 2–6 Nov | Prepare rater sample including both detached-hand versions (controls already built and approved 22 Oct) | Rater sheet |
-| W3 | 9–13 Nov | Ratings collected (features, baselines and Gate 1 done 23 Oct) | Rater agreement. **Gate 1 passed 23 Oct** |
+| W2 | 2–6 Nov | Rater package prepared 24 Oct, not run (owner's decision); controls built and approved 22 Oct | — |
+| W3 | 9–13 Nov | Free (features, baselines and Gate 1 done 23 Oct; ratings not collected) | **Gate 1 passed 23 Oct** |
 | W4 | 16–20 Nov | Trial simulator; feedforward LIF and non-spiking twin; rate and probe diagnostics | Working models with stable activity |
 | W5 | 23–27 Nov | H0/H1/H2; calibrate on full body + detached hand, predict upper limb; recurrent variant | First held-out predictions |
 | W6 | 30 Nov–4 Dec | Predictions for all controls; probe-strength sweep | Control predictions. **Gate 2, 4 Dec** |

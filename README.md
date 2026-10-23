@@ -210,8 +210,7 @@ Done on 23 October:
 
 Next:
 
-1. Rater validation of a fixed image sample by two naive raters.
-2. Build and test the temporal motor-response model; Gate 2 on 4 December, single held-out
+1. Build and test the temporal motor-response model; Gate 2 on 4 December, single held-out
    evaluation 14–18 December. Every analysis is repeated without reference 17 (456 families).
    A fresh CUDA canary is deferred.
 

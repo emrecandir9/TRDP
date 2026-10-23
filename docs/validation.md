@@ -154,6 +154,12 @@ checks are advisory. A regression test rejects an assistant review file.
 
 ## Remaining limits
 
+**Single unblinded review.** All 480 families were accepted by one reviewer (the project owner),
+who knew the hypothesis and which frame was edited. An independent two-rater check was prepared
+([protocol](rater-protocol.md)) but not run, by the owner's decision of 24 October 2026; in
+particular, no independent check shows that movement frames carry no more visible flaws than
+static frames.
+
 No fresh CUDA inference or actual model download was run during this cleanup. No new
 human review of every downloaded image is implied. The accepted reference-17 clothing
 issue remains flagged. A future corrected-mask run requires new canary and full-batch
