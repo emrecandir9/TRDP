@@ -387,41 +387,74 @@ def recheck(path, device='cpu'):
     return report
 
 
+def run_name(hypothesis, representation, spiking, held_out, seed):
+    tag = '' if hypothesis == 'h2' else f'{hypothesis}_'
+    return f"health_{tag}{representation}_{'snn' if spiking else 'rate'}_fold{held_out}_seed{seed}"
+
+
+def prepare(representation='openclip', held_out=1, inner=2, seed=0, spiking=True, hypothesis='h2', bank=None):
+    """Everything one run needs before training (§6.5, §6.6): training and inner-source inputs, with
+    preprocessing and H1's mean salience from training sources only, and the initial network."""
+    bank = bank or bk.Bank(representation)
+    sources = families_by_source(bank)
+    trials.require(held_out != inner and held_out in sources and inner in sources, 'Invalid fold')
+    train_families = [f for s, fam in sources.items() if s not in (held_out, inner) for f in fam]
+    static, movement, gain, scaler, mean_salience = hypothesis_inputs(bank, hypothesis, train_families, train_families)
+    inner_static, inner_movement, inner_gain, _, _ = hypothesis_inputs(bank, hypothesis, None, sources[inner],
+                                                                       scaler, mean_salience)
+    return dict(name=run_name(hypothesis, representation, spiking, held_out, seed),
+                meta=dict(representation=representation, hypothesis=hypothesis, spiking=spiking,
+                          held_out_source_not_used=held_out, inner_source=inner, seed=seed),
+                net=nw.Network(static.shape[1], spiking=spiking, seed=seed), static=static, movement=movement, gain=gain,
+                inner=(inner_static, inner_movement, inner_gain), scaler=scaler, mean_salience=mean_salience,
+                activity=activity_sample(bank, hypothesis, sources, held_out, inner, scaler, mean_salience))
+
+
+def finish(run, readout, history, seconds, output=OUTPUT, device='cpu', updates=None, extra=None):
+    """Health measures of a trained run, then its network and report (report last, atomically)."""
+    net = run['net'].to(device)
+    readout = {k: v.to(device) for k, v in readout.items()}
+    report = dict(run['meta'], updates=updates or TRAIN['updates'], device=str(device), seconds=seconds,
+                  final=history[-1], **(extra or {}))
+    inner_static, inner_movement, inner_gain = run['inner']
+    report.update(diagnose(net, readout, inner_static, inner_movement, device=device, gain=inner_gain,
+                           activity=run['activity']))
+    network = dict(state={k: v.detach().cpu() for k, v in net.state_dict().items()},
+                   readout={k: v.detach().cpu() for k, v in readout.items()}, config=net.config,
+                   scaler=[a.tolist() for a in run['scaler']], mean_salience=run['mean_salience'])
+    output.mkdir(parents=True, exist_ok=True)
+    atomic(output / f"{run['name']}.pt", lambda path: torch.save(network, path))
+    # the report is written last: its presence marks a finished run (model/campaign.py)
+    text = json.dumps(dict(report, history=history), indent=2) + '\n'
+    atomic(output / f"{run['name']}.json", lambda path: path.write_text(text))
+    return report
+
+
+def finish_trained(path, device=None):
+    """Health check and final files of a network trained in a stack (`<run>.trained.pt`)."""
+    device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
+    saved = torch.load(path, weights_only=False, map_location='cpu')
+    run = prepare(**saved['meta_args'])
+    run['net'].load_state_dict(saved['state'])
+    report = finish(run, saved['readout'], saved['history'], saved['seconds'], Path(path).parent, device,
+                    saved['updates'], saved['extra'])
+    Path(path).unlink()
+    return report
+
+
 def health(representation='openclip', held_out=1, inner=2, seed=0, device=None, updates=None, spiking=True,
            output=OUTPUT, hypothesis='h2'):
     """Gate 2 style health check on one outer fold, using training sources only (§6.5). Trains the
     network of one hypothesis (§6.6): h2 (shared by H2, the ungated network and the S3(a) model),
     h0 or h1."""
     device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
-    bank = bk.Bank(representation)
-    sources = families_by_source(bank)
-    trials.require(held_out != inner and held_out in sources and inner in sources, 'Invalid fold')
-    train_families = [f for s, fam in sources.items() if s not in (held_out, inner) for f in fam]
-    # preprocessing and H1's mean salience from training sources only
-    static, movement, gain, scaler, mean_salience = hypothesis_inputs(bank, hypothesis, train_families, train_families)
-    inner_static, inner_movement, inner_gain, _, _ = hypothesis_inputs(bank, hypothesis, None, sources[inner],
-                                                                       scaler, mean_salience)
-    net = nw.Network(static.shape[1], spiking=spiking, seed=seed)
+    run = prepare(representation, held_out, inner, seed, spiking, hypothesis)
     output.mkdir(parents=True, exist_ok=True)
-    tag = '' if hypothesis == 'h2' else f'{hypothesis}_'
-    name = f"health_{tag}{representation}_{'snn' if spiking else 'rate'}_fold{held_out}_seed{seed}"
-    partial = output / f'{name}.partial.pt'                         # resumable training state
+    partial = output / f"{run['name']}.partial.pt"                 # resumable training state
     started = time.time()
-    readout, history = train(net, static, movement, seed=seed, device=device, updates=updates, gain=gain,
-                             log=lambda h: print(json.dumps(h), flush=True), resume=partial)
-    seconds = round(time.time() - started)
-    report = dict(representation=representation, hypothesis=hypothesis, spiking=spiking, held_out_source_not_used=held_out,
-                  inner_source=inner, seed=seed, updates=updates or TRAIN['updates'], device=str(device),
-                  seconds=seconds, final=history[-1])
-    activity = activity_sample(bank, hypothesis, sources, held_out, inner, scaler, mean_salience)
-    report.update(diagnose(net, readout, inner_static, inner_movement, device=device, gain=inner_gain, activity=activity))
-    network = dict(state={k: v.detach().cpu() for k, v in net.state_dict().items()},
-                   readout={k: v.detach().cpu() for k, v in readout.items()}, config=net.config,
-                   scaler=[a.tolist() for a in scaler], mean_salience=mean_salience)
-    atomic(output / f'{name}.pt', lambda path: torch.save(network, path))
-    # the report is written last: its presence marks a finished run (model/campaign.py)
-    text = json.dumps(dict(report, history=history), indent=2) + '\n'
-    atomic(output / f'{name}.json', lambda path: path.write_text(text))
+    readout, history = train(run['net'], run['static'], run['movement'], seed=seed, device=device, updates=updates,
+                             gain=run['gain'], log=lambda h: print(json.dumps(h), flush=True), resume=partial)
+    report = finish(run, readout, history, round(time.time() - started), output, device, updates)
     partial.unlink(missing_ok=True)
     return report
 
@@ -437,8 +470,11 @@ if __name__ == '__main__':
     parser.add_argument('--hypothesis', default='h2', choices=HYPOTHESES)
     parser.add_argument('--output', type=Path, default=OUTPUT)
     parser.add_argument('--recheck', type=Path, help='Recompute the health measures of a saved network')
+    parser.add_argument('--finish', type=Path, help='Health check of a network trained in a stack (<run>.trained.pt)')
     args = parser.parse_args()
-    if args.recheck:
+    if args.finish:
+        report = finish_trained(args.finish)
+    elif args.recheck:
         report = recheck(args.recheck, device='cuda' if torch.cuda.is_available() else 'cpu')
     else:
         report = health(args.representation, args.held_out, args.inner, args.seed, updates=args.updates,

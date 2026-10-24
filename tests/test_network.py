@@ -206,6 +206,38 @@ class Training(unittest.TestCase):
 
 
 
+
+@unittest.skipIf(torch is None, 'torch and snntorch not installed')
+class Stacked(unittest.TestCase):
+    def test_stack_trains_the_same_networks_as_one_at_a_time(self):
+        """Three networks with their own seeds, data and (for one) an H1 gain, trained together,
+        end with the weights, readouts and histories that train.train gives each alone."""
+        import network as nw
+        import stack as st
+        import train as tr
+        rng = np.random.default_rng(2)
+        data = []
+        for i in range(3):
+            static = rng.normal(0, 1, (10 + i, 8)).astype(np.float32)
+            gain = (1 + rng.random(10 + i)).astype(np.float32) if i == 2 else None
+            data.append((static, static + 1, gain))
+        cfg = dict(tr.TRAIN, settle_ms=20, second_ms=40, window=(5, 40), batch=4, rest_trials=2)
+        seeds = [3, 11, 4]
+        alone = []
+        for (static, movement, gain), seed in zip(data, seeds):
+            net = nw.Network(8, small(), seed=seed)
+            readout, history = tr.train(net, static, movement, cfg=cfg, seed=seed, updates=5, gain=gain)
+            alone.append((net, readout, history))
+        nets, readouts, histories = st.train_stack([nw.Network(8, small(), seed=s) for s in seeds], data, seeds,
+                                                   cfg=cfg, updates=5)
+        for (net, readout, history), other, other_readout, other_history in zip(alone, nets, readouts, histories):
+            for a, b in zip(net.state_dict().values(), other.state_dict().values()):
+                self.assertTrue(torch.allclose(a, b, atol=1e-5), (a - b).abs().max())
+            self.assertAlmostEqual(readout['n0'].item(), other_readout['n0'].item(), places=5)
+            self.assertAlmostEqual(history[-1]['loss'], other_history[-1]['loss'], places=4)
+
+
+
 @unittest.skipIf(torch is None, 'torch and snntorch not installed')
 class Campaign(unittest.TestCase):
     def test_folds_inner_sources_and_resume(self):

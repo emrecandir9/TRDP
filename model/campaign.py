@@ -23,6 +23,7 @@ import argparse
 import json
 import subprocess
 import sys
+import threading
 import time
 from pathlib import Path
 
@@ -57,6 +58,78 @@ def span(text):
     return range(int(a), int(b or a) + 1)
 
 
+def train_stacks(args, spiking, output, logs):
+    """Stack mode (docs/model-method.md §6.13): the pending folds of one seed are trained together
+    as one stack on the GPU; each trained network's health check (`train.py --finish`) runs as a
+    separate process while the next stack trains."""
+    import torch
+    import bank as bk
+    import stack as st
+    device = 'cuda' if torch.cuda.is_available() else 'cpu'
+    bank = bk.Bank(args.representation)
+    queue, active, failed, lock, stop = [], [], [], threading.Lock(), threading.Event()
+
+    def pump():
+        while True:
+            with lock:
+                for item in list(active):
+                    process, log, name, started = item
+                    if process.poll() is not None:
+                        log.close()
+                        active.remove(item)
+                        if process.returncode:
+                            failed.append(name)
+                        print(json.dumps(dict(run=name, status='ok' if process.returncode == 0 else f'failed ({process.returncode})',
+                                              finish_minutes=round((time.time() - started) / 60, 1))), flush=True)
+                while queue and len(active) < args.finishers:
+                    path = queue.pop(0)
+                    name = path.name[:-len('.trained.pt')]
+                    log = open(logs / f'{name}.txt', 'a')
+                    active.append((subprocess.Popen([sys.executable, str(ROOT / 'model/train.py'), '--finish', str(path)],
+                                                    stdout=log, stderr=subprocess.STDOUT), log, name, time.time()))
+                idle = not queue and not active
+            if stop.is_set() and idle:
+                return
+            time.sleep(5)
+
+    queue.extend(sorted(output.glob('*.trained.pt')))               # trained before an interruption
+    worker = threading.Thread(target=pump, daemon=True)
+    worker.start()
+    for seed in args.seeds:
+        pending = [(fold, name) for fold, s, name, done in runs(args.hypothesis, args.representation, spiking, args.folds, [seed], output)
+                   if not done and not (output / f'{name}.trained.pt').is_file()]
+        for i in range(0, len(pending), args.stack):
+            group = pending[i:i + args.stack]
+            names = [name for _, name in group]
+            prepared = [tr.prepare(args.representation, fold, inner_source(fold), seed, spiking, args.hypothesis, bank)
+                        for fold, _ in group]
+            started = time.time()
+            print(json.dumps(dict(stack=names, device=device)), flush=True)
+            partial = output / f'stack_seed{seed}_{group[0][0]}-{group[-1][0]}.partial.pt'
+            nets, readouts, histories = st.train_stack(
+                [r['net'] for r in prepared], [(r['static'], r['movement'], r['gain']) for r in prepared],
+                [seed] * len(prepared), device=device, updates=args.updates, resume=partial, key=names,
+                log=lambda h: print(json.dumps(h), flush=True))
+            seconds = round(time.time() - started)
+            for run, net, readout, history in zip(prepared, nets, readouts, histories):
+                trained = dict(state=net.state_dict(), readout=readout, history=history, seconds=seconds,
+                               updates=args.updates,
+                               meta_args=dict(representation=args.representation, held_out=run['meta']['held_out_source_not_used'],
+                                              inner=run['meta']['inner_source'], seed=seed, spiking=spiking,
+                                              hypothesis=args.hypothesis),
+                               extra=dict(trainer='stack', stack_size=len(prepared), stack_seconds=seconds))
+                path = output / f"{run['name']}.trained.pt"
+                tr.atomic(path, lambda target: torch.save(trained, target))
+                (output / f"{run['name']}.partial.pt").unlink(missing_ok=True)   # a single-run checkpoint, superseded
+                with lock:
+                    queue.append(path)
+            partial.unlink(missing_ok=True)
+            print(json.dumps(dict(stack_done=names, minutes=round(seconds / 60, 1))), flush=True)
+    stop.set()
+    worker.join()
+    return failed
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     parser.add_argument('--hypothesis', default='h2', choices=tr.HYPOTHESES)
@@ -66,6 +139,8 @@ def main():
     parser.add_argument('--seeds', type=span, default=range(10), help='e.g. 0-9')
     parser.add_argument('--workers', type=int, default=1)
     parser.add_argument('--updates', type=int, help='Override the declared number of updates (smoke tests only)')
+    parser.add_argument('--stack', type=int, default=0, help='Train this many folds of a seed together (0: one process per run)')
+    parser.add_argument('--finishers', type=int, default=3, help='Parallel health checks in stack mode')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--logs', type=Path, help='Directory for per-run logs (default: <output>/logs)')
     args = parser.parse_args()
@@ -75,8 +150,10 @@ def main():
     logs.mkdir(parents=True, exist_ok=True)
     todo = [(f, s, n) for f, s, n, done in runs(args.hypothesis, args.representation, spiking, args.folds, args.seeds, output)
             if not done]
-    print(json.dumps(dict(output=str(output), runs=len(todo), workers=args.workers)), flush=True)
+    print(json.dumps(dict(output=str(output), runs=len(todo), workers=args.workers, stack=args.stack)), flush=True)
     active, failed = [], []
+    if args.stack:
+        failed, todo = train_stacks(args, spiking, output, logs), []
     while todo or active:
         while todo and len(active) < args.workers:
             fold, seed, name = todo.pop(0)
