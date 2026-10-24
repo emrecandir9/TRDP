@@ -138,6 +138,33 @@ class Training(unittest.TestCase):
         self.assertGreater(task['accuracy'], .85)
         self.assertLess(history[-1]['task'], history[0]['task'])
 
+    def test_interrupted_training_resumes_exactly(self):
+        """A run stopped after a checkpoint and resumed ends with the same weights, readout and
+        history as an uninterrupted run: the trials and noise drawn are the same."""
+        import tempfile
+        import network as nw
+        import train as tr
+        rng = np.random.default_rng(1)
+        static = rng.normal(0, 1, (12, 8)).astype(np.float32)
+        movement = static + 1
+        cfg = dict(tr.TRAIN, settle_ms=20, second_ms=40, window=(5, 40), batch=4, rest_trials=2)
+        whole = nw.Network(8, small(), seed=3)
+        readout_whole, history_whole = tr.train(whole, static, movement, cfg=cfg, seed=3, updates=6)
+        with tempfile.TemporaryDirectory() as d:
+            partial = Path(d) / 'run.partial.pt'
+            first = nw.Network(8, small(), seed=3)
+            tr.train(first, static, movement, cfg=cfg, seed=3, updates=6, resume=partial, every=3)
+            self.assertTrue(partial.is_file())                       # checkpoint written at update 3
+            state = torch.load(partial, weights_only=False)
+            self.assertEqual(state['update'], 3)
+            resumed = nw.Network(8, small(), seed=99)                 # fresh object, weights come from the file
+            readout_resumed, history_resumed = tr.train(resumed, static, movement, cfg=cfg, seed=3, updates=6,
+                                                        resume=partial, every=3)
+        for a, b in zip(whole.state_dict().values(), resumed.state_dict().values()):
+            self.assertTrue(torch.allclose(a, b, atol=1e-6))
+        self.assertAlmostEqual(readout_whole['n0'].item(), readout_resumed['n0'].item(), places=5)
+        self.assertEqual([h['update'] for h in history_whole], [h['update'] for h in history_resumed])
+
     def test_movement_cap_penalises_only_movement_rates_above_it(self):
         """Observation without execution: motor firing on movement frames above motor_max_hz is
         penalised, at or below it is not, and static frames are not touched by the cap."""

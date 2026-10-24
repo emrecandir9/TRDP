@@ -3,11 +3,21 @@
 Every network is trained by `train.health`, the health-checked code path: full-body trials of the
 fold's training sources, with one inner training source held out for the run's own health check
 (docs/model-method.md §6.5). The outer held-out source is never used. The inner source is the next
-source after the held-out one (cyclically), so every source serves once as an inner source. A run
-whose output files exist is skipped, so an interrupted campaign resumes where it stopped. Several
-workers share one GPU (training is launch-bound) or the CPUs of a machine.
+source after the held-out one (cyclically), so every source serves once as an inner source.
+
+Interruptions: a finished run (its report is written last, atomically) is skipped; a run stopped
+part-way continues from its last checkpoint (every 250 updates, `<run>.partial.pt`) with the same
+trials and noise, so rerunning the same command resumes the campaign and loses at most 250 updates
+per interrupted run. Several workers share one GPU or the CPUs of a machine.
 
     python model/campaign.py --hypothesis h2 --representation openclip --seeds 0-9 --workers 3
+
+CREMI lab PCs kill a user's processes when their last SSH session closes, so the campaign runs only
+while a session stays open. From the Mac, this reconnects and resumes after any disconnection:
+
+    caffeinate -i sh -c 'until ssh -o BatchMode=yes -o ServerAliveInterval=60 jessica \
+        "cd /net/travail/mucandy/TRDP && .venv/bin/python model/campaign.py --seeds 0-9 --workers 3"; \
+        do sleep 300; done'
 """
 import argparse
 import json

@@ -7,6 +7,7 @@ rule). MEP analogues are never a training target.
 """
 import argparse
 import json
+import os
 import sys
 import time
 from pathlib import Path
@@ -32,6 +33,14 @@ HEALTH = dict(task_auc=.9, silent_visual=.10, fast_visual=.05, fixation_motor_hz
               saturated=.9)
 OUTPUT = ROOT / 'output/model'
 HYPOTHESES = ('h2', 'h0', 'h1')   # h2: display features, gate 1 on full body (shared by H2, ungated, S3(a))
+
+
+def atomic(path, write):
+    """Write through a temporary file and rename, so an interrupted save never leaves a partial file."""
+    path = Path(path)
+    temporary = path.with_name(path.name + '.tmp')
+    write(temporary)
+    os.replace(temporary, path)
 
 
 def families_by_source(bank):
@@ -128,9 +137,13 @@ def objective(net, out_v, out_m, labels, readout, cfg=TRAIN, rest_m=None):
                       adm_gap=reg_adm.item(), accuracy=accuracy.item())
 
 
-def train(net, static, movement, cfg=TRAIN, seed=0, device='cpu', log=None, updates=None, gain=None):
+def train(net, static, movement, cfg=TRAIN, seed=0, device='cpu', log=None, updates=None, gain=None, resume=None,
+          every=250):
     """Adam on random full-body trials (half movement) of the training families; `gain` is the
-    gate on each family's movement frame (H1), 1 if None."""
+    gate on each family's movement frame (H1), 1 if None. With `resume` (a path), the whole training
+    state (weights, readout, optimiser, both random streams, history) is saved there every `every`
+    updates and training continues from it if it exists, so an interrupted run resumes where it
+    stopped and draws exactly the trials and noise an uninterrupted run would."""
     net.to(device)
     readout = dict(kappa=torch.nn.Parameter(torch.tensor(2., device=device)),
                    n0=torch.nn.Parameter(torch.tensor(1., device=device)))
@@ -139,8 +152,20 @@ def train(net, static, movement, cfg=TRAIN, seed=0, device='cpu', log=None, upda
     generator = torch.Generator(device=device).manual_seed(seed)
     static, movement = (torch.as_tensor(a, dtype=torch.float32, device=device) for a in (static, movement))
     gain = None if gain is None else torch.as_tensor(gain, dtype=torch.float32, device=device)
-    history = []
-    for update in range(updates or cfg['updates']):
+    history, first = [], 0
+    if resume is not None and Path(resume).is_file():
+        state = torch.load(resume, weights_only=False, map_location=device)
+        net.load_state_dict(state['net'])
+        for key, value in state['readout'].items():
+            readout[key].data.copy_(value)
+        opt.load_state_dict(state['optimiser'])
+        rng.bit_generator.state = state['rng']
+        generator.set_state(state['generator'])
+        history, first = state['history'], state['update']
+        if log:
+            log(dict(resumed_at=first))
+    total = updates or cfg['updates']
+    for update in range(first, total):
         pick = torch.as_tensor(rng.integers(len(static), size=cfg['batch']), device=device)
         labels = torch.as_tensor(rng.permutation(np.arange(cfg['batch']) % 2), dtype=torch.float32, device=device)
         drives = batch_drives(net, static[pick], movement[pick], labels, cfg)
@@ -156,10 +181,15 @@ def train(net, static, movement, cfg=TRAIN, seed=0, device='cpu', log=None, upda
         opt.zero_grad()
         loss.backward()
         opt.step()
-        if update % 50 == 0 or update == (updates or cfg['updates']) - 1:
+        if update % 50 == 0 or update == total - 1:
             history.append(dict(update=update, loss=loss.item(), **info))
             if log:
                 log(history[-1])
+        if resume is not None and (update + 1) % every == 0 and update + 1 < total:
+            state = dict(update=update + 1, net=net.state_dict(), readout={k: v.detach() for k, v in readout.items()},
+                         optimiser=opt.state_dict(), rng=rng.bit_generator.state, generator=generator.get_state(),
+                         history=history)
+            atomic(resume, lambda path: torch.save(state, path))
     return readout, history
 
 
@@ -343,7 +373,8 @@ def recheck(path, device='cpu'):
                                scaler, mean_salience)
     cfg = dict(TRAIN, **report.get('train_config', {}))
     report.update(diagnose(net, readout, inner_static, inner_movement, cfg, device, gain, activity))
-    Path(path).with_suffix('.json').write_text(json.dumps(report, indent=2) + '\n')
+    text = json.dumps(report, indent=2) + '\n'
+    atomic(Path(path).with_suffix('.json'), lambda target: target.write_text(text))
     return report
 
 
@@ -362,22 +393,27 @@ def health(representation='openclip', held_out=1, inner=2, seed=0, device=None, 
     inner_static, inner_movement, inner_gain, _, _ = hypothesis_inputs(bank, hypothesis, None, sources[inner],
                                                                        scaler, mean_salience)
     net = nw.Network(static.shape[1], spiking=spiking, seed=seed)
+    output.mkdir(parents=True, exist_ok=True)
+    tag = '' if hypothesis == 'h2' else f'{hypothesis}_'
+    name = f"health_{tag}{representation}_{'snn' if spiking else 'rate'}_fold{held_out}_seed{seed}"
+    partial = output / f'{name}.partial.pt'                         # resumable training state
     started = time.time()
     readout, history = train(net, static, movement, seed=seed, device=device, updates=updates, gain=gain,
-                             log=lambda h: print(json.dumps(h), flush=True))
+                             log=lambda h: print(json.dumps(h), flush=True), resume=partial)
     seconds = round(time.time() - started)
     report = dict(representation=representation, hypothesis=hypothesis, spiking=spiking, held_out_source_not_used=held_out,
                   inner_source=inner, seed=seed, updates=updates or TRAIN['updates'], device=str(device),
                   seconds=seconds, final=history[-1])
     activity = activity_sample(bank, hypothesis, sources, held_out, inner, scaler, mean_salience)
     report.update(diagnose(net, readout, inner_static, inner_movement, device=device, gain=inner_gain, activity=activity))
-    output.mkdir(parents=True, exist_ok=True)
-    tag = '' if hypothesis == 'h2' else f'{hypothesis}_'
-    name = f"health_{tag}{representation}_{'snn' if spiking else 'rate'}_fold{held_out}_seed{seed}"
-    (output / f'{name}.json').write_text(json.dumps(dict(report, history=history), indent=2) + '\n')
-    torch.save(dict(state={k: v.detach().cpu() for k, v in net.state_dict().items()},
-                    readout={k: v.detach().cpu() for k, v in readout.items()}, config=net.config,
-                    scaler=[a.tolist() for a in scaler], mean_salience=mean_salience), output / f'{name}.pt')
+    network = dict(state={k: v.detach().cpu() for k, v in net.state_dict().items()},
+                   readout={k: v.detach().cpu() for k, v in readout.items()}, config=net.config,
+                   scaler=[a.tolist() for a in scaler], mean_salience=mean_salience)
+    atomic(output / f'{name}.pt', lambda path: torch.save(network, path))
+    # the report is written last: its presence marks a finished run (model/campaign.py)
+    text = json.dumps(dict(report, history=history), indent=2) + '\n'
+    atomic(output / f'{name}.json', lambda path: path.write_text(text))
+    partial.unlink(missing_ok=True)
     return report
 
 
