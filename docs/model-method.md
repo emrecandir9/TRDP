@@ -190,6 +190,27 @@ for the primary displays, the paired rectangle sensitivity and the controls.
   Δ(DH, FDI)/Δ(FB, FDI) = −0.10 on training sources only. **The context pathway and the S3
   comparison are awaiting the project owner's decision (§7).**
 
+### 6.7 First health check (24 October 2026, training sources only)
+
+Spiking network, OpenCLIP, initialisation seed 0; outer held-out source 1 not used at all; inner
+check source 2 never trained on; 3,000 updates in 16.5 minutes on `jessica`
+(`output/model/health_openclip_snn_fold1_seed0.json`).
+
+| Criterion (§6.5) | Result |
+| --- | --- |
+| Task accuracy, inner source | 1.00 |
+| Visual activity | 18–23 Hz; 0% silent neurons |
+| Motor rest (static second frames) | 5.0 Hz |
+| ADM movement − static | ≈ 0 (held by the regulariser) |
+| Threshold | Found: 0.063 (raw 1-ms current) |
+| Dose-response, 0.5–2 × threshold | Monotone, Spearman 1.00 |
+
+Not yet checked: motor rate on the fixation display, saturation of task readouts, the non-spiking
+twin and the recurrent variant, and distinct H0–H2 control predictions (needs §7).
+**Compute:** at this speed the full design (20 folds × 10 initialisations × hypotheses × 3
+encoders × spiking and rate) would need about 1,000 GPU hours if trained one network at a time;
+networks are therefore to be trained in parallel batches on the GPU before the full runs.
+
 ## 7. Open decision: the H2 context pathway and criterion S3
 
 **Problem.** S3 requires that "the same network, training, probe and readout fed with (a)

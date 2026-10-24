@@ -24,7 +24,7 @@ GPU work runs on the CREMI lab PC `daniel` (RTX 4000 Ada, 20 GB).
 | Control stimuli | Six controls for all 20 sources, approved 22 Oct ([controls](controls.md)) |
 | Rater validation | Package prepared 24 Oct ([protocol](rater-protocol.md)); **not run**, by the project owner's decision (24 Oct): recruiting naive raters was not feasible. Single unblinded review remains a stated limitation |
 | Visual baselines | Done 23 Oct ([baselines](baselines.md)): method fixed before extraction; 10,560 images; every baseline shows the reverse pattern (largest movement signal for the detached hand), 0/20 sources positive; Gate 1 passed. 24 Oct, Addendum A: the reversal persists in hand-centred views where the hand is up to twice as large (28,800 images) |
-| Model | Trial simulator and input bank built 24 Oct ([model method](model-method.md)); encoder choice awaiting the owner's decision; network not started |
+| Model | 24 Oct ([model method](model-method.md)): trial simulator and inputs built; encoder decided (OpenCLIP primary, spec amendment); spiking network and auxiliary training built; first health check passes on training sources. Open: H2 context pathway and criterion S3 (owner's decision), parallel training |
 
 ### Reanalysis of the paper's deposited data (22 October)
 
