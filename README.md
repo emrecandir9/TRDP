@@ -208,9 +208,17 @@ Done on 23 October:
   the human pattern; every one shows the reverse (the largest movement signal for the
   detached hand). Frozen encoders show no attachment variable beyond a pixel cue.
 
+Done on 24 October:
+
+- Hand-centred views (baselines Addendum A): the reversal persists when every display is seen
+  through the same window around the hand, with the hand up to twice as large.
+- Trial simulator and model inputs ([model method](docs/model-method.md)); rater-validation
+  package prepared, not run by the owner's decision.
+
 Next:
 
-1. Build and test the temporal motor-response model; Gate 2 on 4 December, single held-out
+1. Decide the encoder ([model method](docs/model-method.md) §5), then build and test the temporal
+   motor-response model; Gate 2 on 4 December, single held-out
    evaluation 14–18 December. Every analysis is repeated without reference 17 (456 families).
    A fresh CUDA canary is deferred.
 

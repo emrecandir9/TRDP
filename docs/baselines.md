@@ -523,7 +523,65 @@ the same encoders and preprocessing, for the next project phase:
 
 ### A.5 Results
 
-Not yet run.
+Run on 24 October 2026 on the CREMI lab PC `jessica` (NVIDIA RTX 4000 Ada, same model and driver
+as `daniel`), code at commit `be4f5b2`: 28,800 images in 51 minutes, encoders pinned to the Gate 1
+revisions and weights (checked by the code). **Cross-machine check:** before the run, one Gate 1
+family (22 images) re-encoded on `jessica` gave features **bit-identical** to those computed on
+`daniel` for every representation, so the two runs are directly comparable. Noise floor ≤ 3 × 10⁻⁶
+of the feature norm. Tables: `output/handview/`; features stay on CREMI
+(`/net/travail/mucandy/TRDP/output/handview/`).
+
+**Full body = upper limb.** As the geometry predicted, the full-body and upper-limb crops are
+pixel-identical in all 480 families at s = 1.5 and s = 2, and differ in all 480 at s = 3.
+
+**Primary result (normalised signal, silhouette DH, all 20 sources):**
+
+| Representation | Whole scene (Gate 1) | s = 3 (hand 75 px) | s = 2 (112 px) | s = 1.5 (149 px) |
+| --- | --- | --- | --- | --- |
+| Low-level statistics | −0.146 [−0.198, −0.103] | −0.164 [−0.223, −0.114] | −0.146 [−0.208, −0.095] | −0.149 [−0.206, −0.100] |
+| Pixels 64 × 64 | −0.694 [−0.737, −0.648] | −1.043 [−1.093, −0.991] | −0.940 [−0.981, −0.897] | −0.850 [−0.886, −0.812] |
+| DINOv2 summary | −0.494 [−0.531, −0.458] | −0.494 [−0.536, −0.458] | −0.407 [−0.451, −0.362] | −0.374 [−0.444, −0.320] |
+| DINOv2 patch mean | −0.424 [−0.455, −0.392] | −0.443 [−0.482, −0.406] | −0.345 [−0.384, −0.308] | −0.302 [−0.381, −0.236] |
+| OpenCLIP | −0.713 [−0.757, −0.668] | −0.672 [−0.735, −0.612] | −0.501 [−0.552, −0.447] | −0.430 [−0.482, −0.380] |
+
+`C = (FB + UL)/2 − DH` [95% source-bootstrap interval]. At most 1 of 20 sources has C > 0 in any
+cell (DINOv2 patch mean at s = 1.5); all others 0 of 20.
+
+![Hand-centred views](figures/baselines-handview.png)
+
+- **By the declared rule, the reversal does not depend on the hand being small.** It holds for
+  every representation at every scale. Enlarging the hand weakens it for the encoders (OpenCLIP
+  from −0.67 at s = 3 to −0.43 at s = 1.5; DINOv2 summary from −0.49 to −0.37), mainly because the
+  full-body and upper-limb signals grow as the hand fills more of the input (OpenCLIP 0.22 → 0.34),
+  but the detached-hand signal stays two to three times larger (ratio DH / connected 2.3–4.8 at
+  s = 1.5; human −0.11 [−0.67, 0.38]).
+- **Raw distances agree.** With the silhouette DH, raw C is negative with intervals below 0 for
+  every encoder at every scale (e.g. OpenCLIP −2.02 [−2.59, −1.46] at s = 1.5).
+- **Rectangle DH.** With the normalised signal, C is reversed for every representation at every
+  scale, but smaller (e.g. OpenCLIP −0.27 [−0.30, −0.25] at s = 1.5), because the finger then moves
+  over desk in all three displays. Raw pixel distance is exactly 0 at every scale (identical pixel
+  change). The only cells of the whole addendum with C > 0 are here: **DINOv2 mean patch token at
+  s = 1.5 on the raw distance (+0.135 [0.059, 0.217]) and the cosine distance (+0.00034
+  [0.00012, 0.00060]), with and without reference 17**. In that tight window the rectangle DH is
+  the hand on a desk patch with black around it, and FB/UL are the hand on a full desk; this
+  representation registers the same finger movement slightly more on the full desk. It is one
+  representation, one DH version, one scale and not the primary measure; it does not change the
+  conclusion, but it shows that with the finger's background equalised, the context effect of an
+  encoder can take either sign.
+- **Sensitivity overall:** of 156 contrast cells (5 representations × 3 distances × 2 cohorts × 2
+  DH versions × 3 scales, low-level normalised only), 144 reverse with intervals below 0, 8 are
+  null (raw pixels with the rectangle DH, exactly 0; DINOv2 patch mean cosine with the rectangle at
+  s = 2), and the 4 above are positive. Excluding reference 17 changes no conclusion.
+
+**Conclusion.** Looking at the hand does not rescue the image-only explanation: in every view the
+images and generic encoders carry *more* movement for the detached hand than for the connected
+displays. The Gate 1 conclusion (H2 has a clean target) holds. The one exception shows where any
+context effect must come from once the finger's own background is equalised: from how a
+representation weighs the surround, which is what H2 has to model.
+
+**Black fixation display.** The same job encoded one all-black 2048-px image with the pinned
+encoders (`output/features_extra/black.npz`, SHA-256 `582d6ecd…0310`), the input of the
+fixation trials of the model sessions ([model method](model-method.md) §3).
 
 ## Change log
 
@@ -538,3 +596,4 @@ Not yet run.
 | 24 Oct 2026, after the Gate 1 results | Addendum A (hand-centred views, s = 2 and 4) written and committed before its feature extraction; exploratory | The Gate 1 encoders saw the whole scene at 224 px, so the hand was small, while observers look at the hand |
 | 24 Oct 2026, before the Addendum A commit | Code test of `analysis/handview.py` on one appearance variant (20 families) with a placeholder CPU encoder. It also computed the real low-level and pixel signals of those 20 families, which were seen; the Addendum A method text had been written before and was not changed afterwards | Check the extraction, analysis and figure code before the GPU run |
 | 24 Oct 2026, after the Addendum A commit, before any hand-centred feature was extracted | Scales changed from {2, 4} to {1.5, 2, 3} | At s = 4 the window is larger than the image, so the hand is smaller than in Gate 1 and the scale cannot test the caveat; the new scales enlarge the hand in steps (149, 112, 75 px against 66–71) and s = 3 is the first to include the upper-limb cut. No GPU feature existed when this was changed |
+| 24 Oct 2026 | Addendum A run on `jessica` (daniel offline) after a bit-identical cross-machine check; results in A.5 | — |

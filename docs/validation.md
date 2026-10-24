@@ -152,6 +152,15 @@ checks are advisory. A regression test rejects an assistant review file.
 | Encoders | DINOv2 and OpenCLIP at pinned revisions, float32 with TF32 off; noise floor ≤ 1.2 × 10⁻⁵ of the feature norm, at least 700 times below the smallest movement |
 | Tests | 44 CPU tests, including 16 for the baselines (statistics, leakage-free decoding, rendering) |
 
+## Hand-centred baseline on a second GPU — 24 October 2026
+
+| Check | Result |
+| --- | --- |
+| Cross-machine reproduction | One Gate 1 family (22 images) re-encoded on `jessica`: features bit-identical to those computed on `daniel`, identical pixel hashes, same pinned revisions and weights |
+| Addendum A run | 28,800 hand-centred images; encoders checked against the Gate 1 revisions and weight hash; noise floor ≤ 3 × 10⁻⁶ |
+| Geometry | Full-body and upper-limb crops pixel-identical in all 480 families at s = 1.5 and 2, different in all 480 at s = 3, as predicted |
+| Tests | 87 CPU tests pass |
+
 ## Remaining limits
 
 **Single unblinded review.** All 480 families were accepted by one reviewer (the project owner),

@@ -23,8 +23,8 @@ GPU work runs on the CREMI lab PC `daniel` (RTX 4000 Ada, 20 GB).
 | Analysis spec | Frozen 22 Oct; one logged amendment (§7.2 controls) before any result |
 | Control stimuli | Six controls for all 20 sources, approved 22 Oct ([controls](controls.md)) |
 | Rater validation | Package prepared 24 Oct ([protocol](rater-protocol.md)); **not run**, by the project owner's decision (24 Oct): recruiting naive raters was not feasible. Single unblinded review remains a stated limitation |
-| Visual baselines | Done 23 Oct ([baselines](baselines.md)): method fixed before extraction; 10,560 images; every baseline shows the reverse pattern (largest movement signal for the detached hand), 0/20 sources positive; Gate 1 passed |
-| Model | Not started |
+| Visual baselines | Done 23 Oct ([baselines](baselines.md)): method fixed before extraction; 10,560 images; every baseline shows the reverse pattern (largest movement signal for the detached hand), 0/20 sources positive; Gate 1 passed. 24 Oct, Addendum A: the reversal persists in hand-centred views where the hand is up to twice as large (28,800 images) |
+| Model | Trial simulator and input bank built 24 Oct ([model method](model-method.md)); encoder choice awaiting the owner's decision; network not started |
 
 ### Reanalysis of the paper's deposited data (22 October)
 
