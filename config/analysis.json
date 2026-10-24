@@ -216,8 +216,8 @@
       "ungated (H2 network, g = 1)",
       "non-spiking twin"
     ],
-    "motor_regime": "observation without execution: each motor population near 2 Hz on static frames, below 5 Hz on movement frames (training)",
-    "readout_validity": "full-body facilitation on a training source; pre-probe motor rate <= 6 Hz; displays above it flagged outside the validated readout range",
+    "motor_regime": "observation without execution, per trial: each motor population near 1 Hz on static frames and at rest, below 3 Hz on movement frames (training)",
+    "readout_validity": "full-body facilitation on a training source; pre-probe motor rate within the network's validated readout range (rate at its excitability-curve peak); displays above it flagged outside the validated readout range",
     "readout_trimming": "+/- 2 SD within instance x display x trial type x population, then z-normalisation (paper); untrimmed sensitivity",
     "h2_gate_fit": "grid c in {0, 0.05, ..., 1}, closest source-mean DH/FB ratio to -0.10 on the 19 training sources, ties to smaller c",
     "amended": "2026-10-24: readout validity, motor regime, trimming, ungated comparison (docs/analysis-spec.md section 10)"

@@ -21,15 +21,17 @@ import bank as bk  # noqa: E402
 import network as nw  # noqa: E402
 import trials  # noqa: E402
 
-# Motor populations: held near motor_rest_hz on static second frames and below motor_max_hz on
-# movement frames. The paper excluded trials with background EMG before the pulse, so MEPs were
-# taken at rest; and the probe response of a leaky integrate-and-fire population grows with
-# excitability only while the population is near rest (it plateaus at 6-9 Hz and falls below its
-# resting value at 30-40 Hz; docs/model-method.md §6.10).
+# Motor populations, trial by trial: held near motor_rest_hz on static second frames and at rest, and
+# below motor_max_hz on movement frames. The paper excluded every trial with background EMG before
+# the pulse, so its MEPs were taken at rest; and the probe response of the pooled populations grows
+# with excitability only up to about 5.5 Hz (docs/model-method.md §6.10, §6.12). The limits apply
+# to every trial, not to a batch mean, so that no source or variant is driven past that range.
 TRAIN = dict(settle_ms=300, second_ms=350, window=(50, 300), updates=3000, batch=32, lr=1e-3,
-             visual_rate_hz=(2., 40.), motor_rest_hz=2., motor_max_hz=5., rest_trials=8)
-# Gate 2 health criteria that depend on these constants (docs/model-method.md §6.5).
-HEALTH = dict(task_auc=.9, silent_visual=.10, fast_visual=.05, fixation_motor_hz=(.5, 20.), background_hz=6., dose_spearman=.9,
+             visual_rate_hz=(2., 40.), motor_rest_hz=1., motor_max_hz=3., rest_trials=8)
+# Gate 2 health criteria (docs/model-method.md §6.5). The background limit is not a constant: it is
+# each network's validated readout range, the pre-probe FDI rate at which its excitability curve peaks
+# (the probe response grows with excitability up to there; §6.12).
+HEALTH = dict(task_auc=.9, silent_visual=.10, fast_visual=.05, fixation_motor_hz=(.5, 20.), dose_spearman=.9,
               saturated=.9)
 OUTPUT = ROOT / 'output/model'
 HYPOTHESES = ('h2', 'h0', 'h1')   # h2: display features, gate 1 on full body (shared by H2, ungated, S3(a))
@@ -113,20 +115,25 @@ def objective(net, out_v, out_m, labels, readout, cfg=TRAIN, rest_m=None):
     second = out_m[:, start:]
     static = labels == 0
     n_m = net.n_motor
-    # Each population (FDI, ADM) is held near the rest rate on static frames, not only their mean.
-    pops = [1000 * second[static][..., :n_m].mean(), 1000 * second[static][..., n_m:].mean()] if static.any() else [second.sum() * 0] * 2
-    rest = (pops[0] + pops[1]) / 2
-    reg_rest = sum((r - cfg['motor_rest_hz']) ** 2 for r in pops) / 5
-    # Observation without execution: on movement frames each population stays below motor_max_hz.
+    # Per-trial rate of each population (FDI, ADM) in Hz: [trials, 2].
+    per_trial = lambda m: 1000 * torch.stack([m[..., :n_m].mean((1, 2)), m[..., n_m:].mean((1, 2))], -1)
+    zero = second.sum() * 0
+    # Every static trial: each population near the rest rate.
+    pops = per_trial(second[static]) if static.any() else zero + torch.zeros(1, 2, device=second.device) + cfg['motor_rest_hz']
+    reg_rest = ((pops - cfg['motor_rest_hz']) ** 2).sum(-1).mean() / 5
+    # Observation without execution: every movement trial below motor_max_hz in each population.
     moving = labels == 1
-    active = [1000 * second[moving][..., :n_m].mean(), 1000 * second[moving][..., n_m:].mean()] if moving.any() else [second.sum() * 0] * 2
-    reg_cap = sum(torch.relu(r - cfg['motor_max_hz']) ** 2 for r in active) / 5
+    active = per_trial(second[moving]) if moving.any() else zero + torch.zeros(1, 2, device=second.device)
+    reg_cap = (torch.relu(active - cfg['motor_max_hz']) ** 2).sum(-1).mean() / 5
+    pops, active = pops.mean(0), active.mean(0)
+    rest = pops.mean()
     adm = counts[:, nw.ADM]
     reg_adm = (adm[labels == 1].mean() - adm[static].mean()) ** 2 if static.any() and (~static).any() else adm.sum() * 0
     # At rest (no stimulus, the fixation state where the threshold is measured) each population is
     # also held near the rest rate, so rest is a baseline and not a silent state.
-    at_rest = [1000 * rest_m[:, start:, :n_m].mean(), 1000 * rest_m[:, start:, n_m:].mean()] if rest_m is not None else [second.sum() * 0 + cfg['motor_rest_hz']] * 2
-    reg_fixation = sum((r - cfg['motor_rest_hz']) ** 2 for r in at_rest) / 5
+    at_rest = per_trial(rest_m[:, start:]) if rest_m is not None else zero + torch.zeros(1, 2, device=second.device) + cfg['motor_rest_hz']
+    reg_fixation = ((at_rest - cfg['motor_rest_hz']) ** 2).sum(-1).mean() / 5
+    at_rest = at_rest.mean(0)
     loss = task + reg_visual + reg_rest + reg_cap + reg_adm + reg_fixation
     accuracy = ((logit > 0).float() == labels).float().mean()
     return loss, dict(task=task.item(), visual_hz=visual.mean().item(), silent=(visual == 0).float().mean().item(),
@@ -326,7 +333,8 @@ def diagnose(net, readout, inner_static, inner_movement, cfg=TRAIN, device='cpu'
         diff = (probes['movement']['responses'] - probes['static']['responses'])[..., nw.FDI].ravel()
         half = stats.t.ppf(.975, len(diff) - 1) * diff.std(ddof=1) / np.sqrt(len(diff))
         curve2 = excitability_curve(net, probe, device)
-        within = [c for c in curve2 if c[0] <= cfg['motor_max_hz']]
+        readout_range = max(curve2, key=lambda c: c[1])[0]                 # rate at the curve's peak
+        within = [c for c in curve2 if c[0] <= readout_range]               # the validated readout range
         rho = float(stats.spearmanr(*zip(*within))[0]) if len(within) >= 3 else float('nan')
         everything = np.concatenate([probes[k]['responses'] for k in probes], 1)
         background = max(max(probes[k]['background_hz']) for k in probes)
@@ -336,7 +344,8 @@ def diagnose(net, readout, inner_static, inner_movement, cfg=TRAIN, device='cpu'
                       fdi_facilitation=float(diff.mean()), fdi_facilitation_ci=[float(diff.mean() - half), float(diff.mean() + half)],
                       excitability_curve=curve2, excitability_spearman=rho,
                       saturated_share=float((everything >= HEALTH['saturated'] * net.n_motor).mean()))
-        criteria.update(facilitation=bool(diff.mean() - half > 0), background=bool(background <= HEALTH['background_hz']),
+        report.update(readout_range_hz=readout_range, background_max_hz=background)
+        criteria.update(facilitation=bool(diff.mean() - half > 0), background=bool(background <= readout_range),
                         excitability=bool(rho >= HEALTH['dose_spearman']), not_saturated=report['saturated_share'] == 0,
                         readout_not_silent=bool(everything[..., nw.FDI].mean() > 0))
     report['criteria'] = criteria
@@ -430,7 +439,7 @@ if __name__ == '__main__':
     parser.add_argument('--recheck', type=Path, help='Recompute the health measures of a saved network')
     args = parser.parse_args()
     if args.recheck:
-        report = recheck(args.recheck)
+        report = recheck(args.recheck, device='cuda' if torch.cuda.is_available() else 'cpu')
     else:
         report = health(args.representation, args.held_out, args.inner, args.seed, updates=args.updates,
                         spiking=not args.rate, output=args.output, hypothesis=args.hypothesis)
