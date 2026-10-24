@@ -146,13 +146,21 @@ def settle(net, drive, gate, steps, generator):
     return state
 
 
+def rest_drive(net, batch, device=None):
+    """Visual input of the fixation display: no visual stimulus, so no stimulus current (the
+    layer receives only its noise). A frozen encoder's description of a black frame lies far
+    outside the training images and drove the motor layer to 45 Hz (docs/model-method.md §6.8)."""
+    return torch.zeros(batch, net.config['n_visual'], device=device)
+
+
 @torch.no_grad()
-def threshold(net, black, a_max=20., trials=40, criterion=6, halvings=14, seed=0, settle_ms=300):
+def threshold(net, a_max=20., trials=40, criterion=6, halvings=14, seed=0, settle_ms=300, gate=1., device=None):
     """Resting threshold (docs/model-method.md §6.3): smallest amplitude whose FDI response
-    reaches `criterion` spikes on at least half of `trials` fixation trials, by bisection."""
-    generator = torch.Generator(device=black.device).manual_seed(seed)
-    drive = net.drive(black[None]).expand(trials, -1)
-    gate = torch.ones(trials, device=black.device)
+    reaches `criterion` spikes on at least half of `trials` fixation trials (rest, §6.8), by bisection."""
+    device = device or next(net.parameters()).device
+    generator = torch.Generator(device=device).manual_seed(seed)
+    drive = rest_drive(net, trials, device)
+    gate = torch.full((trials,), float(gate), device=device)
     low, high = 0., a_max
     def passes(amplitude):
         state = settle(net, drive, gate, settle_ms, generator)

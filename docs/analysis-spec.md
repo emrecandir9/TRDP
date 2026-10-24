@@ -24,7 +24,10 @@ contrasts on held-out stimulus groups, and which model components are necessary 
 presence (the model has no such variable); physiological equivalence between a model
 readout and a peripheral MEP; generalisation beyond the 20 source hands. The 20 hands are
 AI-generated synthetic identities (§3), so no claim concerns the variability of real people's
-hands or bodies.
+hands or bodies. In the human data, wrist continuity and the global amount of visible context
+change together (full body, upper limb, detached hand), so the human data cannot show that
+continuity rather than visible context drives the effect; that distinction rests on model
+predictions for the matched controls, which have no human data (amended 24 October 2026).
 
 ## 2. Correspondence with the paper
 
@@ -41,7 +44,7 @@ hands or bodies.
 | TMS 250 ms after second-frame onset | Common probe pulse 250 ms after second-frame onset | Probe is a model current, not TMS |
 | 120% of resting motor threshold (PEST) | Probe = 120% of the model's resting threshold, found on fixation trials (§6.4) | Analogue, not physical intensity |
 | MEP peak-to-peak, 5–60 ms after TMS, FDI and ADM | Readout-population response, 5–60 ms after probe, minus a matched no-probe trial; FDI- and ADM-associated readouts | Arbitrary units, not mV |
-| 20 fixation-cross trials at session start and end | Black-image fixation trials at start and end, for threshold and drift checks | — |
+| 20 fixation-cross trials at session start and end | Black-image fixation trials at start and end, for threshold and drift checks; presented to the network as no visual stimulus (rest), since a frozen encoder's description of a black frame lies far outside its training images (amended 24 October 2026) | — |
 | Count the finger movements (attention task) | Auxiliary training task: detect/count index movements (§6.3) | — |
 | Within-participant z-normalisation of MEPs | Same normalisation applied within each model instance | — |
 
@@ -186,7 +189,7 @@ cannot favour the hypothesis.
 | **P3, stability** | `C_FDI` positive in at least 80% of initialisations (averaged over source groups): 8 of 10, or 4 of 5 | One unstable optimisation cannot create or remove the result |
 | **S1, consistency** | Ratio Δ(DH, FDI) / mean[Δ(FB, FDI), Δ(UL, FDI)] within the human interval [−0.67, 0.38] | No detached-hand facilitation relative to connected displays |
 | **S2, consistency / prediction** | Ratio Δ(UL, FDI) / Δ(FB, FDI) within the human interval [0.34, 1.78] | Full body and upper limb facilitate similarly |
-| **S3, not low-level** | The same network, training, probe and readout fed with (a) low-level statistics and (b) hand-only input does **not** meet P1, and the primary model's `C_FDI` exceeds each by a paired difference over source groups whose 95% interval excludes 0 | The context effect is not explained by visible area, luminance or edge statistics, nor by the hand alone |
+| **S3, not low-level** (amended 24 Oct 2026) | (b) The same network, training, probe and readout fed with hand-only input does **not** meet P1, and the primary model's `C_FDI` exceeds it by a paired difference over source groups whose 95% interval excludes 0. (a) The same network with its context estimate replaced by the global visible-area fraction (gate refitted by the same procedure) is run, and **on both matched control pairs** (`hand_stub` − `hand_gap_stub`, `window_arm` − `window_hand`) the primary model's FDI movement-effect difference exceeds the low-level model's by a paired difference over source groups whose 95% interval excludes 0; whether the low-level model meets P1 is reported | The context effect is not explained by the hand alone, and the model's attachment account is distinguishable from a global visible-context account; the human FB/UL/DH data cannot make this distinction, so the matched controls must |
 | Exploratory | Muscle specificity (three-way contrasts), ADM pattern, controls of §7.2, sensitivity scales, all-context training | Human ADM effect is not robust; controls have no human data |
 
 **Decision rule.** A model *reproduces the robust human pattern* if P1, P2, P3, S1, S2 and S3
@@ -230,7 +233,7 @@ divided by the between-source spread, computed per context and passed through §
 | --- | --- | --- |
 | H0, no context | Visuomotor readout from hand features only | None |
 | H1, salience | Movement signal scaled by low-level change in the whole image | None |
-| H2, attachment gate | A context pathway estimates whether the hand is connected to an arm and gates the visuomotor mapping | At most two gate parameters, fitted to the human ratio Δ(DH, FDI) / Δ(FB, FDI) = −0.10 (§4.5) using training source groups only; no upper-limb data |
+| H2, attachment gate | A context pathway estimates whether the hand is connected to an arm and gates the visuomotor mapping. Amended 24 Oct 2026: the estimate is the forearm visible without a break below the wrist line, in palm widths, capped at 1 (`model/context.py`); the gate is g = c + (1 − c)·a | One gate parameter c (≤ two allowed), fitted to the human ratio Δ(DH, FDI) / Δ(FB, FDI) = −0.10 (§4.5) using training source groups only; no upper-limb data |
 
 No condition label enters any model, and no condition receives its own gain.
 
@@ -276,7 +279,7 @@ Defined and checked in [controls.md](controls.md); P = palm width (landmarks 5�
 | --- | --- |
 | `hand_gap_stub`: silhouette + forearm segment starting 0.5 P below the wrist, on black, area equal to `hand_stub` (missing wrist) | Behaves like the detached hand |
 | `hand_stub`: silhouette + 1 P of forearm, on black | Behaves like the upper limb |
-| Rectangle with desk patch (archive `detached_hand`) | Behaves like the detached hand: a surface is not a body |
+| Rectangle with desk patch (archive `detached_hand`) | Declared at freezing: behaves like the detached hand (a surface is not a body). **Corrected 24 Oct 2026, before any model result:** the rectangle shows on average 0.80 palm widths (0.50–1.00) of forearm continuous with the hand, about as much as `hand_stub`, so H2 predicts facilitation close to the upper limb |
 | `window_hand` vs `window_arm`: equal-area hand-axis rectangles, extended sideways over desk or 1 P down the arm | Only the window containing a connected arm produces facilitation |
 | `scrambled`: upper-limb view in 32 px blocks, blocks touching the hand fixed | Behaves like the detached hand |
 | `occluded_wrist` (exploratory): upper-limb view with an opaque band over 0.5 P of the wrist | Not declared (occlusion, not discontinuity) |
@@ -313,6 +316,7 @@ equal the full-body image, hidden pixels are black, and matched pairs have equal
 | 22 Oct 2026 | **Frozen** | Open items resolved, criteria approved; no model result exists |
 | 22 Oct 2026 (after freeze, before any result) | §7.2 controls given exact definitions and parameters; the wrist gap is shown on black as `hand_gap_stub` with area matched to `hand_stub`; the desk-scene band is kept as exploratory `occluded_wrist` without a declared prediction | A black band on a desk scene reads as an occluder behind which the arm is completed, so it does not test discontinuity; parameters had not been fixed at freezing |
 | 24 Oct 2026 (after the Gate 1 baselines, before any model result) | §5.2 and §6.3: OpenCLIP ViT-bigG-14 named as primary frozen encoder, DINOv2 summary and mean patch token as robustness encoders; the decision rule additionally requires P1 in the same direction with both robustness encoders | The spec required a frozen encoder without naming one; choosing after the baselines could favour the hypothesis, so the least favourable encoder is primary and agreement across encoders is required. Approved by the project owner |
+| 24 Oct 2026 (before any model result) | §1 claim boundary on continuity vs visible context; §2 fixation presented as rest; §5.2 S3 split into (b) hand-only as written and (a) a refitted global visible-area gate compared on the matched control pairs; §6.2 H2's context estimate defined as contiguous forearm continuity at the wrist with a one-parameter gate; §7.2 rectangle prediction corrected | A low-level gate fitted to the same human ratio can match it through visible area, so S3(a) as written would reject H2 by construction and the human data cannot separate the two accounts; the encoded black frame drove the model's motor layer to 45 Hz at rest; two gate parameters cannot be identified from one ratio; the archive rectangle was measured to contain 0.80 palm widths of forearm. Decided by the assistant under the project owner's delegation of 24 October 2026 |
 
 ## 11. References
 

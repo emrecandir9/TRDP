@@ -62,14 +62,18 @@ def objective(net, out_v, out_m, labels, readout, cfg=TRAIN):
     reg_visual = (torch.relu(low - visual) ** 2 + torch.relu(visual - high) ** 2).mean() / 100
     second = out_m[:, start:]
     static = labels == 0
-    rest = 1000 * second[static].mean() if static.any() else second.sum() * 0
-    reg_rest = (rest - cfg['motor_rest_hz']) ** 2 / 25
+    n_m = net.n_motor
+    # Each population (FDI, ADM) is held near the rest rate on static frames, not only their mean.
+    pops = [1000 * second[static][..., :n_m].mean(), 1000 * second[static][..., n_m:].mean()] if static.any() else [second.sum() * 0] * 2
+    rest = (pops[0] + pops[1]) / 2
+    reg_rest = sum((r - cfg['motor_rest_hz']) ** 2 for r in pops) / 50
     adm = counts[:, nw.ADM]
     reg_adm = (adm[labels == 1].mean() - adm[static].mean()) ** 2 if static.any() and (~static).any() else adm.sum() * 0
     loss = task + reg_visual + reg_rest + reg_adm
     accuracy = ((logit > 0).float() == labels).float().mean()
     return loss, dict(task=task.item(), visual_hz=visual.mean().item(), silent=(visual == 0).float().mean().item(),
-                      rest_hz=rest.item(), adm_gap=reg_adm.item(), accuracy=accuracy.item())
+                      rest_hz=rest.item(), fdi_static_hz=pops[0].item(), adm_static_hz=pops[1].item(),
+                      adm_gap=reg_adm.item(), accuracy=accuracy.item())
 
 
 def train(net, static, movement, cfg=TRAIN, seed=0, device='cpu', log=None, updates=None):
@@ -123,10 +127,21 @@ def evaluate_task(net, readout, static, movement, cfg=TRAIN, seed=1, device='cpu
 
 
 @torch.no_grad()
-def dose_response(net, black, amplitude, device='cpu', levels=10, trials_per=40, seed=3):
-    """Mean FDI probe response at 0.5-2 x threshold on the fixation display."""
+def fixation_rates(net, device='cpu', ms=1000, n=16, seed=4):
+    """Visual and per-population motor rates (Hz) at rest, the fixation display (§6.8)."""
     generator = torch.Generator(device=device).manual_seed(seed)
-    drive = net.drive(black[None]).expand(trials_per, -1)
+    drive = nw.rest_drive(net, n, device)[:, None].expand(n, ms, -1)
+    ones = torch.ones(n, ms, device=device)
+    v, m, _ = net.run(drive, ones, ones * 0, net.initial(n, device), net.noise(n, ms, generator, device))
+    hz = lambda x: 1000 * x[:, 200:].mean().item()
+    return dict(visual_hz=hz(v), fdi_hz=hz(m[..., :net.n_motor]), adm_hz=hz(m[..., net.n_motor:]))
+
+
+@torch.no_grad()
+def dose_response(net, amplitude, device='cpu', levels=10, trials_per=40, seed=3):
+    """Mean FDI probe response at 0.5-2 x threshold on the fixation display (rest)."""
+    generator = torch.Generator(device=device).manual_seed(seed)
+    drive = nw.rest_drive(net, trials_per, device)
     gate = torch.ones(trials_per, device=device)
     out = []
     for factor in np.linspace(.5, 2, levels):
@@ -152,22 +167,25 @@ def health(representation='openclip', held_out=1, inner=2, seed=0, device=None, 
     readout, history = train(net, static, movement, seed=seed, device=device, updates=updates,
                              log=lambda h: print(json.dumps(h), flush=True))
     accuracy, visual_hz = evaluate_task(net, readout, inner_static, inner_movement, device=device)
-    black = torch.as_tensor((bank.vector(trials.BLACK) - scaler[0]) / scaler[1], dtype=torch.float32, device=device)
-    amplitude = nw.threshold(net, black)
-    curve = dose_response(net, black, amplitude, device=device) if np.isfinite(amplitude) else []
+    amplitude = nw.threshold(net, device=device)
+    curve = dose_response(net, amplitude, device=device) if np.isfinite(amplitude) else []
+    rest = fixation_rates(net, device)
     from scipy import stats
     monotone = float(stats.spearmanr([c[0] for c in curve], [c[1] for c in curve])[0]) if curve else float('nan')
     report = dict(representation=representation, spiking=spiking, held_out_source_not_used=held_out,
                   inner_source=inner, seed=seed, updates=updates or TRAIN['updates'], device=str(device),
                   seconds=round(time.time() - started), final=history[-1], inner_accuracy=accuracy,
                   inner_visual_hz=visual_hz, threshold=amplitude, dose_response=curve, dose_spearman=monotone,
+                  fixation=rest,
                   criteria=dict(task=accuracy >= .9, threshold=bool(np.isfinite(amplitude)),
                                 dose=bool(monotone >= .9) if curve else False,
-                                silent_visual=history[-1]['silent'] <= .10))
+                                silent_visual=history[-1]['silent'] <= .10,
+                                fixation_motor=bool(1 <= rest['fdi_hz'] <= 20 and 1 <= rest['adm_hz'] <= 20)))
     output.mkdir(parents=True, exist_ok=True)
     name = f"health_{representation}_{'snn' if spiking else 'rate'}_fold{held_out}_seed{seed}"
     (output / f'{name}.json').write_text(json.dumps(dict(report, history=history), indent=2) + '\n')
-    torch.save(dict(state=net.state_dict(), readout={k: v.detach().cpu() for k, v in readout.items()},
+    torch.save(dict(state={k: v.detach().cpu() for k, v in net.state_dict().items()},
+                    readout={k: v.detach().cpu() for k, v in readout.items()},
                     scaler=[a.tolist() for a in scaler]), output / f'{name}.pt')
     return report
 

@@ -158,6 +158,12 @@
         "section": "5.2, 6.3 encoder and decision rule",
         "sha256_after": "ecb3e43445092c9dfcf88eeb5976203f3124c17af75933af74e419517252fdc3",
         "before_any_result": true
+      },
+      {
+        "date": "2026-10-24",
+        "section": "1, 2, 5.2 S3, 6.2 H2, 7.2 rectangle",
+        "sha256_after": "abbce8dfc95c2f5128fa076392b592698f27ed51e015f3d605bac9fb68f5197b",
+        "before_any_result": true
       }
     ]
   },
@@ -189,6 +195,10 @@
     "decision_rule_addition": "P1 in the same direction with both robustness encoders",
     "decided_by": "project owner",
     "date": "2026-10-24",
-    "method": "docs/model-method.md"
+    "method": "docs/model-method.md",
+    "h2_context": "contiguous forearm continuity below the wrist, palm widths, capped at 1 (model/context.py; data/context_continuity.json)",
+    "h2_gate": "g = c + (1 - c) a, one parameter c fitted on training sources to the human DH/FB ratio",
+    "s3_low_level_alternative": "global visible-area fraction with the same gate, compared on the matched control pairs",
+    "fixation": "no visual stimulus (rest)"
   }
 }

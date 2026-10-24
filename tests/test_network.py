@@ -82,8 +82,7 @@ class Network(unittest.TestCase):
         self.assertGreater((membranes[1] - membranes[0]).abs().max().item(), 1e-3)
 
     def test_threshold_and_rate_twin(self):
-        black = torch.zeros(8)
-        a = self.nw.threshold(self.net, black, trials=12, halvings=8)
+        a = self.nw.threshold(self.net, trials=12, halvings=8)
         self.assertTrue(0 < a < 20)
         twin = self.nw.Network(8, small(), spiking=False, seed=0)
         b = 2

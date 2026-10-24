@@ -7,8 +7,8 @@ instance sees, and fixes the details the spec and the paper leave open.
 
 **Status, 24 October 2026: draft.** Sections 1–4 are fixed: the trial simulator is built and
 tested, and nothing has been trained. Section 5 (encoder) was decided on 24 October 2026
-(option A, spec amendment). Section 6 fixes the network before any training; section 7 is an open
-decision about H2 that needs the project owner. Later changes go
+(option A, spec amendment). Section 6 fixes the network before any training; section 7 records
+the H2 context pathway and the S3 amendment; section 8 is a validation of all methods. Later changes go
 to the change log at the end.
 
 ## 1. What the paper and the frozen spec fix
@@ -55,8 +55,9 @@ in training, and MEP values are never a target.
 - Frames are static, so each frame's encoder output is computed once (the Gate 1 features,
   `output/features/`, hash-checked on load) and held constant while the frame is displayed. The
   network supplies all temporal dynamics.
-- The black fixation display is encoded with the same encoders and settings
-  (`output/features_extra/black.npz`).
+- The black fixation display is presented as rest: no visual stimulus current (§6.8). Its encoded
+  features (`output/features_extra/black.npz`) lie far outside the training images and are kept for
+  reference only.
 - **Standardisation is fitted on the training sources' full-body images only** and applied
   unchanged to every display. Full body is the only display seen in training (spec §6.3), and no
   statistic of the held-out source or of a test display enters preprocessing (spec §6.3, §7.1).
@@ -153,12 +154,14 @@ diagnostics use training sources only, and H2's gate fit (§6.6) uses training s
   minus the same count in the matched no-probe twin. The twin is computed by branching from the
   identical network state at the probe time with the identical noise stream, so the difference is
   caused by the probe alone. The session then continues from the no-probe branch.
-- **Resting threshold:** on the black fixation display, the smallest A for which the FDI
+- **Resting threshold:** on the fixation display, presented as rest (§6.8), the smallest A for which the FDI
   response is at least 6 spikes (≈ 10% of the population) on at least 50% of 40 trials, found by
   bisection over A in [0, A_max] with 14 halvings (an adaptive staircase). The task probe is
   1.2 × threshold, as in the paper.
-- **Single-trial readouts** are z-normalised within each instance over both populations (the
-  paper's per-participant normalisation) and passed to the human-target contrast code.
+- **Single-trial readouts** of the task trials are z-normalised within each instance over both
+  populations (the paper's per-participant normalisation; the deposited MEPs contain task trials
+  only, 360 per participant) and passed to the human-target contrast code. Fixation trials serve
+  the threshold and drift checks only.
 
 ### 6.4 Evaluation simulation
 
@@ -185,10 +188,15 @@ for the primary displays, the paired rectangle sensitivity and the controls.
 - **H1, salience:** display features; g = 1 + s/s̄, where s is the 64 × 64 luminance distance
   between the displayed frame and the trial's first frame (0 for first frames and static second
   frames) and s̄ its mean over training full-body movement frames. No parameter is fitted.
-- **H2, attachment gate:** display features; g = σ(w(a − a₀)), with an attachment estimate a from
-  a context pathway and the two parameters w, a₀ fitted to the human ratio
-  Δ(DH, FDI)/Δ(FB, FDI) = −0.10 on training sources only. **The context pathway and the S3
-  comparison are awaiting the project owner's decision (§7).**
+- **H2, attachment gate:** display features; g = c + (1 − c)·a, with a the forearm continuity of
+  the display (§7, `model/context.py`) and one parameter c fitted to the human ratio
+  Δ(DH, FDI)/Δ(FB, FDI) = −0.10 on training sources only.
+- **Training per hypothesis.** Each hypothesis is trained with its own input and gate on full-body
+  training trials: H0 on hand-only features; H1 with its salience gate; H2 with its gate, which is
+  1 on every full-body image (a = 1), so H2 and the ungated network share training.
+- **Fixation gate.** On the fixation display (rest) H0 and H1 use g = 1 and H2 uses g = c (no
+  forearm, a = 0); with no visual stimulus the visual layer is near silent, so the gate there has
+  little effect.
 
 ### 6.7 First health check (24 October 2026, training sources only)
 
@@ -211,35 +219,116 @@ twin and the recurrent variant, and distinct H0–H2 control predictions (needs 
 encoders × spiking and rate) would need about 1,000 GPU hours if trained one network at a time;
 networks are therefore to be trained in parallel batches on the GPU before the full runs.
 
-## 7. Open decision: the H2 context pathway and criterion S3
+### 6.8 Corrections from the first health check (24 October 2026, before any evaluation)
 
-**Problem.** S3 requires that "the same network, training, probe and readout fed with (a)
-low-level statistics" does not meet P1. H2 has two gate parameters fitted to the human DH/FB
-ratio. If the low-level version's gate is also fitted to that ratio, it can match it through
-visible area alone, because the detached hand shows far less of the image than the full body.
-That version would then meet P1, and H2 would fail S3 almost by construction. The human data
-cover only FB, UL and DH, where attachment and visible area change together, so they cannot
-separate the two. Only the matched controls (`hand_stub` vs `hand_gap_stub`, `window_arm` vs
-`window_hand`, equal in area and luminance) can, and they have no human data.
+- **Fixation as rest.** The encoded black frame lies far outside the training images (mean |z|
+  2.9 against 0.8 for full-body images); on it half the visual neurons were silent, 9% fired
+  above 200 Hz and the FDI population fired at 45 Hz, against 0 Hz on full-body frames. A
+  threshold measured there would calibrate the probe in a state unlike any task display. The
+  fixation display is therefore presented as no visual stimulus: the visual layer receives no
+  stimulus current, only its noise (`network.rest_drive`). This matches the paper, where the
+  resting threshold was measured at rest, and a black frame delivers no light. The encoded black
+  frame (`output/features_extra/black.npz`) is kept for reference but not used.
+- **Rest rate per population.** The rest regulariser held only the mean of FDI and ADM near 5 Hz,
+  so FDI was silent on static frames while ADM fired at 10 Hz; each population is now held near
+  5 Hz on static frames.
+- **Portable checkpoints.** Saved on the CPU so they load anywhere.
 
-**Proposed resolution (recommended, needs a spec amendment):** keep S3 as written for the
-hand-only version. For the low-level version, refit its gate by the same procedure on low-level
-statistics, and add a declared **discrimination test on the matched controls**: H2's predicted
-facilitation differences `stub − gap stub` and `arm window − hand window` must exceed those of the
-low-level version, with a source-bootstrap interval excluding 0. Alternative: keep S3 unchanged
-and accept that H2 will very likely fail it.
+The health check is to be repeated with these corrections before any further step.
 
-**Context pathway options:**
+## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
-- **(a) Idealised continuity (recommended):** a = the visible fraction of a band 0–0.5 palm widths
-  below the source's wrist line, inside the source's forearm mask (`data/inputs/*/sam_arm.png`),
-  in the displayed image. It is computed from the image and the hand's geometry, never from a
-  label; it models an observer who knows where the wrist is. Transparent, but it encodes the
-  hypothesis directly, so its control predictions follow almost by construction.
-- **(b) Learned arm detector:** a readout of patch features trained on full-body training images
-  only to predict the forearm mask (segmentation targets, no condition labels); a = predicted arm
-  presence just below the wrist. A more model-like account, but it needs OpenCLIP patch tokens
-  (not yet extracted) or mixing encoders.
+The project owner delegated this decision to the assistant on 24 October 2026, asking for the
+option that best matches the paper and is scientifically and academically sound. It is recorded
+as a spec amendment (§1, §2, §5.2, §6.2, §7.2 and §10 of the spec).
+
+**Context pathway: idealised forearm continuity (option a).** a is the forearm visible without a
+break below the wrist line, in palm widths, capped at 1 (`model/context.py`): 1-px cross-sections
+of the source's SAM-HQ forearm mask are counted from the wrist line until the first one that is
+less than half visible; "visible" means the displayed pixel equals the full-body pixel and is not
+black. Reasons:
+
+1. **It matches the paper's manipulation.** The paper varies visual continuity between the hand
+   and the body, and its detached hand is cut at the wrist; the missing-wrist control follows
+   Tieri et al. (2015). Continuity at the wrist is the variable the paper manipulates.
+2. **It measures connection, not amount.** A visible segment after a gap does not count (tested),
+   so the matched pairs are separated by connection alone, while their area is equal.
+3. **It is parsimonious and transparent.** It has no learned parameter, uses only the displayed
+   pixels and the hand's own geometry (never a condition label), and is identical across the 24
+   appearance variants of every source (checked on all 480 families). The cap of one palm width is
+   the forearm length of `hand_stub`, which the frozen spec already treats as an attached arm.
+4. **Option b offers no gain in validity.** A learned arm detector would be trained with the same
+   segmentation masks, so it is not more autonomous; it would add a model with its own architecture
+   and training choices, require new OpenCLIP patch-token extraction, and its output on these
+   displays is expected to be the same forearm-presence signal.
+
+Measured values (mean over 20 sources; `data/context_continuity.json`):
+
+| Display | FB | UL | DH | DH rectangle | Stub | Gap stub | Arm window | Hand window | Scrambled | Occluded wrist |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| a | 1.00 | 1.00 | 0.00 | 0.80 | 0.99 | 0.00 | 0.99 | 0.00 | 0.15 | 0.00 |
+
+Consequences, stated before any model result:
+
+- The values agree with every H2 prediction declared in spec §7.2 except the archive rectangle,
+  which shows 0.80 palm widths of forearm (0.50–1.00 by source); its declared prediction is
+  corrected in the spec. H2 therefore predicts that the rectangle sensitivity analysis will show
+  little of the FB/UL vs DH contrast, which is a prediction, not a failure of the design.
+- The occluded wrist gets a = 0: a pixel-continuity estimate cannot complete an arm behind an
+  occluder. H2 thus predicts no facilitation there; the spec declared no prediction.
+
+**Gate: one parameter.** g = c + (1 − c)·a. The frozen spec allows at most two parameters, but a
+single human ratio cannot identify two (a slope and a midpoint): intermediate displays such as the
+scrambled view would then depend on an arbitrary choice. With one parameter, the gate is linear in
+continuity, and c, the residual gain of a fully disconnected hand, is fitted on training sources
+to the human ratio Δ(DH, FDI)/Δ(FB, FDI) = −0.10. Because a gated network cannot produce a negative
+movement effect, the fit is expected to reach c = 0, so H2 effectively uses no human data beyond
+the bound; the fitted value is reported.
+
+**Criterion S3.** A low-level gate fitted to the same human ratio could match it through visible
+area alone, since the detached hand shows far less of the image. S3(a) as frozen would then reject
+H2 almost by construction, while the human data (FB, UL, DH, where continuity and visible area
+change together) cannot tell the two accounts apart. S3 is therefore amended: (b), the hand-only
+version, is kept as written; (a) replaces the context estimate by the global visible-area fraction
+with the same gate refitted, and H2 must exceed it on **both** matched control pairs, where area is
+equal and only connection differs. Whether the low-level model meets P1 is reported.
+
+**What H2's success will and will not show.** Because a = 1 for FB and UL and 0 for DH, H2's fit to
+the robust human pattern is largely built in once the network transfers the movement mapping from
+full body to upper limb. The informative tests are therefore S2 (the upper-limb/full-body ratio,
+which no fitted parameter touches), P3 (stability across initialisations), agreement across the
+three encoders, the comparison with H0 and H1, and the S3 discrimination on the matched controls. A
+positive result supports the claim that a wrist-continuity gate on a learned visuomotor mapping is
+sufficient for the human pattern and distinguishable from a visible-context account in its control
+predictions; it does not show that humans use continuity rather than visible context (spec §1).
+
+## 8. Validation of the methods (24 October 2026)
+
+A review of every stage against the paper, the frozen spec and the code, made when the owner asked
+for a general check before the network phase continues.
+
+| Stage | Check | Result |
+| --- | --- | --- |
+| Stimuli and cohort | Hashes; Linux reproduction on CREMI; cross-machine encoder reproduction | All pass; Gate 1 features bit-identical on two GPUs |
+| Image review | Independent raters | Not run (owner's decision); single unblinded review is a stated limitation |
+| Human target | Published statistics reproduced; participant-level inference; five scales | Reproduced exactly; only `C_FDI`, Δ(FB) and Δ(UL) are robust; ADM exploratory |
+| Gate 1 baselines and Addendum A | Method committed before data; all deviations logged; sensitivity | Reverse pattern robust (72/76 and 144/156 cells); exploratory analyses uncorrected, labelled as such |
+| Trial simulator | Paper's Methods re-read against the code | Matches; assumptions listed in §2 (no inter-trial gap, fixation timing, variants as trials) |
+| Encoder | Choice after seeing baselines | Least favourable encoder chosen, agreement across encoders required (spec amendment) |
+| Network units | Synthetic test | Raw units amplified inputs about 110-fold; normalised before any training on image features |
+| Fixation display | Health check on training sources | Encoded black frame out of distribution (FDI 45 Hz); presented as rest (§6.8) |
+| Rest regulariser | Health check | Held only the mean of FDI and ADM; now per population (§6.8) |
+| Readout normalisation | Against the deposit | Task trials only, as the deposited MEPs (§6.3) |
+| H2 gate | Identifiability | Two parameters not identifiable from one ratio; one parameter (§7) |
+| H2 control predictions | Measured continuity on all displays | Agree with spec §7.2 except the rectangle (corrected) |
+| S3 | Logic against H2 with a fitted gate | Would reject H2 by construction; amended to the matched-control comparison (§7) |
+| Muscle specificity | Training objective | Built in by the ADM regulariser; ADM results exploratory (§6.2) |
+| Development rule | Code paths | Health checks use training sources only; no held-out contrast is computed before the evaluation |
+
+**Still to do before Gate 2:** repeat the health check with the §6.8 corrections (pending a free GPU);
+train H0 and H1; fit H2's c on training sources; run the non-spiking twin and the recurrent variant;
+parallelise training (about 1,000 GPU hours one network at a time); implement the session simulation
+and the hierarchical bootstrap evaluation.
 
 ## Change log
 
@@ -249,3 +338,5 @@ and accept that H2 will very likely fail it.
 | 24 Oct 2026 | Encoder decided: option A (OpenCLIP primary, DINOv2 robustness, amended decision rule) | Project owner's decision; spec amendment |
 | 24 Oct 2026 | Network, training, probe, health criteria and H0/H1 fixed (§6) before any training; H2 context pathway and S3 raised as an open decision (§7) | Start of network construction |
 | 24 Oct 2026, before any training on image features | Input units normalised (constant input x → membrane x), noise defined by a resting membrane SD of 0.1 θ, initial biases 0.8 / 0.6, probe kept as a raw 1-ms current | The declared constants were in snnTorch's raw units, where a constant input is amplified about 110-fold: in a synthetic test the visual layer fired at about 600 Hz. After the change, rates were 14–27 Hz (visual) and 5 Hz (motor rest) |
+| 24 Oct 2026, after the first health check, before any evaluation | Fixation presented as rest; rest rate per population; CPU checkpoints; readout z-normalisation over task trials; training per hypothesis (§6.6, §6.8) | Health check on training sources found the encoded black frame out of distribution (FDI 45 Hz at rest) and FDI silent on static frames |
+| 24 Oct 2026 | H2 context pathway (forearm continuity), one-parameter gate, S3 amendment, rectangle correction (§7); validation review (§8) | Decision delegated by the project owner; spec amendment |
