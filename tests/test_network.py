@@ -78,8 +78,21 @@ class Network(unittest.TestCase):
         for gate in (0., 1.):
             _, _, state = self.net.run(drive, torch.full((1, 300), gate), torch.zeros(1, 300), self.net.initial(1), noise)
             membranes.append(state[3])
-        self.assertTrue(torch.allclose(membranes[0], self.net.b_m.detach()[None], atol=1e-3))
+        self.assertTrue(torch.allclose(membranes[0], self.net.motor_bias().detach()[None], atol=1e-3))
         self.assertGreater((membranes[1] - membranes[0]).abs().max().item(), 1e-3)
+
+    def test_motor_populations_are_homogeneous_pools(self):
+        """Without noise every neuron of a motor population has the same membrane potential: the
+        pool shares its visuomotor weights and bias, so its excitability moves as one."""
+        self.assertTrue(self.net.pooled)
+        self.assertEqual(tuple(self.net.w_vm.weight.shape), (2, 32))
+        x = torch.randn(2, 8) * 3
+        drive = self.net.drive(x)[:, None].expand(2, 200, -1)
+        _, _, state = self.net.run(drive, torch.ones(2, 200), torch.zeros(2, 200), self.net.initial(2),
+                                   torch.zeros(2, 200, 32 + 32))
+        for population in (slice(0, 16), slice(16, 32)):
+            mem = state[3][:, population]
+            self.assertTrue(torch.allclose(mem, mem[:, :1].expand_as(mem)))
 
     def test_probe_response_grows_with_amplitude(self):
         """The evoked response (counted from the probe) does not fall as the probe grows."""
@@ -115,13 +128,76 @@ class Training(unittest.TestCase):
         static = rng.normal(0, 1, (40, 8)).astype(np.float32)
         movement = static.copy()
         movement[:, 0] += 3
-        cfg = dict(tr.TRAIN, settle_ms=60, second_ms=120, window=(20, 120), batch=16, lr=3e-3)
+        # 16 motor neurons over 100 ms cannot separate the declared 2 vs 5 Hz; the cap has its own test
+        cfg = dict(tr.TRAIN, settle_ms=60, second_ms=120, window=(20, 120), batch=16, lr=1e-2, motor_rest_hz=5.,
+                   motor_max_hz=40.)
         net = nw.Network(8, small(), seed=0)
-        readout, history = tr.train(net, static, movement, cfg=cfg, updates=150)
-        accuracy, _ = tr.evaluate_task(net, readout, static, movement, cfg=cfg, repeats=2)
-        self.assertGreater(accuracy, .85)
+        readout, history = tr.train(net, static, movement, cfg=cfg, updates=300)
+        task = tr.evaluate_task(net, readout, static, movement, cfg=cfg, repeats=2)
+        self.assertGreater(task['auc'], .9)                                # the declared task criterion
+        self.assertGreater(task['accuracy'], .85)
         self.assertLess(history[-1]['task'], history[0]['task'])
 
+    def test_movement_cap_penalises_only_movement_rates_above_it(self):
+        """Observation without execution: motor firing on movement frames above motor_max_hz is
+        penalised, at or below it is not, and static frames are not touched by the cap."""
+        import network as nw
+        import train as tr
+        net = nw.Network(8, small(), seed=0)
+        cfg = dict(tr.TRAIN, settle_ms=10, second_ms=400, window=(0, 400))
+        labels = torch.tensor([0., 1.])
+        out_v = torch.zeros(2, 410, 32)
+        readout = dict(kappa=torch.tensor(1.), n0=torch.tensor(0.))
+        def loss(movement_hz, static_hz=cfg['motor_rest_hz']):
+            out_m = torch.zeros(2, 410, 32)
+            for row, hz in ((0, static_hz), (1, movement_hz)):
+                out_m[row, 10::int(1000 / hz)] = 1.                  # regular firing at the given rate
+            return tr.objective(net, out_v, out_m, labels, readout, cfg)
+        _, at_cap = loss(5.)
+        self.assertAlmostEqual(at_cap['fdi_movement_hz'], 5., delta=.5)
+        base = loss(5.)[0] - loss(5.)[1]['task']
+        above = loss(20.)[0] - loss(20.)[1]['task']
+        self.assertGreater(above.item(), base.item() + 10)          # (20 - 5)^2 x 2 populations / 5
+
+    def test_health_diagnostics_run_on_a_small_network(self):
+        """diagnose() returns every declared criterion; task probes have one value per trial."""
+        import network as nw
+        import train as tr
+        rng = np.random.default_rng(0)
+        static = rng.normal(0, 1, (6, 8)).astype(np.float32)
+        movement = static + 2
+        net = nw.Network(8, small(), seed=0)
+        readout = dict(kappa=torch.tensor(1.), n0=torch.tensor(0.))
+        cfg = dict(tr.TRAIN, settle_ms=50, second_ms=120, window=(20, 120))
+        report = tr.diagnose(net, readout, static, movement, cfg)
+        self.assertEqual(set(report['criteria']), {'task', 'silent_visual', 'fast_visual', 'threshold', 'dose', 'fixation_motor', 'facilitation',
+                                                   'background', 'excitability', 'not_saturated', 'readout_not_silent'})
+        task = tr.task_probe(net, report['threshold'] * 1.2, static, movement, cfg, repeats=2)
+        self.assertEqual(task['movement']['responses'].shape, (2, 6, 2))
+        rates = [r for r, _ in report['excitability_curve']]
+        self.assertTrue(all(b > a for a, b in zip(rates, rates[1:])))   # the sweep depolarises FDI step by step
+
+
+
+@unittest.skipIf(torch is None, 'torch and snntorch not installed')
+class Campaign(unittest.TestCase):
+    def test_folds_inner_sources_and_resume(self):
+        """Every source is an inner source once, never its own fold's held-out source, and finished
+        runs are skipped."""
+        import tempfile
+        import campaign as cp
+        inner = [cp.inner_source(f) for f in cp.SOURCES]
+        self.assertEqual(sorted(inner), list(cp.SOURCES))
+        self.assertTrue(all(i != f for i, f in zip(inner, cp.SOURCES)))
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            for suffix in ('json', 'pt'):
+                (d / f'health_h1_openclip_snn_fold3_seed0.{suffix}').write_text('{}')
+            done = {(f, s): flag for f, s, _, flag in cp.runs('h1', 'openclip', True, [3, 4], [0], d)}
+            self.assertEqual(done, {(3, 0): True, (4, 0): False})
+            command = cp.command('h1', 'openclip', False, 4, 0, d)
+            self.assertEqual(command[command.index('--inner') + 1], '5')
+            self.assertIn('--rate', command)
 
 if __name__ == '__main__':
     unittest.main()

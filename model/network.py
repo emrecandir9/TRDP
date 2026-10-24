@@ -12,8 +12,12 @@ import math
 import torch
 from torch import nn
 
+# motor_pool: each motor population is a homogeneous pool, its neurons sharing one visuomotor weight
+# vector and one bias and differing only by their noise, so the population's firing and its
+# excitability move together (docs/model-method.md §6.10). Checkpoints saved before 24 Oct 2026
+# have per-neuron weights (motor_pool=False).
 CONFIG = dict(n_visual=256, n_motor=64, tau_syn=5., tau_mem=20., dt=1., membrane_sd=.1, threshold=1., slope=25.,
-              rate_slope=4., visual_bias=.8, motor_bias=.6, input_gain=.5)
+              rate_slope=4., visual_bias=.8, motor_bias=.6, input_gain=.5, motor_pool=True)
 # ms after the probe. The human MEP window (5-60 ms) follows a corticospinal conduction delay of
 # about 20 ms; the model reads its motor population directly, which answers within 1-5 ms, so the
 # window keeps the human length (55 ms) but starts at the probe (spec amendment, 24 Oct 2026).
@@ -46,8 +50,9 @@ class Network(nn.Module):
         c = self.config
         torch.manual_seed(seed)
         self.w_in = nn.Linear(dim, c['n_visual'])
-        self.w_vm = nn.Linear(c['n_visual'], 2 * c['n_motor'], bias=False)
-        self.b_m = nn.Parameter(torch.full((2 * c['n_motor'],), c['motor_bias']))
+        units = 2 if c.get('motor_pool') else 2 * c['n_motor']      # one per population, or per neuron
+        self.w_vm = nn.Linear(c['n_visual'], units, bias=False)
+        self.b_m = nn.Parameter(torch.full((units,), c['motor_bias']))
         nn.init.normal_(self.w_in.weight, 0, c['input_gain'] / math.sqrt(dim))
         nn.init.constant_(self.w_in.bias, c['visual_bias'])
         nn.init.normal_(self.w_vm.weight, 0, 1 / math.sqrt(c['n_visual']))
@@ -63,6 +68,21 @@ class Network(nn.Module):
     @property
     def n_motor(self):
         return self.config['n_motor']
+
+    @property
+    def pooled(self):
+        return bool(self.config.get('motor_pool'))
+
+    def per_neuron(self, x):
+        """Expand per-population values [..., 2] to the motor neurons [..., 2 n_motor] (pooled network)."""
+        return x.repeat_interleave(self.n_motor, dim=-1) if self.pooled else x
+
+    def motor_bias(self):
+        return self.per_neuron(self.b_m)
+
+    def fdi_bias_index(self):
+        """Entries of b_m that set the FDI population's bias."""
+        return slice(0, 1) if self.pooled else slice(0, self.n_motor)
 
     def drive(self, x):
         """Visual input current of standardised encoder vectors (constant within a frame)."""
@@ -89,7 +109,7 @@ class Network(nn.Module):
         else:
             out_v, syn_v, mem_v = self._rate(self.scale * (drive + noise_v), syn_v, mem_v)
         # The probe is a raw 1-ms current (not scaled), the model's brief TMS pulse.
-        current = self.scale * (gate[:, None] * self.w_vm(out_v) + self.b_m + noise_m) + probe[:, None]
+        current = self.scale * (gate[:, None] * self.per_neuron(self.w_vm(out_v)) + self.motor_bias() + noise_m) + probe[:, None]
         if self.spiking:
             out_m, syn_m, mem_m = self.motor(current, syn_m, mem_m)
         else:

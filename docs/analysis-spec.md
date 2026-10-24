@@ -46,6 +46,8 @@ predictions for the matched controls, which have no human data (amended 24 Octob
 | MEP peak-to-peak, 5–60 ms after TMS, FDI and ADM | Readout-population response over 55 ms from the probe (amended 24 Oct 2026; was 5–60 ms), minus a matched no-probe trial; FDI- and ADM-associated readouts | Arbitrary units, not mV; no conduction delay, so the window starts at the probe |
 | 20 fixation-cross trials at session start and end | Black-image fixation trials at start and end, for threshold and drift checks; presented to the network as no visual stimulus (rest), since a frozen encoder's description of a black frame lies far outside its training images (amended 24 October 2026) | — |
 | Count the finger movements (attention task) | Auxiliary training task: detect/count index movements (§6.3) | — |
+| Trials with background EMG in the 100 ms before the pulse excluded (hand at rest) | Motor populations held near rest during observation by training (§6.3); pre-probe rate reported per display, and displays above the background criterion flagged (§6.4) (amended 24 October 2026) | A trained constraint and a display-level rule instead of trial exclusion |
+| MEPs beyond ± 2 SD of their condition mean removed per participant | Same trimming within each model instance and cell; untrimmed as sensitivity (amended 24 October 2026) | — |
 | Within-participant z-normalisation of MEPs | Same normalisation applied within each model instance | — |
 
 ## 3. Frozen cohort
@@ -171,8 +173,8 @@ averaged into the 12 cells, and passed through the same contrast code as the hum
 ### 5.2 Criteria, fixed now
 
 **Primary model:** H2 (attachment gate, §6.2), implemented as the spiking network selected at
-Gate 2 (feedforward or recurrent; logged before evaluation). H0, H1 and the non-spiking twin
-are comparison models scored with the same criteria. A comparison model never replaces the
+Gate 2 (feedforward or recurrent; logged before evaluation). H0, H1, the ungated network (§6.2) and
+the non-spiking twin are comparison models scored with the same criteria. A comparison model never replaces the
 primary model after results are seen.
 
 **Encoder (amended 24 October 2026).** The frozen image encoder of every model is the OpenCLIP
@@ -234,6 +236,7 @@ divided by the between-source spread, computed per context and passed through §
 | H0, no context | Visuomotor readout from hand features only | None |
 | H1, salience | Movement signal scaled by low-level change in the whole image | None |
 | H2, attachment gate | A context pathway estimates whether the hand is connected to an arm and gates the visuomotor mapping. Amended 24 Oct 2026: the estimate is the forearm visible without a break below the wrist line, in palm widths, capped at 1 (`model/context.py`); the gate is g = c + (1 − c)·a | One gate parameter c (≤ two allowed), fitted to the human ratio Δ(DH, FDI) / Δ(FB, FDI) = −0.10 (§4.5) using training source groups only; no upper-limb data |
+| Ungated network (comparison; added 24 Oct 2026) | H2's trained network with g = 1 on every display: the learned visuomotor mapping applied to the display features without any context pathway | None |
 
 No condition label enters any model, and no condition receives its own gain.
 
@@ -246,6 +249,10 @@ No condition label enters any model, and no condition receives its own gain.
 - Training uses only an auxiliary task, matching the participants' instruction: detect or
   count index movements in static→static and static→movement sequences. MEP values are never
   a training target.
+- Observation without execution (amended 24 October 2026): the motor populations are held near
+  rest on static frames and below a fixed limit on movement frames, as the paper's MEPs were taken
+  with the hand at rest (background EMG excluded); limits in
+  [model-method](model-method.md) §6.2.
 - Training images are **full-body views only**: the observer's view of their own connected
   hand. Associative accounts hold that observation–execution matching is learned from seeing
   one's own actions (Heyes, 2001; Cook et al., 2014), and sensorimotor training reconfigures
@@ -262,6 +269,12 @@ No condition label enters any model, and no condition receives its own gain.
 - Readout: response of the FDI- and ADM-associated populations 0–55 ms after the probe (amended 24 October 2026: the human 5–60-ms window follows a corticospinal conduction delay the model does not have),
   minus the same window on a matched trial without a probe (same random input stream).
 - Plasticity is frozen during evaluation. Silent or saturated readouts invalidate a run.
+- Readout validity (amended 24 October 2026): a run is usable only if, on full-body trials of a
+  training source, the FDI readout is larger on movement than static trials and the motor
+  populations stay within the background criterion before the probe. On a test display whose
+  pre-probe motor rate exceeds that criterion, the readout no longer grows with excitability, so its
+  contrasts are reported as outside the validated readout range and do not count towards any
+  criterion ([model-method](model-method.md) §6.3, §6.5).
 
 ## 7. Splits, controls and sensitivity
 
@@ -319,17 +332,27 @@ equal the full-body image, hidden pixels are black, and matched pairs have equal
 | 24 Oct 2026 (before any model result) | §1 claim boundary on continuity vs visible context; §2 fixation presented as rest; §5.2 S3 split into (b) hand-only as written and (a) a refitted global visible-area gate compared on the matched control pairs; §6.2 H2's context estimate defined as contiguous forearm continuity at the wrist with a one-parameter gate; §7.2 rectangle prediction corrected | A low-level gate fitted to the same human ratio can match it through visible area, so S3(a) as written would reject H2 by construction and the human data cannot separate the two accounts; the encoded black frame drove the model's motor layer to 45 Hz at rest; two gate parameters cannot be identified from one ratio; the archive rectangle was measured to contain 0.80 palm widths of forearm. Decided by the assistant under the project owner's delegation of 24 October 2026 |
 | 24 Oct 2026 (before any model result) | §2 and §6.4: readout window 0–55 ms after the probe instead of 5–60 ms | The human window captures an MEP that arrives after about 20 ms of corticospinal conduction; the model reads its motor population directly, which answers within 1–5 ms in synchronous volleys, so the 5-ms boundary cut through them and made the probe dose-response non-monotone (health check on training sources). The window keeps the human length; with it the dose-response is monotone (Spearman 1.00) |
 
+| 24 Oct 2026 (before any model result) | §2 background-EMG and ± 2 SD trimming rows; §5.2 and §6.2 ungated network added as a comparison model; §6.3 observation without execution; §6.4 readout validity and the readout range rule | A check on the health-check network (training sources, full-body trials only) found that after training the FDI population fired at 26 Hz before the probe on movement trials (99% of its neurons active), against 5 Hz on static trials, and the probe readout did not differ between them (−0.47 spikes, 95% interval −1.32 to 0.38): the population's probe response peaks near 9 Hz and falls below its resting value at 30–40 Hz, so a population driven hard reads as unexcited. P2 would then have failed in every model for a measurement reason, and an over-driven test display could have imitated the human pattern. The paper's own trimming had not been mirrored, and without an ungated model the necessity of H2's gate could not be shown. Decided by the assistant under the project owner's delegation of 24 October 2026 |
+
 ## 11. References
 
 - Catmur, C., Walsh, V. & Heyes, C. (2007). Sensorimotor learning configures the human mirror
   system. *Current Biology*, 17, 1527–1531.
 - Cook, R., Bird, G., Catmur, C., Press, C. & Heyes, C. (2014). Mirror neurons: from origin to
   function. *Behavioral and Brain Sciences*, 37, 177–192.
+- Fadiga, L., Fogassi, L., Pavesi, G. & Rizzolatti, G. (1995). Motor facilitation during action
+  observation: a magnetic stimulation study. *Journal of Neurophysiology*, 73, 2608–2611.
 - Heyes, C. (2001). Causes and consequences of imitation. *Trends in Cognitive Sciences*, 5,
   253–261.
+- Kraskov, A., Dancause, N., Quallo, M. M., Shepherd, S. & Lemon, R. N. (2009). Corticospinal
+  neurons in macaque ventral premotor cortex with mirror properties: a potential mechanism for
+  action suppression? *Neuron*, 64, 922–930.
 - Matamala-Gomez, M., Frisco, F. et al. (2025). Virtual body continuity during action
   observation affects motor cortical excitability. *Scientific Reports*, 15, 13364.
 - Nosek, B. A., Ebersole, C. R., DeHaven, A. C. & Mellor, D. T. (2018). The preregistration
   revolution. *PNAS*, 115, 2600–2606.
 - Saravanan, V., Berman, G. J. & Sober, S. J. (2020). Application of the hierarchical bootstrap
   to multi-level data in neuroscience. *Neurons, Behavior, Data analysis, and Theory*, 3(5).
+- Vigneswaran, G., Philipp, R., Lemon, R. N. & Kraskov, A. (2013). M1 corticospinal mirror
+  neurons and their role in movement suppression during action observation. *Current Biology*,
+  23, 236–243.

@@ -161,6 +161,24 @@ checks are advisory. A regression test rejects an assistant review file.
 | Geometry | Full-body and upper-limb crops pixel-identical in all 480 families at s = 1.5 and 2, different in all 480 at s = 3, as predicted |
 | Tests | 87 CPU tests pass |
 
+## Pre-training validation of the model — 24 October 2026
+
+Review of every step before the training campaign, against the paper's Methods, the frozen spec and
+the code ([model method](model-method.md) §6.10–6.11, §8; spec amendment of 24 October). Training
+sources and full-body trials only; no held-out source, and no probe or movement contrast on another
+display.
+
+| Check | Result |
+| --- | --- |
+| Probe readout measures the trained response | **Failed, corrected.** FDI fired at 26 Hz before the probe on movement trials and the readout did not differ from static trials (−0.47 spikes [−1.32, 0.38]); the population's probe response falls once it fires above about 9 Hz. After holding the motor populations near rest (the paper excluded trials with background EMG) and making each population a homogeneous pool: facilitation +2.3 [1.5, 3.1], +2.6 [1.9, 3.4] and +3.0 [2.3, 3.7] spikes in three H2 networks (two seeds, two encoders), +1.5 for H0 and +2.8 for H1; all criteria pass for these five. DINOv2 mean patch token misses the task criterion (AUC 0.891 vs 0.9) with positive facilitation (+1.3) |
+| Non-spiking twin | **Not usable as built**: its softplus rate unit is far from the spiking neuron's regime and it did not learn the task (AUC 0.0); to be repaired before Gate 2 |
+| Paper's preprocessing mirrored | Background-EMG exclusion and ± 2 SD trimming had not been mirrored; added |
+| Health criteria implemented as declared | "> 200 Hz" missing, "silent" measured on one batch, accuracy confounded by source offsets; corrected (AUC, all training sources) |
+| Gate necessity testable | Ungated comparison model added |
+| What is built in for H2 | Stated per criterion ([model method](model-method.md) §7) |
+| Citations | Three added references checked against publisher records |
+| Tests | 105 CPU tests pass, including 12 for the network, health measures and campaign driver |
+
 ## Remaining limits
 
 **Single unblinded review.** All 480 families were accepted by one reviewer (the project owner),

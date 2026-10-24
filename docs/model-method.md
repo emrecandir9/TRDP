@@ -122,7 +122,7 @@ diagnostics use training sources only, and H2's gate fit (§6.6) uses training s
 | --- | --- |
 | Input | Standardised encoder vector of the displayed image (§3), constant within a frame; D = 1,280 (OpenCLIP) or 1,024 (DINOv2) |
 | Visual layer V | 256 current-based leaky integrate-and-fire neurons (snnTorch `Synaptic`): `I ← αI + s(W_in x + b_V + σξ)`, `U ← βU + I − θS`, `S = H(U − θ)`, θ = 1, reset by subtraction, α = exp(−1/τ_syn), β = exp(−1/τ_mem), τ_syn = 5 ms, τ_mem = 20 ms, Δt = 1 ms. **Units:** s = (1 − α)(1 − β), so a constant input x settles at membrane potential x; initial b_V = 0.8 (below threshold), W_in ~ N(0, 0.5²/D) |
-| Motor layer M | Two populations of 64 neurons each, FDI- and ADM-associated, same neuron model; input `s(g · W_VM S_V + b_M + σξ) + P(t)`, initial b_M = 0.6 (below threshold) |
+| Motor layer M | Two populations of 64 neurons each, FDI- and ADM-associated, same neuron model; input `s(g · w_p · S_V + b_p + σξ) + P(t)` for population p. **Each population is a homogeneous pool** (amended 24 Oct 2026, §6.10; was a separate weight row and bias per neuron): its neurons share one visuomotor weight vector w_p (initial N(0, 1/256)) and one bias b_p (initial 0.6, below threshold) and differ only by their independent noise, so the pool's firing and its excitability change together |
 | Gate g | Multiplies the visuomotor input; defined per hypothesis (§6.6); never a function of a condition label |
 | Noise | Independent Gaussian input noise in both layers, σ set so that the membrane potential fluctuates with SD 0.1 θ at rest (derived analytically, checked in a test); the matched no-probe twin shares it exactly |
 | Probe P(t) | Raw (unscaled) current of amplitude A injected into every motor neuron for 1 ms at the probe time |
@@ -139,11 +139,21 @@ diagnostics use training sources only, and H2's gate fit (§6.6) uses training s
   population's mean spike count 50–300 ms after second-frame onset, the logit is `κ(n_FDI − n₀)`
   (κ, n₀ trainable readout scalars) and the loss is binary cross-entropy against
   movement/static. MEP analogues are never a training target.
-- **Regularisers:** visual neurons kept between 2 and 40 Hz (hinge on the mean rate); motor rate
-  on static second frames held near 5 Hz; the ADM population is held at the same rate in
-  movement and static frames. **This builds in muscle specificity** (FDI learns the index
+- **Regularisers:** visual neurons kept between 2 and 40 Hz (hinge on the mean rate); each motor
+  population held near 2 Hz on static second frames and at rest (quadratic, weight 1/5 per Hz²; eight
+  no-stimulus rest trials run in every batch), and **below 5 Hz on movement frames** (hinge, same
+  weight); amended 24 October 2026, §6.10, before any evaluation: was 5 Hz on static frames with
+  weight 1/50, no rest trials and no limit on movement frames. The ADM population is held at the
+  same rate in movement and static frames. **This builds in muscle specificity** (FDI learns the index
   movement, ADM does not), as the associative account predicts for index-movement training; ADM
   results are therefore exploratory, as in spec §5.2.
+- **Observation without execution (§6.10).** The paper excluded every trial with background EMG
+  in the 100 ms before the pulse, so its MEPs were recorded with the hand at rest. Observation
+  modulates corticospinal neurons without producing muscle activity (Kraskov et al., 2009;
+  Vigneswaran et al., 2013), and MEP facilitation during observation is a change of excitability at
+  rest (Fadiga et al., 1995). The model's motor populations stand for that corticospinal output, so
+  observing a movement may raise their firing only slightly. The limit also keeps the readout valid:
+  the probe response of this population grows with excitability only near rest (§6.10).
 - **Optimiser:** Adam, learning rate 10⁻³, batch 32 trials, 3,000 updates; surrogate gradient
   fast sigmoid (snnTorch default, slope 25); weights initialised from a seed per
   initialisation (10 per configuration, spec §5.1).
@@ -159,10 +169,21 @@ diagnostics use training sources only, and H2's gate fit (§6.6) uses training s
   response is at least 6 spikes (≈ 10% of the population) on at least 50% of 40 trials, found by
   bisection over A in [0, A_max] with 14 halvings (an adaptive staircase). The task probe is
   1.2 × threshold, as in the paper.
-- **Single-trial readouts** of the task trials are z-normalised within each instance over both
-  populations (the paper's per-participant normalisation; the deposited MEPs contain task trials
-  only, 360 per participant) and passed to the human-target contrast code. Fixation trials serve
-  the threshold and drift checks only.
+- **Single-trial readouts** of the task trials are trimmed as in the paper (readouts beyond ± 2 SD
+  of their cell mean removed within each instance, cell = display × trial type × population),
+  then z-normalised within each instance over both populations (the paper's per-participant
+  normalisation; the deposited MEPs contain task trials only, 360 per participant) and passed to
+  the human-target contrast code. Untrimmed readouts are a sensitivity analysis (amended 24
+  October 2026, before any evaluation: the paper's trimming had not been mirrored). Fixation
+  trials serve the threshold and drift checks only.
+- **Readout range rule (amended 24 October 2026, before any evaluation).** The readout measures
+  excitability only while the motor population is near rest (§6.10); a display that drives it
+  harder would show a smaller probe response for a reason unrelated to the hypothesis, and could
+  imitate the human pattern. For every model and display, the mean rate of each motor population in
+  the 100 ms before the probe is reported per trial type. If it exceeds 6 Hz (the background
+  criterion of §6.5) for a display, every contrast involving that display is reported as
+  **outside the validated readout range**, and a criterion that depends on it is not counted as
+  met, whichever way it comes out.
 
 ### 6.4 Evaluation simulation
 
@@ -170,28 +191,57 @@ Each instance runs its full session (§2) at Δt = 1 ms with plasticity frozen; 
 task and fixation trial. Instances are simulated in parallel on the GPU. The same session is run
 for the primary displays, the paired rectangle sensitivity and the controls.
 
+**Memory of the feedforward network.** Its only state is the synaptic and membrane variables
+(τ ≤ 20 ms), so its state at the probe, 250 ms after the second frame starts, depends on that
+frame alone (residual influence of earlier frames < e⁻¹² ≈ 6 × 10⁻⁶). Trial jitter, familiarisation, block order and
+carry-over therefore cannot affect it; they are kept for fidelity and matter only for the
+recurrent variant. A simulation that starts each trial from rest 300 ms before its second frame is
+equivalent up to that residual and may be used for the feedforward network if the first instance
+shows identical cell means within simulation noise. The "final frame only vs sequence" ablation
+(next-phase plan W7) is null by construction for the feedforward network.
+
 ### 6.5 Health criteria (Gate 2, spec §8), on training sources
 
 | Criterion | Requirement |
 | --- | --- |
-| Visual activity | ≤ 10% silent neurons (no spike over a training session), ≤ 5% above 200 Hz |
-| Motor rest | Mean motor rate on fixation 1–20 Hz |
-| Task | Detection accuracy ≥ 0.9 on full-body trials of an inner held-out training source |
+| Visual activity | ≤ 10% silent neurons (no spike over all inner-source trials), ≤ 5% above 200 Hz |
+| Motor rest | Mean rate of each motor population on fixation 0.5–20 Hz (amended 24 Oct 2026 from 1–20 Hz with the lower rest target, §6.10) |
+| Task | Movement detection on full-body trials of an inner held-out training source: AUC of the FDI count, movement vs static, ≥ 0.9 (amended 24 Oct 2026, §6.10: was accuracy ≥ 0.9 with the trained threshold; accuracy is still reported) |
 | Threshold | Found inside (0, A_max); probe dose-response monotone (Spearman ≥ 0.9 over 10 amplitudes, 0.5–2 × threshold) |
-| Readouts | Not silent (mean task response > 0) and not saturated (< 90% of the population) |
+| Readouts | Not silent (mean task response > 0) and not saturated (no response ≥ 90% of the population) |
+| **Readout facilitation** (added 24 Oct 2026, §6.10) | On full-body trials of the inner source, the FDI probe response at the task probe is larger on movement than on static trials (95% interval of the paired difference above 0). This checks that the readout measures the trained motor response; it uses the training display only and no context information |
+| **Background activity** (added) | Each motor population's rate in the 100 ms before the probe ≤ 6 Hz on static and movement full-body trials of the inner source (the model's analogue of the paper's background-EMG exclusion) |
+| **Excitability range** (added) | At rest, raising the FDI population's excitability with a constant current raises its probe response monotonically up to the movement limit of 5 Hz (Spearman ≥ 0.9) |
 | Distinct predictions | H0, H1 and H2 make different control predictions (spec §8) |
 
 ### 6.6 Hypotheses (spec §6.2)
 
 - **H0, no context:** the visual input is the hand-only image of the same family and frame (the
   Gate 1 `hand_only` features), identical in every display; g = 1. Its context effect is 0 by
-  construction.
+  construction. Its standardisation is fitted on the training sources' hand-only images, its only
+  input (amended 24 October 2026; §3 describes the display models).
 - **H1, salience:** display features; g = 1 + s/s̄, where s is the 64 × 64 luminance distance
   between the displayed frame and the trial's first frame (0 for first frames and static second
   frames) and s̄ its mean over training full-body movement frames. No parameter is fitted.
 - **H2, attachment gate:** display features; g = c + (1 − c)·a, with a the forearm continuity of
   the display (§7, `model/context.py`) and one parameter c fitted to the human ratio
   Δ(DH, FDI)/Δ(FB, FDI) = −0.10 on training sources only.
+- **Ungated network (comparison, added 24 October 2026 before any evaluation):** H2's trained
+  network with g = 1 on every display. It costs no training (H2 and the ungated network share it) and is the
+  direct test that the gate is necessary: it shows what the learned visuomotor mapping does with
+  the display features alone, which Gate 1 found reversed (largest movement signal for the detached
+  hand). Spec §1 allows claims about which components are necessary; without this model the
+  necessity of the gate would rest on H0 and H1 only, which differ from H2 in their input or gate
+  and in their training.
+- **Fitting c (declared 24 October 2026, before any fit).** Per outer fold and initialisation, after
+  training: full-body and silhouette detached-hand trials of the fold's 19 training sources
+  (30 static and 30 movement trials per source and display, every variant used as in §2, task probe,
+  trimming and normalisation as in §6.3 within each source) are simulated once with common random
+  numbers for every c on the grid {0, 0.05, …, 1}. c is the grid value whose ratio of source-mean
+  Δ(DH, FDI) to Δ(FB, FDI) is closest to −0.10; ties go to the smaller c. If Δ(FB, FDI) ≤ 0 on the
+  training sources, the fit is undefined and the run fails health (§6.5). The S3(a) visible-area
+  model's c is fitted by the identical procedure. The fitted c and the whole ratio curve are
+  reported; the held-out source never enters.
 - **Training per hypothesis.** Each hypothesis is trained with its own input and gate on full-body
   training trials: H0 on hand-only features; H1 with its salience gate; H2 with its gate, which is
   1 on every full-body image (a = 1), so H2 and the ungated network share training.
@@ -260,6 +310,117 @@ network was rechecked without retraining (`train.recheck`):
 
 A test now requires the evoked response not to fall as the probe grows.
 
+### 6.10 Pre-training validation: the readout and the motor regime (24 October 2026)
+
+Asked to validate every step before the training campaign, the assistant checked whether the
+probe readout measures what the trained network does. Every check below uses full-body trials of
+training sources (inner source 2 of fold 1) or the fixation display; no other display enters a
+probe, a movement contrast or a ratio. To find out whether test displays drive the network far from
+its training regime, static-frame activity (no probe, no movement) was also inspected on every
+display for training sources 3–20 with the §6.9 network; that inspection showed one display,
+`scrambled`, driving the FDI population to 25 Hz on static frames (full body 5 Hz), which motivated
+the readout range rule (§6.3).
+
+**Finding 1: the readout did not register the trained response.** In the §6.9 network the FDI
+population fired at 26 Hz before the probe on movement trials (99% of its neurons active) and at 5 Hz
+on static trials, yet the probe response was the same (9.9 vs 9.4 spikes; difference −0.47, 95%
+interval −1.32 to 0.38). Raising the FDI population's excitability step by step at rest showed why:
+its probe response grows from 7.8 spikes at 1.6 Hz to a plateau of 13 near 6–9 Hz and falls back to
+about 9 spikes at 30–40 Hz. A neuron that already fires is moved forward in time by the probe rather
+than recruited, so a population driven hard reads as unexcited. Shorter windows (0–3, 0–5, 0–10,
+0–20 ms) behave the same way, so this is not a window effect. (In people, MEPs grow with background
+contraction; this decline is a property of the model, which is why it is kept out of its operating
+range.) With the declared training, P2 would have failed in every model for a measurement reason, and
+a test display that over-drives the network could have imitated the human pattern.
+
+**Change 1: observation without execution** (§6.2): each motor population held near 2 Hz on static
+frames and below 5 Hz on movement frames, as the paper's MEPs were taken at rest. Health check
+(`output/model/v3/`): FDI 0.7 Hz on static and 4.5 Hz on movement frames, but the probe response
+*fell* on movement trials (10.6 → 6.5 spikes; ADM 15.1 → 7.1 although its rate did not change).
+
+**Finding 2: the population was not homogeneous.** Each motor neuron had its own visuomotor weights
+and bias. On movement frames the spread of the visual input across FDI neurons grew eightfold (SD
+0.028 → 0.216): 12% of neurons fired above 10 Hz while half were silent, and the mean membrane
+potential fell (0.715 → 0.663 θ). The network detected the movement with a few neurons and moved the
+rest away from threshold, so the population as a whole became less excitable.
+
+**Change 2: homogeneous pools** (§6.1): the neurons of a population share one visuomotor weight
+vector and one bias and differ only by their noise. A population then stands for a muscle's
+corticospinal pool, its rate and its excitability move together, and the excitability curve above
+describes the operating range exactly. Health check (`output/model/v4/`, OpenCLIP seeds 0 and 1,
+DINOv2 summary token seed 0): FDI probe response 12.4 → 17.5, 12.3 → 17.1 and 12.8 → 19.0 spikes
+from static to movement trials (differences 5.1 [4.1, 6.2], 4.9 [3.8, 5.9], 6.1 [5.0, 7.2]); ADM
+changes by −0.6 to +1.0 spikes; pre-probe rates ≤ 4.4 Hz; excitability curve monotone up to 5 Hz.
+
+**Finding 3 and change 3: rest and the task criterion.** At rest the pools fell to 0.2–0.8 Hz
+(criterion 0.5–20 Hz), because nothing held the no-stimulus state; eight rest trials per batch now
+hold it near 2 Hz too (§6.2), so rest, where the threshold is calibrated, is a baseline and not a
+silent state. Detection accuracy on the inner source was 0.95, 0.89 and 0.50 although the FDI count
+separated the trial types clearly (DINOv2: 0.22 vs 0.51 spikes per neuron): the trained threshold
+had been set on the training sources, whose counts were twice as high (0.47 vs 1.41). Source-level
+offsets do not affect the readout, which is z-normalised within each instance, so the task
+criterion is now the threshold-free AUC (§6.5).
+
+**Other corrections found in the same review.** The declared visual criterion "≤ 5% above 200 Hz"
+was not computed, and "silent" was measured on one training batch; both are now computed over two
+variants of every training source. The paper's ± 2 SD trimming had not been mirrored (§6.3). H0's
+standardisation was not defined (§6.6). The ungated network was missing as a comparison model, and
+c's fitting procedure was not declared (§6.6). §7 stated that a gated network cannot produce a
+negative movement effect, which is not true for c > 0; corrected. The README's directory map had no
+`model/` entry.
+
+Results of the corrected design: §6.11.
+
+### 6.11 Health check of the corrected design (24 October 2026, training sources only)
+
+Fold 1 (outer source 1 never used), inner source 2, 3,000 updates each, on `jessica`, three to four
+networks sharing the GPU (44 minutes each); `output/model/v5/`.
+
+| Criterion (§6.5) | H2, OpenCLIP, seed 0 | H2, OpenCLIP, seed 1 | H2, DINOv2 summary, seed 0 |
+| --- | --- | --- | --- |
+| Task AUC (accuracy) | 1.00 (1.00) | 1.00 (0.995) | 0.999 (0.50: source offset, §6.10) |
+| Visual rate; silent / > 200 Hz neurons | 17 Hz; 0 / 0 | 14 Hz; 0 / 0 | 19 Hz; 0 / 0 |
+| Rest (fixation) FDI / ADM | 1.95 / 2.02 Hz | 1.98 / 2.01 Hz | 1.91 / 2.02 Hz |
+| Threshold; dose-response Spearman | 0.016; 1.00 | 0.016; 1.00 | 0.017; 1.00 |
+| FDI probe response, static → movement | 8.2 → 10.5 | 7.5 → 10.1 | 4.8 → 7.8 |
+| **Readout facilitation** [95% CI] | **+2.3 [1.5, 3.1]** | **+2.6 [1.9, 3.4]** | **+3.0 [2.3, 3.7]** |
+| ADM, static → movement | 6.6 → 6.6 | 6.5 → 7.4 | 7.0 → 7.6 |
+| Highest pre-probe rate (criterion ≤ 6 Hz) | 5.5 Hz (FDI, movement) | 5.1 Hz | 2.2 Hz |
+| Excitability curve Spearman up to 5 Hz | 1.00 | 1.00 | 1.00 |
+| Saturated responses | 0 | 0 | 0 |
+| **All criteria** | **pass** | **pass** | **pass** |
+
+The facilitation is 28–63% of the static response and muscle-specific: ADM changes by 0 to 0.9
+spikes. Its size in model units is not compared with the human effect; only signs, contrasts and
+scale-free ratios are ([next-phase plan](next-phase-plan.md) §4.1). 
+
+| Criterion (§6.5) | H2, DINOv2 mean patch, seed 0 | H0, OpenCLIP, seed 0 | H1, OpenCLIP, seed 0 | Non-spiking twin, OpenCLIP, seed 0 |
+| --- | --- | --- | --- | --- |
+| Task AUC (accuracy) | **0.891** (0.50) | 0.988 (0.57) | 1.00 (0.98) | **0.00** (0.50) |
+| Rest FDI / ADM | 1.94 / 2.04 Hz | 1.92 / 2.00 Hz | 1.93 / 2.04 Hz | 4.1 / 5.1 Hz |
+| FDI probe response, static → movement | 2.7 → 4.0 | 7.7 → 9.2 | 7.3 → 10.1 | 0.01 → 0.00 |
+| Readout facilitation [95% CI] | +1.3 [0.9, 1.8] | +1.5 [0.7, 2.3] | +2.8 [2.1, 3.6] | **−0.01 [−0.01, −0.00]** |
+| Highest pre-probe rate | 1.7 Hz | 3.3 Hz | 4.5 Hz | 0.1 Hz |
+| **All criteria** | **fails task** (by 0.009) | **pass** | **pass** | **fails task, facilitation, excitability** |
+
+- **DINOv2 mean patch token.** Detection on the inner source just misses the criterion while the
+  readout facilitation is clear. This encoder carried the weakest full-body movement signal in Gate 1
+  (single-image accuracy 0.57, R4). It is a robustness encoder; its runs carry their own health checks
+  in the campaign, and nothing is tuned for it.
+- **Non-spiking twin: not usable as built.** Its softplus unit, `softplus(k(U − θ))/k`, gives a large
+  output below threshold (about 90 Hz at the initial membrane level, against near silence for the
+  spiking neuron), so at initialisation every layer fired at 40–180 Hz. The rate regularisers then
+  pushed its motor output to near zero on task frames, the task loss stayed at chance (0.70) and the
+  readout carries no signal. The twin needs a rate function matched to the spiking neuron's
+  rate–membrane relation (for example the noisy LIF transfer function) before its campaign. It is a
+  comparison model and the Gate 2 fallback (spec §8), so it must be repaired before Gate 2, but it does
+  not affect the spiking campaign.
+
+**Readiness.** The spiking network passes every health criterion for H2 (two seeds; OpenCLIP and the
+DINOv2 summary token), H0 and H1, so their training campaign can start (`model/campaign.py`). Each
+run repeats the health check on its own inner source, and failed runs are reported with the failing
+criteria (spec §9).
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -305,9 +466,11 @@ Consequences, stated before any model result:
 single human ratio cannot identify two (a slope and a midpoint): intermediate displays such as the
 scrambled view would then depend on an arbitrary choice. With one parameter, the gate is linear in
 continuity, and c, the residual gain of a fully disconnected hand, is fitted on training sources
-to the human ratio Δ(DH, FDI)/Δ(FB, FDI) = −0.10. Because a gated network cannot produce a negative
-movement effect, the fit is expected to reach c = 0, so H2 effectively uses no human data beyond
-the bound; the fitted value is reported.
+to the human ratio Δ(DH, FDI)/Δ(FB, FDI) = −0.10. The ungated network's detached-hand movement effect is expected to
+be positive (Gate 1 transfer gains for the detached hand are 1.24–1.75, so the movement moves the
+silhouette along the full-body readout axis at least as much as the full body), and the gate scales
+it towards 0 as c falls, so the fit is expected to reach c = 0. H2 then effectively uses no human data
+beyond the bound; the fitted value is reported.
 
 **Criterion S3.** A low-level gate fitted to the same human ratio could match it through visible
 area alone, since the detached hand shows far less of the image. S3(a) as frozen would then reject
@@ -319,12 +482,25 @@ equal and only connection differs. Whether the low-level model meets P1 is repor
 
 **What H2's success will and will not show.** Because a = 1 for FB and UL and 0 for DH, H2's fit to
 the robust human pattern is largely built in once the network transfers the movement mapping from
-full body to upper limb. The informative tests are therefore S2 (the upper-limb/full-body ratio,
-which no fitted parameter touches), P3 (stability across initialisations), agreement across the
-three encoders, the comparison with H0 and H1, and the S3 discrimination on the matched controls. A
-positive result supports the claim that a wrist-continuity gate on a learned visuomotor mapping is
-sufficient for the human pattern and distinguishable from a visible-context account in its control
-predictions; it does not show that humans use continuity rather than visible context (spec §1).
+full body to upper limb. Stated per criterion (added 24 October 2026, before any evaluation):
+
+| Criterion | For H2 | What can still fail |
+| --- | --- | --- |
+| P2, full body | Trained (the auxiliary task) | Only the readout (checked by the readout-facilitation criterion, §6.5) |
+| P1, S1 | Close to built in: with c ≈ 0 the gated detached hand has no visuomotor input, so Δ(DH) ≈ 0 | Only through Δ(UL) and Δ(FB) |
+| S3(b) | Built in: H0's contrast is 0 by construction | Only through P1 |
+| P2, upper limb; S2 | **Not built in**: the full-body mapping must transfer to the upper-limb features, whose movement direction has cosine ≈ 0.5 with the full-body one (Gate 1 R7) | Transfer too weak or too strong; readout out of range |
+| S3(a) | **Not built in**: the two pair members get equal low-level gates and different H2 gates by construction, but H2 exceeds the low-level model only if the full-body mapping also responds to the movement in the stub and arm-window displays, whose movement directions are nearly orthogonal to the full-body one (cosine 0.05–0.25, R7) | Δ(stub) or Δ(arm window) not above 0 |
+| P3, encoders | Not built in | Unstable optimisation; encoder-dependent transfer |
+
+The informative tests are therefore S2, the upper-limb half of P2, the control-display transfer that
+S3(a) requires, P3, agreement across the three encoders, and the comparison with the ungated network,
+H0 and H1. The ungated network is the reference for necessity: if it already reproduced the human
+pattern, the gate would not be needed. A positive result supports the claim that a wrist-continuity
+gate on a learned visuomotor mapping is sufficient for the human pattern and distinguishable from a
+visible-context account in its control predictions. Because the gate is computed from segmentation
+masks rather than learned from the image, it does not show how such a signal could arise from vision,
+and it does not show that humans use continuity rather than visible context (spec §1).
 
 ## 8. Validation of the methods (24 October 2026)
 
@@ -349,10 +525,17 @@ for a general check before the network phase continues.
 | S3 | Logic against H2 with a fitted gate | Would reject H2 by construction; amended to the matched-control comparison (§7) |
 | Muscle specificity | Training objective | Built in by the ADM regulariser; ADM results exploratory (§6.2) |
 | Development rule | Code paths | Health checks use training sources only; no held-out contrast is computed before the evaluation |
+| **Readout validity** (pre-training validation, §6.10) | Probe readout on trained full-body trials | Did not register the trained response (−0.47 spikes): motor population over-driven (26 Hz), then heterogeneous; corrected by observation without execution and homogeneous pools; facilitation +4.9 to +6.1 spikes |
+| Paper's preprocessing | Methods re-read for every step | Background-EMG exclusion and ± 2 SD trimming had not been mirrored; added (§6.3, spec amendment) |
+| Necessity of the gate | Comparison models | No model isolated the gate; ungated network added (§6.6) |
+| What is built in | Each criterion against H2's construction | P1, S1, S3(b) and P2 (full body) are close to built in for H2; S2, P2 (upper limb), S3(a) and P3 are not (§7) |
+| Network memory | Time constants | Feedforward state at the probe depends on the second frame only; sequence effects only in the recurrent variant (§6.4) |
+| Health criteria | Code against §6.5 | "> 200 Hz" not computed and "silent" measured on one batch; task accuracy confounded by source offsets; corrected (§6.10) |
+| Citations | Added references checked against the publishers' records | Fadiga et al. 1995, Kraskov et al. 2009, Vigneswaran et al. 2013 verified |
 
-**Still to do before Gate 2:** train H0 and H1; fit H2's c on training sources; run the non-spiking twin and the recurrent variant;
-parallelise training (about 1,000 GPU hours one network at a time); implement the session simulation
-and the hierarchical bootstrap evaluation.
+**Still to do before Gate 2:** the training campaign (`model/campaign.py`); the recurrent variant;
+the evaluation simulator (sessions with probes, trimming, normalisation, readout range rule), the fit
+of c, and the hierarchical bootstrap evaluation.
 
 ## Change log
 
@@ -365,3 +548,4 @@ and the hierarchical bootstrap evaluation.
 | 24 Oct 2026, after the first health check, before any evaluation | Fixation presented as rest; rest rate per population; CPU checkpoints; readout z-normalisation over task trials; training per hypothesis (§6.6, §6.8) | Health check on training sources found the encoded black frame out of distribution (FDI 45 Hz at rest) and FDI silent on static frames |
 | 24 Oct 2026 | H2 context pathway (forearm continuity), one-parameter gate, S3 amendment, rectangle correction (§7); validation review (§8) | Decision delegated by the project owner; spec amendment |
 | 24 Oct 2026 | Readout window 0–55 ms from the probe (§6.9, spec amendment); second health check passes every criterion | The 5-ms window start cut through the model's synchronous volleys and made the dose-response non-monotone |
+| 24 Oct 2026, before any evaluation | Pre-training validation (§6.10): observation without execution (rest 2 Hz, movement limit 5 Hz, rest trials), homogeneous motor pools, readout-validity criteria, AUC task criterion, visual criteria over all training sources, ± 2 SD trimming, readout range rule, ungated comparison, H0 standardisation, declared fit of c, H0/H1 training paths, campaign driver; §7 corrected and made explicit about what is built in (spec amendment) | The probe readout did not register the trained motor response, so P2 would have failed in every model for a measurement reason; the remaining items were gaps between the spec, the paper and the code |

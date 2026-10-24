@@ -26,6 +26,7 @@ TRDP/
 │                                #   scikit-learn, matplotlib
 ├── requirements-features.txt    # GPU feature extraction: torch (CUDA 12.8), transformers, open_clip
 ├── requirements-segmentation.txt # Optional: torch, timm, pinned SAM-HQ for segment_hands.py
+├── requirements-model.txt       # Model phase: requirements-features.txt plus snnTorch
 ├── .gitignore                   # Keeps data, models, environments and runs local
 ├── .gitattributes               # Treats PDFs as binary files; no Git LFS
 ├── config/
@@ -35,7 +36,15 @@ TRDP/
 │   ├── human_target.py          # Participant-level human MEP target from the OSF deposit
 │   ├── features.py              # Gate 1 inputs: rendering, low-level statistics, DINOv2/OpenCLIP (GPU)
 │   ├── baselines.py             # Gate 1 baselines: movement signal, decoding, latent-space analyses
-│   └── baseline_figures.py      # Figures of docs/baselines.md
+│   ├── baseline_figures.py      # Figures of docs/baselines.md
+│   └── handview.py              # Baselines Addendum A: hand-centred views
+├── model/
+│   ├── trials.py                # Trial simulator: sessions, timing, block orders (paper's procedure)
+│   ├── bank.py                  # Frozen-encoder inputs, hash-checked; training-only standardisation
+│   ├── context.py               # H2 context pathway: forearm continuity at the wrist
+│   ├── network.py               # Spiking visuomotor network, rate twin, probe readout, threshold
+│   ├── train.py                 # Auxiliary training per hypothesis and Gate 2 health check
+│   └── campaign.py              # Trains every fold × initialisation through the health-checked path
 ├── scripts/
 │   ├── setup.sh                 # Creates .venv for review or Linux CUDA generation
 │   ├── models.py                # Downloads / resolves the three pinned models
@@ -52,7 +61,12 @@ TRDP/
 │   ├── test_silhouette.py       # Silhouette geometry, registration, seams, wrist cut, frozen mattes
 │   ├── test_controls.py         # Control geometry, equal areas, scramble, frozen controls
 │   ├── test_human_target.py     # Human target checks; published-statistics reproduction
-│   └── test_baselines.py        # Baseline statistics, leave-one-source-out decoding, rendering
+│   ├── test_baselines.py        # Baseline statistics, leave-one-source-out decoding, rendering
+│   ├── test_handview.py         # Hand-centred windows and analysis
+│   ├── test_raters.py           # Rater-validation package
+│   ├── test_trials.py           # Trial simulator and feature bank
+│   ├── test_context.py          # Forearm-continuity estimate
+│   └── test_network.py          # Network units, probe readout, training, health measures, campaign
 ├── data/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
 │   ├── hand_segmentation.json   # Tracked SAM-HQ provenance, prompts and mask hashes
@@ -214,12 +228,21 @@ Done on 24 October:
   through the same window around the hand, with the hand up to twice as large.
 - Trial simulator and model inputs ([model method](docs/model-method.md)); rater-validation
   package prepared, not run by the owner's decision.
+- Encoder decided (OpenCLIP primary, DINOv2 for robustness); spiking visuomotor network, auxiliary
+  training and health check built; H2's context pathway (forearm continuity) decided.
+- Pre-training validation ([model method](docs/model-method.md) §6.10, §8): the probe readout did
+  not register the trained motor response, because the motor population was driven far above rest.
+  Training now keeps the motor populations near rest during observation (as the paper's MEPs were
+  taken at rest), and new health criteria check the readout itself. H0 and H1 training paths, an
+  ungated comparison model, the paper's ± 2 SD trimming and a campaign driver
+  (`model/campaign.py`) were added (spec amendment). The corrected spiking network passes every
+  health criterion for H2, H0 and H1; the non-spiking twin does not yet learn the task.
 
 Next:
 
-1. Decide the encoder ([model method](docs/model-method.md) §5), then build and test the temporal
-   motor-response model; Gate 2 on 4 December, single held-out
-   evaluation 14–18 December. Every analysis is repeated without reference 17 (456 families).
+1. Training campaign (20 folds × 10 initialisations per hypothesis, encoder and network type),
+   the recurrent variant, the evaluation simulator and H2's gate fit; Gate 2 on 4 December, single
+   held-out evaluation 14–18 December. Every analysis is repeated without reference 17 (456 families).
    A fresh CUDA canary is deferred.
 
 Image acceptance does not establish physiological or scientific replication.
