@@ -152,6 +152,12 @@
         "section": "7.2 controls",
         "sha256_after": "62182356f066f64e8a30f09cea85200df29cd40dee9ace29e505b0e6e5191100",
         "before_any_result": true
+      },
+      {
+        "date": "2026-10-24",
+        "section": "5.2, 6.3 encoder and decision rule",
+        "sha256_after": "ecb3e43445092c9dfcf88eeb5976203f3124c17af75933af74e419517252fdc3",
+        "before_any_result": true
       }
     ]
   },
@@ -171,5 +177,18 @@
     ],
     "rendering": "On demand from each family full-body image (scripts/controls.py render); no stored image archive",
     "visual_review": "approved by the project owner on 2026-10-22 (docs/controls-approval.json)"
+  },
+  "model": {
+    "encoder_primary": "openclip",
+    "encoder_primary_description": "OpenCLIP ViT-bigG-14 laion2b_s39b_b160k, encode_image before L2 normalisation, 224 px",
+    "encoders_robustness": [
+      "dinov2_cls",
+      "dinov2_patchmean"
+    ],
+    "features": "output/features (Gate 1 run, hash-checked by model/bank.py)",
+    "decision_rule_addition": "P1 in the same direction with both robustness encoders",
+    "decided_by": "project owner",
+    "date": "2026-10-24",
+    "method": "docs/model-method.md"
   }
 }

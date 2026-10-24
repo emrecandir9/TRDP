@@ -172,6 +172,13 @@ Gate 2 (feedforward or recurrent; logged before evaluation). H0, H1 and the non-
 are comparison models scored with the same criteria. A comparison model never replaces the
 primary model after results are seen.
 
+**Encoder (amended 24 October 2026).** The frozen image encoder of every model is the OpenCLIP
+ViT-bigG-14 image embedding (primary). The DINOv2 ViT-L/14 summary token and mean patch token are
+robustness encoders: the identical pipeline, initialisations and evaluation run on each, and every
+result is reported for all three. OpenCLIP was chosen after the Gate 1 results because its
+baselines were the least favourable to H2 ([baselines](baselines.md) R1, R4, R5), so the choice
+cannot favour the hypothesis.
+
 | Criterion | Requirement | Why |
 | --- | --- | --- |
 | **P1, primary** | `C_FDI` > 0, 95% interval excluding 0 | The one human effect that survives every scale (§4.5) |
@@ -183,7 +190,9 @@ primary model after results are seen.
 | Exploratory | Muscle specificity (three-way contrasts), ADM pattern, controls of §7.2, sensitivity scales, all-context training | Human ADM effect is not robust; controls have no human data |
 
 **Decision rule.** A model *reproduces the robust human pattern* if P1, P2, P3, S1, S2 and S3
-all hold. Every criterion is reported for every model, pass or fail. If the primary model fails
+all hold with the primary encoder **and** P1 holds in the same direction with both robustness
+encoders (amended 24 October 2026). If P1 holds with some encoders only, the result is reported as
+encoder-dependent. Every criterion is reported for every model, pass or fail. If the primary model fails
 P1, the result is reported as negative. Parameters, preprocessing and readouts are not changed
 after the evaluation is opened.
 
@@ -227,7 +236,7 @@ No condition label enters any model, and no condition receives its own gain.
 
 ### 6.3 Network and training
 
-- Frozen image encoder → feedforward leaky integrate-and-fire network (snnTorch), then a
+- Frozen image encoder (OpenCLIP primary, DINOv2 for robustness; §5.2) → feedforward leaky integrate-and-fire network (snnTorch), then a
   recurrent variant; a non-spiking network with matched size and inputs as a twin.
 - Initial constants: time step 1 ms, membrane 20 ms, synaptic 5 ms; sensitivity at 10/40 ms
   and 2/10 ms; time-step check at 0.5 ms on a subset.
@@ -303,6 +312,7 @@ equal the full-body image, hidden pixels are black, and matched pairs have equal
 | 22 Oct 2026 (draft) | §5 revised: hierarchical aggregation, 10 initialisations, primary model named, P2 and P3 added, S3 redefined as same-model low-level and hand-only controls, H2 fit target excludes upper limb, full-body-only training | Audit found undefined aggregation, a P1 loophole, a vacuous S3, partial circularity of S1 for H2 and unspecified training contexts; approved by the project owner |
 | 22 Oct 2026 | **Frozen** | Open items resolved, criteria approved; no model result exists |
 | 22 Oct 2026 (after freeze, before any result) | §7.2 controls given exact definitions and parameters; the wrist gap is shown on black as `hand_gap_stub` with area matched to `hand_stub`; the desk-scene band is kept as exploratory `occluded_wrist` without a declared prediction | A black band on a desk scene reads as an occluder behind which the arm is completed, so it does not test discontinuity; parameters had not been fixed at freezing |
+| 24 Oct 2026 (after the Gate 1 baselines, before any model result) | §5.2 and §6.3: OpenCLIP ViT-bigG-14 named as primary frozen encoder, DINOv2 summary and mean patch token as robustness encoders; the decision rule additionally requires P1 in the same direction with both robustness encoders | The spec required a frozen encoder without naming one; choosing after the baselines could favour the hypothesis, so the least favourable encoder is primary and agreement across encoders is required. Approved by the project owner |
 
 ## 11. References
 

@@ -6,9 +6,8 @@ the parts of the [analysis spec](analysis-spec.md) §2, §5.1 and §6.3–6.4 th
 instance sees, and fixes the details the spec and the paper leave open.
 
 **Status, 24 October 2026: draft.** Sections 1–4 are fixed: the trial simulator is built and
-tested, and nothing has been trained. Section 5 (encoder) is a **proposal awaiting the project
-owner's decision**, because it changes the decision rule of spec §5.2 and therefore needs a spec
-amendment. Section 6 lists what must be fixed before the first training run. Later changes go
+tested, and nothing has been trained. Section 5 (encoder) was decided on 24 October 2026
+(option A, spec amendment). Section 6 lists what must be fixed before the first training run. Later changes go
 to the change log at the end.
 
 ## 1. What the paper and the frozen spec fix
@@ -72,7 +71,14 @@ initialisation; Williams carry-over balance for 3, 4 and 6 displays); determinis
 rectangle sensitivity session; time grids at 1 and 0.5 ms; training sequences limited to
 full-body, training-source images; feature-bank look-ups on the real features.
 
-## 5. Encoder: proposal awaiting decision
+## 5. Encoder: decided 24 October 2026 (option A)
+
+**Decision.** The project owner approved option A on 24 October 2026: OpenCLIP ViT-bigG-14 is the
+primary encoder, the DINOv2 summary token and mean patch token are robustness encoders, and the
+decision rule requires P1 in the same direction with both. Recorded as a spec amendment (§5.2,
+§10) and in `config/analysis.json` (`model`). The proposal is kept below as written.
+
+### Proposal as written
 
 Spec §6.3 requires a frozen image encoder but does not name one. The choice is being made
 **after** the Gate 1 results are known, so it could be biased, deliberately or not, towards an
@@ -113,3 +119,4 @@ favourable to the hypothesis. Whichever is chosen is entered in the spec's amend
 | Date | Change | Reason |
 | --- | --- | --- |
 | 24 Oct 2026 | Draft: trial simulator and input rules fixed; encoder proposal | Start of the model phase |
+| 24 Oct 2026 | Encoder decided: option A (OpenCLIP primary, DINOv2 robustness, amended decision rule) | Project owner's decision; spec amendment |
