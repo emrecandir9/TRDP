@@ -151,6 +151,28 @@ def dose_response(net, amplitude, device='cpu', levels=10, trials_per=40, seed=3
     return out
 
 
+@torch.no_grad()
+def recheck(path, device='cpu'):
+    """Recompute threshold, dose-response and rest rates of a saved health-check network (the
+    readout does not affect training, so a readout correction needs no retraining)."""
+    from scipy import stats
+    import json as _json
+    ck = torch.load(path, weights_only=False, map_location=device)
+    report = _json.loads(Path(path).with_suffix('.json').read_text())
+    net = nw.Network(len(ck['scaler'][0]), spiking=report['spiking'], seed=report['seed']).to(device)
+    net.load_state_dict(ck['state'])
+    amplitude = nw.threshold(net, device=device)
+    curve = dose_response(net, amplitude, device=device) if np.isfinite(amplitude) else []
+    monotone = float(stats.spearmanr([c[0] for c in curve], [c[1] for c in curve])[0]) if curve else float('nan')
+    rest = fixation_rates(net, device)
+    report.update(threshold=amplitude, dose_response=curve, dose_spearman=monotone, fixation=rest,
+                  readout_ms=list(nw.READOUT))
+    report['criteria'].update(threshold=bool(np.isfinite(amplitude)), dose=bool(monotone >= .9) if curve else False,
+                              fixation_motor=bool(1 <= rest['fdi_hz'] <= 20 and 1 <= rest['adm_hz'] <= 20))
+    Path(path).with_suffix('.json').write_text(_json.dumps(report, indent=2) + '\n')
+    return report
+
+
 def health(representation='openclip', held_out=1, inner=2, seed=0, device=None, updates=None, spiking=True,
            output=OUTPUT):
     """Gate 2 style health check on one outer fold, using training sources only (§6.5)."""
@@ -176,7 +198,7 @@ def health(representation='openclip', held_out=1, inner=2, seed=0, device=None, 
                   inner_source=inner, seed=seed, updates=updates or TRAIN['updates'], device=str(device),
                   seconds=round(time.time() - started), final=history[-1], inner_accuracy=accuracy,
                   inner_visual_hz=visual_hz, threshold=amplitude, dose_response=curve, dose_spearman=monotone,
-                  fixation=rest,
+                  fixation=rest, readout_ms=list(nw.READOUT),
                   criteria=dict(task=accuracy >= .9, threshold=bool(np.isfinite(amplitude)),
                                 dose=bool(monotone >= .9) if curve else False,
                                 silent_visual=history[-1]['silent'] <= .10,

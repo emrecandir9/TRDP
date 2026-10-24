@@ -67,7 +67,7 @@ in training, and MEP values are never a target.
 ## 4. What the simulator guarantees (tests)
 
 Counts per block and session; timing bounds; probe 250 ms after onset and the readout window
-(5–60 ms) inside the second frame; contiguous timeline without gaps; correct frame pairs;
+(0–55 ms) inside the second frame; contiguous timeline without gaps; correct frame pairs;
 every variant used, none from another source; order balance (all six orders per source and per
 initialisation; Williams carry-over balance for 3, 4 and 6 displays); determinism; pairing of the
 rectangle sensitivity session; time grids at 1 and 0.5 ms; training sequences limited to
@@ -150,7 +150,8 @@ diagnostics use training sources only, and H2's gate fit (§6.6) uses training s
 
 ### 6.3 Probe, threshold and readout (spec §6.4)
 
-- **Readout:** for each probe, the FDI (and ADM) population spike count 5–60 ms after the probe,
+- **Readout:** for each probe, the FDI (and ADM) population spike count 0–55 ms after the probe
+  (the human window's length; it starts at the probe because the model has no conduction delay, §6.9),
   minus the same count in the matched no-probe twin. The twin is computed by branching from the
   identical network state at the probe time with the identical noise stream, so the difference is
   caused by the probe alone. The session then continues from the no-probe branch.
@@ -236,6 +237,29 @@ networks are therefore to be trained in parallel batches on the GPU before the f
 
 The health check is to be repeated with these corrections before any further step.
 
+### 6.9 Second health check and readout window (24 October 2026)
+
+Same fold, seed and training as §6.7, with the §6.8 corrections, on `jessica` (16.5 minutes).
+Every criterion passed except the probe dose-response (Spearman 0.76): responses at 0.5–2 ×
+threshold were 8.4, 2.4, 1.5, 5.7, 18, 34, 50, 56, 48, 31 spikes. A millisecond trace showed the
+cause: the motor population answers the probe within 1–5 ms in synchronous volleys, and the 5-ms
+start of the declared window (taken from the human MEP, which arrives after about 20 ms of
+corticospinal conduction) cut through them at amplitude-dependent points. Counted from the probe,
+the evoked response grows monotonically. The window was therefore set to 0–55 ms (the human length,
+starting at the probe; spec amendment). The network does not depend on the readout, so the saved
+network was rechecked without retraining (`train.recheck`):
+
+| Criterion (§6.5) | Result |
+| --- | --- |
+| Task accuracy, inner source | 1.00 |
+| Visual activity | 21–23 Hz; 0% silent neurons |
+| FDI / ADM on static frames | 5.0 / 4.9 Hz |
+| Motor rest at fixation | FDI 1.6 Hz, ADM 3.2 Hz |
+| Threshold | Found: 0.020; response at 1 × threshold 5.9 spikes (criterion 6) |
+| Dose-response, 0.5–2 × threshold | 2.5 → 16.3 spikes, monotone (Spearman 1.00) |
+
+A test now requires the evoked response not to fall as the probe grows.
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -319,14 +343,14 @@ for a general check before the network phase continues.
 | Fixation display | Health check on training sources | Encoded black frame out of distribution (FDI 45 Hz); presented as rest (§6.8) |
 | Rest regulariser | Health check | Held only the mean of FDI and ADM; now per population (§6.8) |
 | Readout normalisation | Against the deposit | Task trials only, as the deposited MEPs (§6.3) |
+| Readout window | Dose-response in the second health check | Human 5–60 ms window cut through the model's 1–5-ms volleys; 0–55 ms from the probe (§6.9, spec amendment) |
 | H2 gate | Identifiability | Two parameters not identifiable from one ratio; one parameter (§7) |
 | H2 control predictions | Measured continuity on all displays | Agree with spec §7.2 except the rectangle (corrected) |
 | S3 | Logic against H2 with a fitted gate | Would reject H2 by construction; amended to the matched-control comparison (§7) |
 | Muscle specificity | Training objective | Built in by the ADM regulariser; ADM results exploratory (§6.2) |
 | Development rule | Code paths | Health checks use training sources only; no held-out contrast is computed before the evaluation |
 
-**Still to do before Gate 2:** repeat the health check with the §6.8 corrections (pending a free GPU);
-train H0 and H1; fit H2's c on training sources; run the non-spiking twin and the recurrent variant;
+**Still to do before Gate 2:** train H0 and H1; fit H2's c on training sources; run the non-spiking twin and the recurrent variant;
 parallelise training (about 1,000 GPU hours one network at a time); implement the session simulation
 and the hierarchical bootstrap evaluation.
 
@@ -340,3 +364,4 @@ and the hierarchical bootstrap evaluation.
 | 24 Oct 2026, before any training on image features | Input units normalised (constant input x → membrane x), noise defined by a resting membrane SD of 0.1 θ, initial biases 0.8 / 0.6, probe kept as a raw 1-ms current | The declared constants were in snnTorch's raw units, where a constant input is amplified about 110-fold: in a synthetic test the visual layer fired at about 600 Hz. After the change, rates were 14–27 Hz (visual) and 5 Hz (motor rest) |
 | 24 Oct 2026, after the first health check, before any evaluation | Fixation presented as rest; rest rate per population; CPU checkpoints; readout z-normalisation over task trials; training per hypothesis (§6.6, §6.8) | Health check on training sources found the encoded black frame out of distribution (FDI 45 Hz at rest) and FDI silent on static frames |
 | 24 Oct 2026 | H2 context pathway (forearm continuity), one-parameter gate, S3 amendment, rectangle correction (§7); validation review (§8) | Decision delegated by the project owner; spec amendment |
+| 24 Oct 2026 | Readout window 0–55 ms from the probe (§6.9, spec amendment); second health check passes every criterion | The 5-ms window start cut through the model's synchronous volleys and made the dose-response non-monotone |

@@ -43,7 +43,7 @@ predictions for the matched controls, which have no human data (amended 24 Octob
 | First frame 2,250–3,250 ms (jittered), second frame 750 ms | Same; jitter drawn uniformly in integer ms | Original draws unknown |
 | TMS 250 ms after second-frame onset | Common probe pulse 250 ms after second-frame onset | Probe is a model current, not TMS |
 | 120% of resting motor threshold (PEST) | Probe = 120% of the model's resting threshold, found on fixation trials (§6.4) | Analogue, not physical intensity |
-| MEP peak-to-peak, 5–60 ms after TMS, FDI and ADM | Readout-population response, 5–60 ms after probe, minus a matched no-probe trial; FDI- and ADM-associated readouts | Arbitrary units, not mV |
+| MEP peak-to-peak, 5–60 ms after TMS, FDI and ADM | Readout-population response over 55 ms from the probe (amended 24 Oct 2026; was 5–60 ms), minus a matched no-probe trial; FDI- and ADM-associated readouts | Arbitrary units, not mV; no conduction delay, so the window starts at the probe |
 | 20 fixation-cross trials at session start and end | Black-image fixation trials at start and end, for threshold and drift checks; presented to the network as no visual stimulus (rest), since a frozen encoder's description of a black frame lies far outside its training images (amended 24 October 2026) | — |
 | Count the finger movements (attention task) | Auxiliary training task: detect/count index movements (§6.3) | — |
 | Within-participant z-normalisation of MEPs | Same normalisation applied within each model instance | — |
@@ -259,7 +259,7 @@ No condition label enters any model, and no condition receives its own gain.
 - Model resting threshold: the smallest probe amplitude that evokes a readout response above
   a fixed criterion on 50% of fixation trials, found by an adaptive staircase. Probe for the
   task = 120% of that threshold, as in the paper.
-- Readout: response of the FDI- and ADM-associated populations 5–60 ms after the probe,
+- Readout: response of the FDI- and ADM-associated populations 0–55 ms after the probe (amended 24 October 2026: the human 5–60-ms window follows a corticospinal conduction delay the model does not have),
   minus the same window on a matched trial without a probe (same random input stream).
 - Plasticity is frozen during evaluation. Silent or saturated readouts invalidate a run.
 
@@ -317,6 +317,7 @@ equal the full-body image, hidden pixels are black, and matched pairs have equal
 | 22 Oct 2026 (after freeze, before any result) | §7.2 controls given exact definitions and parameters; the wrist gap is shown on black as `hand_gap_stub` with area matched to `hand_stub`; the desk-scene band is kept as exploratory `occluded_wrist` without a declared prediction | A black band on a desk scene reads as an occluder behind which the arm is completed, so it does not test discontinuity; parameters had not been fixed at freezing |
 | 24 Oct 2026 (after the Gate 1 baselines, before any model result) | §5.2 and §6.3: OpenCLIP ViT-bigG-14 named as primary frozen encoder, DINOv2 summary and mean patch token as robustness encoders; the decision rule additionally requires P1 in the same direction with both robustness encoders | The spec required a frozen encoder without naming one; choosing after the baselines could favour the hypothesis, so the least favourable encoder is primary and agreement across encoders is required. Approved by the project owner |
 | 24 Oct 2026 (before any model result) | §1 claim boundary on continuity vs visible context; §2 fixation presented as rest; §5.2 S3 split into (b) hand-only as written and (a) a refitted global visible-area gate compared on the matched control pairs; §6.2 H2's context estimate defined as contiguous forearm continuity at the wrist with a one-parameter gate; §7.2 rectangle prediction corrected | A low-level gate fitted to the same human ratio can match it through visible area, so S3(a) as written would reject H2 by construction and the human data cannot separate the two accounts; the encoded black frame drove the model's motor layer to 45 Hz at rest; two gate parameters cannot be identified from one ratio; the archive rectangle was measured to contain 0.80 palm widths of forearm. Decided by the assistant under the project owner's delegation of 24 October 2026 |
+| 24 Oct 2026 (before any model result) | §2 and §6.4: readout window 0–55 ms after the probe instead of 5–60 ms | The human window captures an MEP that arrives after about 20 ms of corticospinal conduction; the model reads its motor population directly, which answers within 1–5 ms in synchronous volleys, so the 5-ms boundary cut through them and made the probe dose-response non-monotone (health check on training sources). The window keeps the human length; with it the dose-response is monotone (Spearman 1.00) |
 
 ## 11. References
 

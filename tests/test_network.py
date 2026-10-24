@@ -81,6 +81,18 @@ class Network(unittest.TestCase):
         self.assertTrue(torch.allclose(membranes[0], self.net.b_m.detach()[None], atol=1e-3))
         self.assertGreater((membranes[1] - membranes[0]).abs().max().item(), 1e-3)
 
+    def test_probe_response_grows_with_amplitude(self):
+        """The evoked response (counted from the probe) does not fall as the probe grows."""
+        n = 64
+        drive, gate = self.nw.rest_drive(self.net, n), torch.ones(n)
+        g = torch.Generator().manual_seed(5)
+        state = self.nw.settle(self.net, drive, gate, 200, g)
+        means = []
+        for amplitude in (.5, 1., 2., 4., 8.):
+            g.manual_seed(6)                       # same noise for every amplitude
+            means.append(self.nw.probe_response(self.net, state, drive, gate, amplitude, g)[:, self.nw.FDI].mean().item())
+        self.assertTrue(all(b >= a for a, b in zip(means, means[1:])), means)
+
     def test_threshold_and_rate_twin(self):
         a = self.nw.threshold(self.net, trials=12, halvings=8)
         self.assertTrue(0 < a < 20)

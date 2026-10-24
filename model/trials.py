@@ -18,7 +18,7 @@ import numpy as np
 SEED = 20261022
 TIMING = dict(first_min_ms=2250, first_max_ms=3250, second_ms=750, probe_after_ms=250,
               familiarisation_ms=60000, fixation_trials=20, trials_per_type=30)
-READOUT_MS = (5, 60)     # readout window after the probe (spec §6.4)
+READOUT_MS = (0, 55)     # readout window after the probe (network.READOUT; spec amendment 24 Oct 2026)
 BODIES = ('full_body', 'upper_limb', 'detached_hand_silhouette')            # primary displays, paper order
 SENSITIVITY_BODIES = ('full_body', 'upper_limb', 'detached_hand')            # rectangle detached hand
 CONTROL_DISPLAYS = ('hand_stub', 'hand_gap_stub', 'window_hand', 'window_arm', 'scrambled', 'occluded_wrist')

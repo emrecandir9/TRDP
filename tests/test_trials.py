@@ -37,7 +37,7 @@ class Session(unittest.TestCase):
             self.assertEqual(x['onset2_ms'] - x['start_ms'], x['first_ms'])
             self.assertEqual(x['probe_ms'], x['onset2_ms'] + 250)
             self.assertEqual(x['end_ms'], x['onset2_ms'] + 750)
-            self.assertEqual(x['probe_ms'] + t.READOUT_MS[1], x['onset2_ms'] + 310)   # readout ends inside frame 2
+            self.assertEqual(x['probe_ms'] + t.READOUT_MS[1], x['onset2_ms'] + 305)   # readout ends inside frame 2
         segments = s.segments
         self.assertEqual(segments[0][0], 0)
         self.assertTrue(all(a[1] == b[0] for a, b in zip(segments, segments[1:])))   # contiguous, no gaps

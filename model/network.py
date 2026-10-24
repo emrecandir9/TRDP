@@ -14,7 +14,10 @@ from torch import nn
 
 CONFIG = dict(n_visual=256, n_motor=64, tau_syn=5., tau_mem=20., dt=1., membrane_sd=.1, threshold=1., slope=25.,
               rate_slope=4., visual_bias=.8, motor_bias=.6, input_gain=.5)
-READOUT = (5, 60)        # ms after the probe (spec §6.4)
+# ms after the probe. The human MEP window (5-60 ms) follows a corticospinal conduction delay of
+# about 20 ms; the model reads its motor population directly, which answers within 1-5 ms, so the
+# window keeps the human length (55 ms) but starts at the probe (spec amendment, 24 Oct 2026).
+READOUT = (0, 55)
 FDI, ADM = 0, 1
 
 
@@ -117,7 +120,7 @@ def population_counts(motor, n_motor):
 
 @torch.no_grad()
 def probe_response(net, state, drive, gate, amplitude, generator):
-    """Probe-evoked FDI and ADM response: population output 5-60 ms after a 1-ms probe of the
+    """Probe-evoked FDI and ADM response: population output 0-55 ms after a 1-ms probe of the
     given amplitude, minus the matched no-probe twin (same state, same noise). Returns [B, 2]
     as summed outputs of each population (spikes for the spiking network)."""
     batch, steps = drive.shape[0], READOUT[1]
