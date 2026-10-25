@@ -491,6 +491,36 @@ With the per-network limit all four networks pass every criterion (records reche
 code; recheck is deterministic on this GPU). By the rule above, the campaign restarts with these
 settings.
 
+### 6.13 Training many networks at once (25 October 2026)
+
+A spiking network is simulated one millisecond after another, and each millisecond is a handful of
+very small operations, so a single network keeps the GPU waiting on instruction launches rather than
+computing (one network: 0.41 s per update on `jessica`, three sharing the GPU: about 0.30 s per
+network-update). `model/stack.py` trains K networks of identical shape together: their parameters
+are stacked along a leading network dimension and every millisecond is one set of batched operations.
+Nothing is shared between the networks. Each keeps its own initial weights (built by
+`network.Network` with its own seed), its own trial draws and noise (the generators of `train.train`,
+seeded the same way, drawn in the same order), its own readout and its own loss; the summed loss gives
+each network exactly its own gradient, and Adam acts element by element. A stacked network is
+therefore the network `train.train` gives alone, up to the rounding of batched matrix products: the
+largest weight difference after 20 updates was 6 × 10⁻⁸ (test in `tests/test_network.py`).
+
+| Networks trained together (alone on the GPU) | Seconds per update | Per network |
+| --- | --- | --- |
+| 1 | 0.41 | 0.41 |
+| 10 | 0.56 | 0.056 |
+| 20 | 0.85 | 0.042 |
+| 40 | 1.87 | 0.047 |
+
+The campaign trains the folds of one seed as one stack (`model/campaign.py --stack 20`); in the
+running campaign a stack of 17 networks took 0.54 s per update (0.032 s per network, about nine times
+the earlier throughput). Each trained network is written to `<run>.trained.pt`, and its health check
+(`train.py --finish`, the same `prepare`/`finish` code as `train.health`) runs as a separate process
+while the next stack trains. Stacks checkpoint and resume like single runs. Reports record
+`trainer: stack` and the stack size. Folds 1–3 of seed 0 were trained one at a time before the switch;
+fold 4 of seed 0 was also trained one at a time in the §6.12 check, so the stack's fold-4 network can be
+compared with it.
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -620,3 +650,5 @@ of c, and the hierarchical bootstrap evaluation.
 | 24 Oct 2026 | Readout window 0–55 ms from the probe (§6.9, spec amendment); second health check passes every criterion | The 5-ms window start cut through the model's synchronous volleys and made the dose-response non-monotone |
 | 24 Oct 2026, before any evaluation | Pre-training validation (§6.10): observation without execution (rest 2 Hz, movement limit 5 Hz, rest trials), homogeneous motor pools, readout-validity criteria, AUC task criterion, visual criteria over all training sources, ± 2 SD trimming, readout range rule, ungated comparison, H0 standardisation, declared fit of c, H0/H1 training paths, campaign driver; §7 corrected and made explicit about what is built in (spec amendment) | The probe readout did not register the trained motor response, so P2 would have failed in every model for a measurement reason; the remaining items were gaps between the spec, the paper and the code |
 | 24 Oct 2026, before any campaign run | Training made interruption-safe: checkpoint with optimiser and both random streams every 250 updates, resumed exactly (tested); results written atomically, report last; reconnecting launch command in `model/campaign.py` | CREMI lab PCs kill a user's processes when the SSH session closes and can be switched off; an interrupted run previously restarted from zero, and a run killed while saving could have left a damaged file counted as finished |
+| 24–25 Oct 2026, before any evaluation (first campaign stopped after 3 networks) | Motor limits per trial, rest 1 Hz, movement 3 Hz; background criterion and readout range rule use each network's measured readout peak (§6.12, spec amendment) | The batch-mean limit let unseen sources drive the motor population past the readout's peak, where facilitation was not detected |
+| 25 Oct 2026, during the campaign (no evaluation) | Stacked training (§6.13), about nine times faster; equivalence tested | One network at a time left the GPU waiting on instruction launches; the full design would have taken weeks |

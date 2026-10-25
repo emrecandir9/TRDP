@@ -44,6 +44,7 @@ TRDP/
 │   ├── context.py               # H2 context pathway: forearm continuity at the wrist
 │   ├── network.py               # Spiking visuomotor network, rate twin, probe readout, threshold
 │   ├── train.py                 # Auxiliary training per hypothesis and Gate 2 health check
+│   ├── stack.py                 # Trains many networks at once on the GPU (same networks, ~9x faster)
 │   └── campaign.py              # Trains every fold × initialisation through the health-checked path
 ├── scripts/
 │   ├── setup.sh                 # Creates .venv for review or Linux CUDA generation
