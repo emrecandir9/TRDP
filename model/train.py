@@ -167,7 +167,7 @@ def train(net, static, movement, cfg=TRAIN, seed=0, device='cpu', log=None, upda
             readout[key].data.copy_(value)
         opt.load_state_dict(state['optimiser'])
         rng.bit_generator.state = state['rng']
-        generator.set_state(state['generator'])
+        generator.set_state(state["generator"].cpu())        # RNG states must be CPU ByteTensors
         history, first = state['history'], state['update']
         if log:
             log(dict(resumed_at=first))

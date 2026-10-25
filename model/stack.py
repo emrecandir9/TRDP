@@ -101,7 +101,7 @@ def train_stack(nets, data, seeds, cfg=tr.TRAIN, device='cpu', updates=None, res
         for rng, s in zip(rngs, state['rngs']):
             rng.bit_generator.state = s
         for g, s in zip(generators, state['generators']):
-            g.set_state(s)
+            g.set_state(s.cpu())                                   # RNG states must be CPU ByteTensors
         histories, first = state['histories'], state['update']
     steps = cfg['settle_ms'] + cfg['second_ms']
     proxy = type('Net', (), dict(n_motor=stack.n_motor))()        # train.objective needs n_motor only

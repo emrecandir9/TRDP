@@ -261,6 +261,30 @@ class Training(unittest.TestCase):
 
 @unittest.skipIf(torch is None, 'torch and snntorch not installed')
 class Stacked(unittest.TestCase):
+    @unittest.skipUnless(torch is not None and torch.cuda.is_available(), 'needs a CUDA GPU')
+    def test_stack_resumes_exactly_on_the_gpu(self):
+        """On the GPU, the generators' saved states are restored from the CPU copy (a CUDA RNG state
+        must be a CPU ByteTensor): an interrupted stack ends with the uninterrupted stack's weights."""
+        import tempfile
+        import network as nw
+        import stack as st
+        import train as tr
+        rng = np.random.default_rng(2)
+        data = [(s, s + 1, None) for s in (rng.normal(0, 1, (10, 8)).astype(np.float32) for _ in range(3))]
+        cfg = dict(tr.TRAIN, settle_ms=20, second_ms=40, window=(5, 40), batch=4, rest_trials=2)
+        seeds = [3, 11, 4]
+        whole, _, _ = st.train_stack([nw.Network(8, small(), seed=s) for s in seeds], data, seeds, cfg=cfg, updates=6,
+                                     device='cuda')
+        with tempfile.TemporaryDirectory() as d:
+            partial = Path(d) / 'stack.partial.pt'
+            st.train_stack([nw.Network(8, small(), seed=s) for s in seeds], data, seeds, cfg=cfg, updates=4, device='cuda',
+                           resume=partial, every=3)
+            resumed, _, _ = st.train_stack([nw.Network(8, small(), seed=s) for s in seeds], data, seeds, cfg=cfg, updates=6,
+                                           device='cuda', resume=partial, every=3)
+        for a, b in zip(whole, resumed):
+            for x, y in zip(a.state_dict().values(), b.state_dict().values()):
+                self.assertTrue(torch.equal(x, y))
+
     def test_stack_trains_the_same_networks_as_one_at_a_time(self):
         """Three networks with their own seeds, data and (for one) an H1 gain, trained together,
         end with the weights, readouts and histories that train.train gives each alone."""
