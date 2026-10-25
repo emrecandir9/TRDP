@@ -531,7 +531,10 @@ settles its membrane at x, tabulated by simulation on a grid of x from −1 to 3
 filtered input as the spiking neuron, with the same noise, and emits this rate instead of spikes. At
 x = 0.8 the rate is 1.6 Hz, at 1.0 13 Hz, at 1.6 50 Hz; a test checks it against an independent
 spiking simulation (within 10%). Unlike the spiking population (§6.10), the twin's probe response grows
-monotonically with excitability, because it has no reset. Health check: pending (§6.16).
+monotonically with excitability, because it has no reset. Health check (25 October 2026, folds 1–4,
+seed 0, one stack of four, `output/model/v8_rate/`): **all four pass every criterion**. The twin's
+campaign (H2 with each encoder, 20 folds × 10 initialisations) is queued after the spiking
+configurations.
 
 ### 6.15 Spinal motoneuron readout: tried, not adopted (25 October 2026)
 
