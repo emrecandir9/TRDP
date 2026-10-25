@@ -32,7 +32,7 @@ TRAIN = dict(settle_ms=300, second_ms=350, window=(50, 300), updates=3000, batch
 # each network's validated readout range, the pre-probe FDI rate at which its excitability curve peaks
 # (the probe response grows with excitability up to there; §6.12).
 HEALTH = dict(task_auc=.9, silent_visual=.10, fast_visual=.05, fixation_motor_hz=(.5, 20.), dose_spearman=.9,
-              saturated=.9)
+              saturated=.9, spinal_background_hz=.5)   # motoneurons before the probe: near silent (no background EMG)
 OUTPUT = ROOT / 'output/model'
 HYPOTHESES = ('h2', 'h0', 'h1')   # h2: display features, gate 1 on full body (shared by H2, ungated, S3(a))
 
@@ -357,6 +357,43 @@ def activity_sample(bank, hypothesis, sources, held_out, inner, scaler, mean_sal
     families = [f for s, fam in sources.items() if s not in (held_out, inner) for f in fam[::12]]
     static, movement, gain, _, _ = hypothesis_inputs(bank, hypothesis, None, families, scaler, mean_salience)
     return static, movement, gain
+
+
+def diagnose_spinal(net, inner_static, inner_movement, cfg=TRAIN, device='cpu', gain=None):
+    """Health measures of the second MEP analogue, read from the spinal motoneuron pools (§6.15):
+    threshold, dose-response, motoneuron activity at rest and before the probe (the analogue of
+    background EMG), readout facilitation on full-body trials of the inner source, saturation."""
+    from scipy import stats
+    net.readout_stage = 'spinal'
+    try:
+        amplitude = nw.threshold(net, device=device)
+        found = bool(np.isfinite(amplitude))
+        curve = dose_response(net, amplitude, device=device) if found else []
+        dose = float(stats.spearmanr(*zip(*curve))[0]) if curve else float('nan')
+        rest = fixation_rates(net, device)
+        report = dict(threshold=amplitude, dose_response=curve, dose_spearman=dose, motoneurons_at_rest_hz=rest)
+        criteria = dict(threshold=found, dose=bool(dose >= HEALTH['dose_spearman']),
+                        silent_at_rest=bool(max(rest['fdi_hz'], rest['adm_hz']) <= HEALTH['spinal_background_hz']))
+        if found:
+            probes = task_probe(net, 1.2 * amplitude, inner_static, inner_movement, cfg, device, gain=gain)
+            diff = (probes['movement']['responses'] - probes['static']['responses'])[..., nw.FDI].ravel()
+            half = stats.t.ppf(.975, len(diff) - 1) * diff.std(ddof=1) / np.sqrt(len(diff))
+            everything = np.concatenate([probes[k]['responses'] for k in probes], 1)
+            background = max(max(probes[k]['background_hz']) for k in probes)
+            report.update(task_probe={k: dict(fdi_mean=float(v['responses'][..., nw.FDI].mean()),
+                                              adm_mean=float(v['responses'][..., nw.ADM].mean()),
+                                              background_hz=v['background_hz']) for k, v in probes.items()},
+                          fdi_facilitation=float(diff.mean()), fdi_facilitation_ci=[float(diff.mean() - half), float(diff.mean() + half)],
+                          background_max_hz=background,
+                          saturated_share=float((everything >= HEALTH['saturated'] * net.n_motor).mean()))   # recruited share
+            criteria.update(facilitation=bool(diff.mean() - half > 0),
+                            background=bool(background <= HEALTH['spinal_background_hz']),
+                            not_saturated=report['saturated_share'] == 0,
+                            readout_not_silent=bool(everything[..., nw.FDI].mean() > 0))
+        report['criteria'] = criteria
+        return report
+    finally:
+        net.readout_stage = 'cortical'
 
 
 def checkpoint(path, device='cpu'):

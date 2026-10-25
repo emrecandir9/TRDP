@@ -521,6 +521,39 @@ while the next stack trains. Stacks checkpoint and resume like single runs. Repo
 fold 4 of seed 0 was also trained one at a time in the §6.12 check, so the stack's fold-4 network can be
 compared with it.
 
+### 6.14 Non-spiking twin repaired (25 October 2026, before any evaluation)
+
+The twin's softplus output (§6.11) emitted about 90 Hz below threshold and did not learn. Its unit now
+emits the **mean-field rate function of the network's own spiking neuron**: the steady firing rate of
+the noisy leaky integrate-and-fire neuron (same constants, noise and reset) under a constant input that
+settles its membrane at x, tabulated by simulation on a grid of x from −1 to 3 in steps of 0.01
+(`network.lif_transfer`) and interpolated linearly, so it is differentiable. The twin computes the same
+filtered input as the spiking neuron, with the same noise, and emits this rate instead of spikes. At
+x = 0.8 the rate is 1.6 Hz, at 1.0 13 Hz, at 1.6 50 Hz; a test checks it against an independent
+spiking simulation (within 10%). Unlike the spiking population (§6.10), the twin's probe response grows
+monotonically with excitability, because it has no reset. Health check: pending (§6.16).
+
+### 6.15 Spinal motoneuron readout: tried, not adopted (25 October 2026)
+
+To make the MEP analogue less abstract, a spinal stage was built (`network.SPINAL`, readout stage
+`spinal`, used by no result): each muscle's cortical pool drives 64 motoneurons of the same neuron
+model; motoneurons have no resting drive (silent at rest, as the paper required no background EMG); the
+connection weight (0.0193) is the largest for which cortical spikes at the 3 Hz movement limit leave
+them essentially silent (≤ 0.1 Hz; derived by bisection on synthetic input, re-derived by a test); the
+readout counts recruited motoneurons, with its own resting threshold and 120% probe.
+
+On the four §6.12 networks (training sources only) it detected full-body facilitation in three folds
+(+16 to +43 recruited motoneurons), but recruitment was nearly all-or-none: at rest the dose-response
+went from 0 to all 64 motoneurons between 0.5 and 2 × threshold, 43–63% of task trials recruited at
+least 90% of the pool, and on fold 2's high-drive inner source motoneurons fired before the probe and
+facilitation was negative. A spread of motoneuron thresholds (the size principle; resting levels from 0
+to −0.25, −0.5 or −1) did not remove the saturation. The cause is structural: the probe makes the whole
+cortical pool fire within a few milliseconds, a volley too large for the motoneurons' range, whereas a
+human MEP at 120% of resting threshold is far below its maximum. A valid spinal readout would need
+corticospinal volley structure (I-waves), heterogeneous connections and larger pools, each with
+literature-based constants; it is left as future work, and "the readout is an analogy, not physiology"
+remains a stated limitation. The stage stays in the code, switched off, with its tests.
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -602,6 +635,84 @@ visible-context account in its control predictions. Because the gate is computed
 masks rather than learned from the image, it does not show how such a signal could arise from vision,
 and it does not show that humans use continuity rather than visible context (spec §1).
 
+### 7.1 Learned context pathways (declared 25 October 2026, before any gate value is computed)
+
+Requested by the project owner to address the hand-designed gate. In these stimuli, attachment and the
+paper's condition coincide by design (full body and upper limb show the forearm, the detached hand does
+not), so **any** correct attachment estimate gives the same gate for the three paper displays; the main
+pattern stays partly built in for every attachment model. Two learned pathways are therefore added, with
+different roles. Neither uses a condition label, the paper's display names, MEP analogues or human data;
+both are fitted per outer fold on the fold's 19 training sources only, and applied, like H2's gate
+(g = c + (1 − c)·m, c fitted by §6.6), to the trained H2 networks at evaluation (no new training).
+
+**H2-learned, attachment learned by forearm prediction.** A self-supervised predictor learns, from
+full-body images only, what the forearm just below the wrist looks like given the hand:
+
+- Geometry from each source's hand landmarks (the controls' geometry: wrist point, hand axis, palm
+  width P). Hand window: 0 to 1.5 P along the axis from the wrist towards the fingers, ±0.75 P across,
+  sampled at 24 × 24 luminance. Forearm band: 0 to 1 P below the wrist line, ±0.5 P across, 16 × 16.
+- Predictor: ridge regression from the hand window to the forearm band, fitted on the static and
+  movement full-body frames of the 19 training sources; the ridge penalty is chosen from
+  {10⁻², 10⁻¹, …, 10⁴} by leave-one-training-source-out prediction error.
+- Match of a display (static frame): its prediction error e (mean squared difference between the
+  predicted and the displayed band). Calibration: the leave-one-training-source-out errors of the
+  full-body static frames, E. **m = min(1, 2 · P(E ≥ e))**: 1 for a display predicted at least as well
+  as the median full-body view of an unseen person, falling to 0 for a display predicted worse than
+  every one.
+- What it adds over the rule: the continuity signal is learned from seeing a connected body and read
+  from the displayed pixels, not defined by segmentation; on the controls and on unseen hands its
+  values are not given by construction. Expected for the paper's displays: m(FB) = m(UL) (identical
+  pixels in the band), m(DH) ≈ 0 (black band).
+
+**H4, own-body familiarity (competing hypothesis).** A context gate that measures how much the whole
+display resembles the observer's own first-person body view, learned from full-body images only:
+
+- Features: the network's own encoder input (each encoder separately), standardised on the training
+  sources' full-body static frames (each refit leaves out the same sources as the model).
+- Model: principal components of the 19 training sources' full-body static frames, as many as explain
+  90% of their variance; distance d = Euclidean norm of the whitened component scores.
+- Calibration as above: E = leave-one-training-source-out distances of full-body static frames
+  (components refitted without the source); **m = min(1, 2 · P(E ≥ d))**.
+- It tests whether a generic own-body prior, rather than attachment, can produce the human pattern. It
+  is not built in: Gate 1 found the upper-limb features far from the full-body ones (R6), so H4 is
+  expected to give the upper limb a low gate and to fail S2 (upper limb ≈ full body in humans); if so,
+  that is evidence against a familiarity account.
+
+Under this calibration a full-body view of an unseen person gets m = 0.75 on average (1 for the half
+that is at least as typical as the median, then falling evenly), so both pathways also weaken full-body
+facilitation somewhat; this follows from the declared rule and applies to every display alike.
+
+Both are scored with every criterion of spec §5.2 and reported with H0, H1 and the ungated network;
+neither replaces the primary model. Their gate tables are computed and recorded before any evaluation
+(they are properties of the displays, not results).
+
+**Gate tables (computed 25 October 2026 after the definitions above were committed to the text, before
+any evaluation; `model/learned_context.py`, `output/learned_context/`).** Mean m of each held-out
+source's displays (static frames), averaged over the 20 folds:
+
+| Display | FB | UL | DH | DH rectangle | Stub | Gap stub | Arm window | Hand window | Scrambled | Occluded wrist |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| Rule a (§7, for comparison) | 1.00 | 1.00 | 0.00 | 0.80 | 0.99 | 0.00 | 0.99 | 0.00 | 0.15 | 0.00 |
+| H2-learned (forearm prediction) | 0.69 | 0.69 | 0.00 | 0.00 | 0.00 | 0.00 | 0.01 | 0.00 | 0.00 | 0.00 |
+| H4, OpenCLIP | 0.68 | 0.15 | 0.00 | 0.01 | 0.00 | 0.00 | 0.01 | 0.02 | 0.00 | 0.10 |
+| H4, DINOv2 summary | 0.71 | 0.39 | 0.00 | 0.09 | 0.00 | 0.00 | 0.02 | 0.02 | 0.09 | 0.34 |
+| H4, DINOv2 patch mean | 0.70 | 0.02 | 0.00 | 0.00 | 0.00 | 0.02 | 0.00 | 0.00 | 0.00 | 0.02 |
+
+Ridge penalties chosen per fold: 0.01, 10 or 100; H4 kept 13–15 principal components.
+
+- **H4** behaves as expected: the upper limb is far less familiar than the full body, so H4 predicts
+  much weaker upper-limb facilitation and is expected to fail S2.
+- **H2-learned does not isolate attachment.** It agrees with the rule on the paper's displays, but it
+  also rejects the connected controls (stub, arm window) and the archive rectangle, which show a
+  forearm below the wrist: the predictor learned the whole full-body scene in the band (the desk
+  around the forearm included), and any display that differs from a full-body view there, even with a
+  connected arm, is predicted worse than every full-body view of an unseen person. Its control
+  predictions therefore differ from H2's, and it is expected to fail S3(a) on the stub pair.
+- **The definitions are not changed after these values.** Narrowing the band or relaxing the
+  calibration until the stub reads as connected would steer a model's control predictions towards the
+  hypothesis. The result is reported as it is: a simple self-supervised continuity learner on pixels
+  does not recover attachment from these images.
+
 ## 8. Validation of the methods (24 October 2026)
 
 A review of every stage against the paper, the frozen spec and the code, made when the owner asked
@@ -633,9 +744,18 @@ for a general check before the network phase continues.
 | Health criteria | Code against §6.5 | "> 200 Hz" not computed and "silent" measured on one batch; task accuracy confounded by source offsets; corrected (§6.10) |
 | Citations | Added references checked against the publishers' records | Fadiga et al. 1995, Kraskov et al. 2009, Vigneswaran et al. 2013 verified |
 
-**Still to do before Gate 2:** the training campaign (`model/campaign.py`); the recurrent variant;
-the evaluation simulator (sessions with probes, trimming, normalisation, readout range rule), the fit
-of c, and the hierarchical bootstrap evaluation.
+**Still to do before Gate 2:** the training campaign (`model/campaign.py`, running); the recurrent
+variant; the evaluation simulator (sessions with probes, trimming, normalisation, readout range rule),
+the fit of c, and the hierarchical bootstrap evaluation. Being built (25 October 2026, at the project
+owner's request): a repaired non-spiking twin, a spinal motoneuron readout as a second MEP analogue,
+and a self-supervised attachment pathway as a second H2 variant.
+
+**Next step after these (decided 25 October 2026, not yet declared in the spec):** robustness
+variations of the choices that have no literature value: visual layer 128 and 512 neurons (256 in
+the primary), learning rate 3 × 10⁻⁴ and 3 × 10⁻³ (10⁻³), 6,000 updates (3,000), and the time
+constants and time step already listed in spec §6.3 (10/40 ms and 2/10 ms; 0.5 ms). Each would run on
+all 20 folds with 3 initialisations and be evaluated once with the primary model. They are to be
+declared in the spec before the evaluation is opened.
 
 ## Change log
 

@@ -173,8 +173,9 @@ averaged into the 12 cells, and passed through the same contrast code as the hum
 ### 5.2 Criteria, fixed now
 
 **Primary model:** H2 (attachment gate, §6.2), implemented as the spiking network selected at
-Gate 2 (feedforward or recurrent; logged before evaluation). H0, H1, the ungated network (§6.2) and
-the non-spiking twin are comparison models scored with the same criteria. A comparison model never replaces the
+Gate 2 (feedforward or recurrent; logged before evaluation). H0, H1, the ungated network (§6.2),
+H2-learned, H4 (§6.2; added 25 October 2026) and the non-spiking twin are comparison models scored with
+the same criteria. A comparison model never replaces the
 primary model after results are seen.
 
 **Encoder (amended 24 October 2026).** The frozen image encoder of every model is the OpenCLIP
@@ -237,6 +238,8 @@ divided by the between-source spread, computed per context and passed through §
 | H1, salience | Movement signal scaled by low-level change in the whole image | None |
 | H2, attachment gate | A context pathway estimates whether the hand is connected to an arm and gates the visuomotor mapping. Amended 24 Oct 2026: the estimate is the forearm visible without a break below the wrist line, in palm widths, capped at 1 (`model/context.py`); the gate is g = c + (1 − c)·a | One gate parameter c (≤ two allowed), fitted to the human ratio Δ(DH, FDI) / Δ(FB, FDI) = −0.10 (§4.5) using training source groups only; no upper-limb data |
 | Ungated network (comparison; added 24 Oct 2026) | H2's trained network with g = 1 on every display: the learned visuomotor mapping applied to the display features without any context pathway | None |
+| H2-learned (comparison; added 25 Oct 2026) | H2's network and gate form, with the attachment estimate learned by self-supervised forearm prediction from full-body training images (predicted vs displayed forearm band below the wrist; [model-method](model-method.md) §7.1) | One gate parameter c, fitted as for H2 |
+| H4, own-body familiarity (comparison; added 25 Oct 2026) | H2's network and gate form, with the estimate replaced by how typical the display's encoder features are of the training sources' full-body views (whitened principal-component distance; model-method §7.1) | One gate parameter c, fitted as for H2 |
 
 No condition label enters any model, and no condition receives its own gain.
 
@@ -335,6 +338,7 @@ equal the full-body image, hidden pixels are black, and matched pairs have equal
 | 24 Oct 2026 (before any model result) | §2 background-EMG and ± 2 SD trimming rows; §5.2 and §6.2 ungated network added as a comparison model; §6.3 observation without execution; §6.4 readout validity and the readout range rule | A check on the health-check network (training sources, full-body trials only) found that after training the FDI population fired at 26 Hz before the probe on movement trials (99% of its neurons active), against 5 Hz on static trials, and the probe readout did not differ between them (−0.47 spikes, 95% interval −1.32 to 0.38): the population's probe response peaks near 9 Hz and falls below its resting value at 30–40 Hz, so a population driven hard reads as unexcited. P2 would then have failed in every model for a measurement reason, and an over-driven test display could have imitated the human pattern. The paper's own trimming had not been mirrored, and without an ungated model the necessity of H2's gate could not be shown. Decided by the assistant under the project owner's delegation of 24 October 2026 |
 | 24 Oct 2026 (before any model result; training campaign stopped after 3 networks) | Motor limits of §6.3 applied to every trial instead of the batch mean, movement limit 4 Hz, background criterion 5 Hz instead of 6 Hz ([model-method](model-method.md) §6.2, §6.12) | In the first campaign networks the batch-mean limit let single sources reach 9 Hz before the probe, past the readout's measured peak (5.4–5.5 Hz), where facilitation was no longer detected (fold 2: +0.46 spikes, 95% interval −0.39 to 1.31, inner training source only). The paper excluded background activity trial by trial. The three networks and four partial ones of the stopped campaign are kept in `output/model/campaign_superseded_batch_mean_cap/` and not used |
 | 25 Oct 2026 (before any model result; before the campaign restart) | Motor limits rest 1 Hz and movement 3 Hz per trial; background criterion and readout range rule use each network's measured readout peak instead of a fixed rate ([model-method](model-method.md) §6.12) | With rest 2 Hz and limit 4 Hz, unseen inner sources were driven up to 6.3 Hz, too close to the readout's peak; with rest 1 Hz the calibrated probe is larger and the readout grows up to about 8 Hz, so a fixed limit taken from the earlier networks no longer described the readout's valid range. Training sources and full-body trials only |
+| 25 Oct 2026 (before any model result) | §5.2 and §6.2: H2-learned and H4 added as comparison models; non-spiking twin's output function replaced by the mean-field rate function of the network's spiking neuron ([model-method](model-method.md) §6.14); a spinal motoneuron readout was built and not adopted (§6.15) | Requested by the project owner to address the hand-designed gate, the failed twin and the abstract readout. In these stimuli attachment coincides with the paper's condition, so any correct attachment estimate partly builds in the main pattern; H2-learned shows whether attachment can be learned without labels, H4 tests a competing own-body familiarity account that is not built in. The twin's softplus output did not train. The spinal readout saturated (nearly all-or-none recruitment) and is left as future work |
 
 ## 11. References
 

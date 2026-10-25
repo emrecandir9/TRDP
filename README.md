@@ -45,7 +45,8 @@ TRDP/
 │   ├── network.py               # Spiking visuomotor network, rate twin, probe readout, threshold
 │   ├── train.py                 # Auxiliary training per hypothesis and Gate 2 health check
 │   ├── stack.py                 # Trains many networks at once on the GPU (same networks, ~9x faster)
-│   └── campaign.py              # Trains every fold × initialisation through the health-checked path
+│   ├── campaign.py              # Trains every fold × initialisation through the health-checked path
+│   └── learned_context.py       # Learned context pathways: forearm prediction (H2-learned), familiarity (H4)
 ├── scripts/
 │   ├── setup.sh                 # Creates .venv for review or Linux CUDA generation
 │   ├── models.py                # Downloads / resolves the three pinned models
@@ -67,7 +68,8 @@ TRDP/
 │   ├── test_raters.py           # Rater-validation package
 │   ├── test_trials.py           # Trial simulator and feature bank
 │   ├── test_context.py          # Forearm-continuity estimate
-│   └── test_network.py          # Network units, probe readout, training, health measures, campaign
+│   ├── test_network.py          # Network units, probe readout, training, health measures, campaign
+│   └── test_learned_context.py  # Learned context pathways
 ├── data/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
 │   ├── hand_segmentation.json   # Tracked SAM-HQ provenance, prompts and mask hashes

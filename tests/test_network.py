@@ -94,6 +94,40 @@ class Network(unittest.TestCase):
             mem = state[3][:, population]
             self.assertTrue(torch.allclose(mem, mem[:, :1].expand_as(mem)))
 
+    def test_spinal_weight_leaves_motoneurons_silent_at_the_movement_limit(self):
+        """The declared spinal weight: cortical spikes at the 3 Hz movement limit leave the motoneurons
+        essentially silent (<= 0.1 Hz); a weight 20% larger does not."""
+        nw, net = self.nw, self.net
+        def rate(w, trials=150, steps=3000, n=64):
+            g = torch.Generator().manual_seed(1)
+            syn = torch.zeros(trials, n); mem = torch.zeros(trials, n); spikes = 0.
+            for t in range(steps):
+                cortical = (torch.rand(trials, n, generator=g) < nw.SPINAL['at_hz'] / 1000).float().sum(1, keepdim=True)
+                syn = net.alpha * syn + w * cortical + net.scale * net.sigma * torch.randn(trials, n, generator=g)
+                mem = net.beta * mem + syn
+                s = (mem >= 1).float(); mem = mem - s
+                spikes += s.mean().item() if t >= 300 else 0.
+            return 1000 * spikes / (steps - 300)
+        self.assertLessEqual(rate(nw.SPINAL['weight']), 1.5 * nw.SPINAL['silent_hz'])
+        self.assertGreater(rate(1.2 * nw.SPINAL['weight']), nw.SPINAL['silent_hz'])
+
+    def test_spinal_readout_counts_recruited_motoneurons(self):
+        """With the spinal stage the probe response counts recruited motoneurons, at most one per
+        neuron, and the network's saved parameters are unchanged."""
+        keys = sorted(self.net.state_dict())
+        self.net.readout_stage = 'spinal'
+        try:
+            n = 6
+            drive, gate = self.nw.rest_drive(self.net, n), torch.ones(n)
+            g = torch.Generator().manual_seed(2)
+            state = self.nw.settle(self.net, drive, gate, 100, g)
+            self.assertEqual(len(state), 6)
+            response = self.nw.probe_response(self.net, state, drive, gate, 200., g)
+            self.assertTrue((response <= self.net.n_motor).all() and (response[:, self.nw.FDI] > 0).all())
+        finally:
+            self.net.readout_stage = 'cortical'
+        self.assertEqual(sorted(self.net.state_dict()), keys)
+
     def test_probe_response_grows_with_amplitude(self):
         """The evoked response (counted from the probe) does not fall as the probe grows."""
         n = 64
@@ -105,6 +139,24 @@ class Network(unittest.TestCase):
             g.manual_seed(6)                       # same noise for every amplitude
             means.append(self.nw.probe_response(self.net, state, drive, gate, amplitude, g)[:, self.nw.FDI].mean().item())
         self.assertTrue(all(b >= a for a, b in zip(means, means[1:])), means)
+
+    def test_rate_twin_matches_the_spiking_neuron(self):
+        """The twin's unit, given a constant input, emits the rate at which the noisy spiking neuron
+        fires under that input (independent simulation, other seed)."""
+        net, twin = self.net, self.nw.Network(8, small(), spiking=False, seed=0)
+        g = torch.Generator().manual_seed(9)
+        for x in (.8, 1., 1.3):
+            syn = torch.zeros(2000); mem = torch.zeros(2000); spikes = 0.
+            for t in range(1500):
+                syn = net.alpha * syn + net.scale * (x + net.sigma * torch.randn(2000, generator=g))
+                mem = net.beta * mem + syn
+                spike = (mem >= 1).float()
+                mem = mem - spike
+                spikes += spike.mean().item() if t >= 300 else 0.
+            spiking_rate = spikes / 1200
+            settled = torch.full((1,), twin.scale * x / (1 - twin.alpha))      # synaptic state at steady input x
+            out, _, _ = twin._rate(torch.full((1,), twin.scale * x), settled, torch.full((1,), x))   # membrane at x
+            self.assertAlmostEqual(out.item(), spiking_rate, delta=.1 * spiking_rate + 2e-4)
 
     def test_threshold_and_rate_twin(self):
         a = self.nw.threshold(self.net, trials=12, halvings=8)
