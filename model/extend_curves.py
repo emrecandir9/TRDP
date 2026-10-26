@@ -8,8 +8,14 @@ so no task or context display is used. One JSON per network; finished networks a
 (background, excitability, readout_peak_found) into its health report, keeping the 13-level values
 under `*_sweep13` keys, and prints the changes per configuration.
 
+`--population adm` measures the ADM population's own curve the same way (current into the ADM
+bias, ADM rate and response; docs/model-method.md §6.19), and `--apply --population adm` stores it as
+`adm_*` fields; health criteria are unchanged (they use the FDI curve).
+
     python model/extend_curves.py --shard 0 --shards 2
     python model/extend_curves.py --apply
+    python model/extend_curves.py --population adm --shard 0 --shards 2
+    python model/extend_curves.py --apply --population adm
 """
 import argparse
 import glob
@@ -28,6 +34,7 @@ sys.path.insert(0, str(ROOT / 'model'))
 import train as tr  # noqa: E402
 
 OUTPUT = ROOT / 'output/model/curve_extension'
+OUTPUT_ADM = ROOT / 'output/model/curve_extension_adm'
 
 
 def apply():
@@ -68,24 +75,55 @@ def apply():
         print(name, c)
 
 
+def apply_adm():
+    """ADM curves into the health reports: adm_excitability_curve, adm_readout_range_hz (rate at the
+    peak), adm_readout_peak (response at the peak), adm_readout_peak_found; also readout_peak, the FDI
+    curve's peak response. Prints per configuration how many ADM curves peak inside the sweep."""
+    counts = {}
+    for path in sorted(OUTPUT_ADM.glob('health_*.json')):
+        record = json.loads(path.read_text())
+        report_path = ROOT / 'output/model/campaign' / record['configuration'] / path.name
+        report = json.loads(report_path.read_text())
+        tr.trials.require(len(report['excitability_curve']) == len(record['curve']), f'{path.name}: FDI curve not extended')
+        curve = record['curve']
+        peak = max(range(len(curve)), key=lambda i: curve[i][1])
+        fdi = report['excitability_curve']
+        report.update(adm_excitability_curve=curve, adm_readout_range_hz=curve[peak][0], adm_readout_peak=curve[peak][1],
+                      adm_readout_peak_found=peak < len(curve) - 1, readout_peak=max(c[1] for c in fdi))
+        text = json.dumps(report, indent=2) + '\n'
+        tr.atomic(report_path, lambda target: target.write_text(text))
+        c = counts.setdefault(record['configuration'], dict(networks=0, adm_peak_found=0, adm_range=[], fdi_range=[]))
+        c['networks'] += 1
+        c['adm_peak_found'] += report['adm_readout_peak_found']
+        c['adm_range'].append(report['adm_readout_range_hz'])
+        c['fdi_range'].append(report['readout_range_hz'])
+    for name, c in counts.items():
+        print(name, dict(networks=c['networks'], adm_peak_found=c['adm_peak_found'],
+                         adm_range_median=round(float(np.median(c['adm_range'])), 2),
+                         fdi_range_median=round(float(np.median(c['fdi_range'])), 2)))
+
+
 def main():
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument('--shard', type=int, default=0)
     parser.add_argument('--shards', type=int, default=1)
     parser.add_argument('--apply', action='store_true')
+    parser.add_argument('--population', choices=('fdi', 'adm'), default='fdi')
     args = parser.parse_args()
+    adm = args.population == 'adm'
     if args.apply:
-        return apply()
+        return apply_adm() if adm else apply()
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    OUTPUT.mkdir(parents=True, exist_ok=True)
+    output = OUTPUT_ADM if adm else OUTPUT
+    output.mkdir(parents=True, exist_ok=True)
     paths = sorted(glob.glob(str(ROOT / 'output/model/campaign/*/health_*.pt')))[args.shard::args.shards]
     for path in paths:
-        target = OUTPUT / (Path(path).stem + '.json')
+        target = output / (Path(path).stem + '.json')
         if target.exists():
             continue
         start = time.time()
         net, _, _, _, report = tr.checkpoint(path, device)
-        curve = tr.excitability_curve(net, 1.2 * report['threshold'], device)
+        curve = tr.excitability_curve(net, 1.2 * report['threshold'], device, population=tr.nw.ADM if adm else tr.nw.FDI)
         record = dict(run=Path(path).stem, configuration=Path(path).parent.name, device=device, curve=curve,
                       saved_curve=report['excitability_curve'], seconds=time.time() - start)
         tr.atomic(target, lambda t: t.write_text(json.dumps(record)))

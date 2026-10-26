@@ -91,6 +91,12 @@ authors, venue, year) and, where the claim depends on a finding, against the abs
 | Over-driven held-out displays counted only if the result holds both with them removed and with them set to the readout's maximum | Worst-case (partial-identification) bounds for missing outcomes (Horowitz & Manski, 2000); the maximum mirrors the MEP plateau (Devanne et al., 1997) | L |
 | Readout range valid only if the excitability curve peaks inside the tested range (sweep doubled 26 Oct 2026) | Measurement validation: the twin had not peaked in the old sweep; every premise of the rule tested on all 2,400 networks (model-method §6.17) | M |
 
+| Each population flagged against its own readout range (ADM curve measured like the FDI one) | Applies the rule's premise to the population it concerns instead of assuming the ADM curve matches the FDI one | M |
+| c fitted under each treatment; the evaluation uses the c of the same treatment | The same validity rule throughout, from fit to verdict | M |
+| Learned pathways scored on training sources by cross-fitting (pathway fitted without the source) | Out-of-sample scoring, as for the held-out source; in-sample scores were not comparable (model-method §6.19) | M (fault fixed) |
+| Gate 2 "different control predictions": any of 8 paired quantities, Holm-corrected, both treatments | Holm (1979); hierarchical bootstrap (Saravanan et al., 2020); the choice of quantities is the project's | C |
+| Gate 2 "smooth probe responses": Spearman ≥ 0.9 over 1.0–1.5 × threshold in every network | Reuses the declared dose-response threshold | C |
+
 Because no network is excluded on the arbitrary health thresholds of the first row any more, their
 arbitrariness no longer decides which data enter the analysis.
 
@@ -102,14 +108,14 @@ arbitrariness no longer decides which data enter the analysis.
 
 ## Summary
 
-43 decisions, counted by their first class:
+48 decisions, counted by their first class:
 
 | Class | Decisions |
 | --- | --- |
 | P, mirrors the paper | 8 |
 | L, grounded in literature | 13 |
-| M, methodological standard | 10 |
-| C, project choice | 6 |
+| M, methodological standard | 13 |
+| C, project choice | 8 |
 | W, weakness or limit | 6 |
 
 Three of the L decisions have a grounded principle but project-chosen values (time constants, the motor

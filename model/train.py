@@ -282,10 +282,11 @@ def task_probe(net, amplitude, static, movement, cfg=TRAIN, device='cpu', repeat
 
 
 @torch.no_grad()
-def excitability_curve(net, amplitude, device='cpu', levels=25, top=.6, n=200, seed=6):
-    """FDI probe response at rest while an extra constant current depolarises the FDI population:
-    (pre-probe FDI rate in Hz, mean response) per level. Shows where the readout grows with excitability.
-    Steps of 0.025 up to 0.6 (26 Oct 2026; was 0.3, where the non-spiking twin had not yet peaked)."""
+def excitability_curve(net, amplitude, device='cpu', levels=25, top=.6, n=200, seed=6, population=nw.FDI):
+    """Probe response of one population (FDI by default) at rest while an extra constant current
+    depolarises that population: (its pre-probe rate in Hz, its mean response) per level. Shows where
+    the readout grows with excitability. Steps of 0.025 up to 0.6 (26 Oct 2026; was 0.3, where the
+    non-spiking twin had not yet peaked)."""
     generator = torch.Generator(device=device).manual_seed(seed)
     drive, ones = nw.rest_drive(net, n, device), torch.ones(n, device=device)
     bias = net.b_m.detach().clone()
@@ -293,13 +294,14 @@ def excitability_curve(net, amplitude, device='cpu', levels=25, top=.6, n=200, s
     try:
         for extra in np.linspace(0, top, levels):
             net.b_m.data = bias.clone()
-            net.b_m.data[net.fdi_bias_index()] += float(extra)
+            net.b_m.data[net.bias_index(population)] += float(extra)
             state = nw.settle(net, drive, ones, 300, generator)
             ones_t = torch.ones(n, 100, device=device)
             _, m, state = net.run(drive[:, None].expand(n, 100, -1), ones_t, ones_t * 0, state,
                                   net.noise(n, 100, generator, device))
-            rate = 1000 * m[..., :net.n_motor].mean().item()
-            out.append((rate, nw.probe_response(net, state, drive, ones, amplitude, generator)[:, nw.FDI].mean().item()))
+            cells = slice(population * net.n_motor, (population + 1) * net.n_motor)
+            rate = 1000 * m[..., cells].mean().item()
+            out.append((rate, nw.probe_response(net, state, drive, ones, amplitude, generator)[:, population].mean().item()))
     finally:
         net.b_m.data = bias
     return out

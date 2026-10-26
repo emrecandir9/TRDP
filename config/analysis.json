@@ -170,6 +170,12 @@
         "section": "2, 6.4 readout window",
         "sha256_after": "ef0ee836c83654175a3d0576241ccaffc021c77e2d1bfb104478816a8d8c39b8",
         "before_any_result": true
+      },
+      {
+        "date": "2026-10-26",
+        "section": "5.1 instances and over-driven displays; 5.2 implementation; 6.2 fit of c; 6.4 readout validity; 8 Gate 2 checks",
+        "sha256_after": "45b4efcfb0d8a1bcf944a19c5c067fa06cc1514b81c6737e23c84d32a6c512ca",
+        "before_any_result": true
       }
     ]
   },
@@ -217,9 +223,10 @@
       "non-spiking twin"
     ],
     "motor_regime": "observation without execution, per trial: each motor population near 1 Hz on static frames and at rest, below 3 Hz on movement frames (training)",
-    "readout_validity": "full-body facilitation on a training source; pre-probe motor rate within the network's validated readout range (rate at its excitability-curve peak); displays above it flagged outside the validated readout range",
+    "readout_validity": "every trained network enters except one failing a network-level health criterion; a cell (display x trial type x population) is over-driven when that population's mean pre-probe rate exceeds its own readout range (rate at its excitability-curve peak, measured inside the 0-0.6 sweep); every criterion is computed with over-driven readouts removed and set to the readout maximum, met only if met both ways, not met only if not met both ways, otherwise undetermined",
     "readout_trimming": "+/- 2 SD within instance x display x trial type x population, then z-normalisation (paper); untrimmed sensitivity",
-    "h2_gate_fit": "grid c in {0, 0.05, ..., 1}, closest source-mean DH/FB ratio to -0.10 on the 19 training sources, ties to smaller c",
-    "amended": "2026-10-24: readout validity, motor regime, trimming, ungated comparison (docs/analysis-spec.md section 10)"
+    "h2_gate_fit": "grid c in {0, 0.05, ..., 1}, closest source-mean DH/FB ratio to -0.10 on the 19 training sources, ties to smaller c, values with source-mean delta FB <= 0 excluded; fitted raw and under each treatment, the evaluation uses the c of the same treatment; learned pathways cross-fitted on training sources",
+    "amended": "2026-10-24: readout validity, motor regime, trimming, ungated comparison (docs/analysis-spec.md section 10); 2026-10-26: failing-network rule, readout ranges, criteria implementation, fit under each treatment, Gate 2 checks",
+    "gate2_checks": "inner training source only; distinct control predictions: 8 quantities (6 control FDI movement effects, 2 matched-pair differences), paired hierarchical bootstrap, two-sided p < .05 after Holm over the 8, under both treatments, for H0-H1, H0-H2, H1-H2 with the primary encoder; smooth probe responses: full-body trials, probe 1.0-1.5 x threshold, mean FDI readout static and movement Spearman >= 0.9 in every network"
   }
 }

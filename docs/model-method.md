@@ -736,6 +736,85 @@ continuously. Tests: `tests/test_evaluate.py` (models and gates, reproducibility
 numbers, mode equivalence without noise, probe twin, held-out refusal, trimming and normalisation,
 contrasts through the human code, the two-level bootstrap).
 
+### 6.19 Criteria, fit of c and Gate 2 checks (declared 26 October 2026, before any of them is run)
+
+Everything below was written, implemented and tested on synthetic data before any fit, prediction or
+sweep was run on a trained network.
+
+**Batched simulation.** `evaluate.simulate_grid` runs several models or probe strengths on one
+session in one batch, every copy sharing every noise draw. For one model it is bit-identical to the
+§6.18 trialwise simulation (checked against the committed code), so §6.18's validation carries over.
+
+**ADM readout range.** The over-driven rule applies to each population with its own range. The ADM
+population's excitability curve is measured as the FDI one (extra current into the ADM bias, its rate
+and response; `extend_curves.py --population adm`); its peak response is the ADM readout maximum. The
+FDI peak response is the FDI readout maximum. Health criteria still use the FDI curve.
+
+**Learned pathways on training sources (a fault, fixed).** H2-learned's and H4's tables scored every
+training source with the pathway fitted on it. On held-out sources (the evaluation) each source is
+scored by a pathway that never saw it. In-sample values are not comparable: H4's whitened
+principal-component distance of in-sample full-body images (median 4.06, fold 1, OpenCLIP) exceeds
+that of a left-out source (2.40), because a new source differs mostly in the discarded dimensions, so
+in-sample m was near 0 (full body 0.06–0.24) against ≈ 0.7 out of sample; H2-learned's was inflated
+(0.98 against 0.69). For the fit of c, every training source s of fold f is now scored by the pathway
+fitted without both f and s, with its own calibration (`learned_context.py crossfit`,
+`gates_crossfit.csv`). Cross-fitted means match the held-out ones (full body 0.67–0.72; upper limb
+0.715 H2-learned, 0.04–0.41 H4). The declared definitions of both pathways are unchanged. Reported as
+found: H2-learned's full-body m is bimodal across sources (held out: 0 for sources 2, 3 and 11, 1 for
+most others), so its gate closes the full body of some sources; and H4's distance ignores novelty
+outside its retained components (a limitation of the declared measure).
+
+**Criteria (`model/criteria.py`).** Per instance and treatment (§6.17): a cell (display × trial type
+× population) is over-driven when that population's mean pre-probe rate exceeds its readout range;
+'remove' drops its readouts before trimming and normalisation, 'maximum' sets them to the
+population's readout maximum. Contrasts are computed per instance and averaged over the instances
+that have them; a ratio uses the instances complete for all its terms. One set of hierarchical-
+bootstrap draws (10,000, seed 20261022) serves all quantities of an analysis; paired comparisons are
+differenced per matched instance (same source and initialisation) before resampling.
+
+| Criterion | Computation |
+| --- | --- |
+| P1 | Mean C_FDI > 0 and its 95% interval above 0 |
+| P2 | 95% intervals of Δ(FB, FDI) and Δ(UL, FDI) above 0 |
+| P3 | C_FDI averaged over source groups, per initialisation: positive in ≥ 80% of initialisations |
+| S1, S2 | Ratio of instance means inside the human 95% interval (participant_z: S1 [−0.667, 0.379], S2 [0.342, 1.781], read from `output/human_target/ratios.csv`); not met if the denominator is ≤ 0, where the ratio has no meaning |
+| S3(b) | H0 does not meet P1, and the paired difference C_FDI(primary) − C_FDI(H0) has its interval above 0 |
+| S3(a) | For both matched control pairs, the paired difference of [Δ(x) − Δ(y)] between the primary model and the visible-area model has its interval above 0 |
+| Verdict | Met under both treatments: met; under neither: not met; otherwise undetermined |
+| Decision rule | Met if P1, P2, P3, S1, S2, S3 (primary encoder) and P1 (both robustness encoders) are all met; not met if any is not met; otherwise undetermined |
+
+**Fit of c (`model/fit_gate.py`; §6.6 as declared, with three additions).** (1) All 21 grid values
+and the four gated models (H2, S3(a) visible area, H2-learned, H4) of one network run in one batch with
+common random numbers. (2) The fit is made as declared (raw readouts) and under each treatment, and
+the evaluation uses c from the fit under the same treatment, so each treatment is applied throughout.
+The raw fit is reported. (3) Values of c whose source-mean Δ(FB, FDI) ≤ 0 are not candidates; if none
+remains the fit is undefined and the network has no instance for that model and treatment. The resting
+threshold is asserted to be identical for c = 0 and 1 (the gate only scales visual input, which is
+silent at rest). Within a source, readouts of both displays are trimmed and z-normalised together, as
+declared; the ratio within a source does not depend on that scaling, only the weights of sources in
+the source means do. H2-learned and H4 use the cross-fitted tables above.
+
+**Gate 2 checks (`model/gate2.py`), on each network's inner training source only.**
+
+- *Distinct control predictions.* Every H0, H1 and H2 spiking network (three encoders) runs the six
+  control displays; H2 with its fitted c per treatment. Prediction per network: each control's
+  Δ(FDI) and the two matched-pair differences (8 numbers). Two hypotheses make different predictions
+  if at least one of the 8 paired differences between their networks of the same fold and
+  initialisation has a two-sided hierarchical-bootstrap p < .05 after Holm correction over the 8,
+  under both treatments. Gate 2's condition is met if H0–H1, H0–H2 and H1–H2 are all distinct with the
+  primary encoder; the robustness encoders are reported. The S3(a) visible-area model is not run on the
+  controls before the evaluation, and no paper display other than the full body is simulated, so no
+  criterion is previewed.
+- *Probe-strength sweep.* Every network, full-body trials of its inner source, probe at 1.0, 1.1, …,
+  1.5 × its resting threshold in one batch with common random numbers. A network varies smoothly with
+  strength if the mean FDI readout on static and on movement trials both rise with strength (Spearman ≥
+  0.9, the dose-response threshold of §6.5). The condition is met for a configuration if every network
+  meets it; failures are listed. Full-body facilitation at each strength is reported, to show whether
+  the 120% probe sits on a knife edge.
+
+No model setting is changed in response to any of these results; a fault in code or measurement is
+fixed and reported, as in §6.10–6.17.
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the

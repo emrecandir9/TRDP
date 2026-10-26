@@ -213,6 +213,16 @@ encoder-dependent. Every criterion is reported for every model, pass or fail. If
 P1, the result is reported as negative. Parameters, preprocessing and readouts are not changed
 after the evaluation is opened.
 
+**Implementation (amended 26 October 2026, before any criterion, fit or prediction was computed;
+[model-method](model-method.md) §6.19).** Each criterion is computed under both treatments of
+over-driven readouts (§5.1), each population against its own readout range, and combined into met /
+not met / undetermined; the decision rule is met only if every part is met and not met if any part is
+not met. S1 and S2 compare the ratio of instance means with the human interval and are not met when
+the denominator is ≤ 0. Paired comparisons (S3) match instances by source and initialisation. H2's c
+(and that of every gated comparison model) is fitted by §6.2's procedure as declared and under each
+treatment; the evaluation uses, in each treatment, the c fitted under it; training sources are scored
+by the learned pathways with cross-fitted values (a pathway that did not see the source).
+
 **Which tests are predictions.** H0 and H1 use no human data, so S1 and S2 are predictions for
 them. H2's gate is fitted to the human ratio Δ(DH, FDI) / Δ(FB, FDI) (§6.2); for H2, S1 is a fit
 check and S2 is the out-of-sample prediction, because no upper-limb data enter its fitting.
@@ -325,6 +335,16 @@ equal the full-body image, hidden pixels are black, and matched pairs have equal
 | Freeze | 11 Dec | Configurations, seeds and code hashes recorded | — |
 | Evaluation | 14–18 Dec | Held-out evaluation opened once | — |
 
+**Gate 2 checks (amended 26 October 2026, before they were run).** On each network's inner training
+source only. *Different control predictions*: per network, each control's Δ(FDI) and the two
+matched-pair differences of S3(a); two hypotheses differ if at least one of these 8 paired differences
+(networks of the same fold and initialisation) has a two-sided hierarchical-bootstrap p < .05 after
+Holm correction over the 8, under both treatments; the condition holds if H0–H1, H0–H2 and H1–H2 all
+differ with the primary encoder. *Probe responses vary smoothly with strength*: full-body trials, probe
+1.0–1.5 × threshold; the mean FDI readout on static and on movement trials both rise with strength
+(Spearman ≥ 0.9) in every network. The visible-area model is not run on the controls before the
+evaluation, so S3(a) is not previewed.
+
 ## 9. Reporting rules
 
 - Report all 12 cells and all contrasts for humans and models, with intervals and units.
@@ -352,6 +372,7 @@ equal the full-body image, hidden pixels are black, and matched pairs have equal
 | 25 Oct 2026 (before any model result; before the campaign restart) | Motor limits rest 1 Hz and movement 3 Hz per trial; background criterion and readout range rule use each network's measured readout peak instead of a fixed rate ([model-method](model-method.md) §6.12) | With rest 2 Hz and limit 4 Hz, unseen inner sources were driven up to 6.3 Hz, too close to the readout's peak; with rest 1 Hz the calibrated probe is larger and the readout grows up to about 8 Hz, so a fixed limit taken from the earlier networks no longer described the readout's valid range. Training sources and full-body trials only |
 | 25 Oct 2026 (before any model result) | §5.2 and §6.2: H2-learned and H4 added as comparison models; non-spiking twin's output function replaced by the mean-field rate function of the network's spiking neuron ([model-method](model-method.md) §6.14); a spinal motoneuron readout was built and not adopted (§6.15) | Requested by the project owner to address the hand-designed gate, the failed twin and the abstract readout. In these stimuli attachment coincides with the paper's condition, so any correct attachment estimate partly builds in the main pattern; H2-learned shows whether attachment can be learned without labels, H4 tests a competing own-body familiarity account that is not built in. The twin's softplus output did not train. The spinal readout saturated (nearly all-or-none recruitment) and is left as future work |
 | 26 Oct 2026 (before any evaluation; training-source health results only) | §5.1 instances and health, over-driven displays; §6.4 readout validity | The campaign showed that source-dependent health failures follow the fold, where inner source and training set cannot be separated; excluding those runs is never conservative (it drops an unrelated source or favours P1 and P2). An over-driven readout cannot be measured, so it is bounded both ways; the readout maximum mirrors the human MEP plateau (Devanne et al., 1997). Every premise was tested on all 2,400 networks ([model-method](model-method.md) §6.17). Accepted by the project owner on the condition that it is scientifically validated |
+| 26 Oct 2026 (before any criterion, fit of c or Gate 2 check was computed) | §5.2 implementation of the criteria and verdicts; §6.2 fit of c under each treatment, learned pathways cross-fitted on training sources; §8 operational Gate 2 checks | The criteria and Gate 2's wording needed computable definitions; the fit must use the same readout rule as the evaluation; the learned pathways scored training sources in-sample, which is not comparable with their held-out scores (H4's in-sample full-body m near 0 against 0.7 out of sample; [model-method](model-method.md) §6.19). Declared and committed before running |
 
 ## 11. References
 

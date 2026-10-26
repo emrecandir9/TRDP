@@ -15,6 +15,13 @@ full-body static encoder features; a display's distance d is the norm of its whi
 
 Calibration, both: E = the leave-one-training-source-out errors (distances) of full-body static
 frames, everything refitted without the left-out source; m = min(1, 2 P(E >= e)).
+
+Cross-fitted values for the fit of c (docs/model-method.md §6.19): a fold's training source s is scored
+by the pathway fitted without both the fold's held-out source and s (with its own calibration), exactly
+as the held-out source is scored by the pathway fitted without it. Scoring a training source with the
+pathway fitted on it is not comparable: H4's in-sample full-body distances exceed out-of-sample ones,
+because its whitened principal-component distance ignores the discarded dimensions, where a new source
+mostly differs.
 """
 import argparse
 import json
@@ -111,11 +118,16 @@ def match(error, calibration):
     return np.minimum(1., 2 * above)
 
 
+def excluded(held_out):
+    return tuple(held_out) if isinstance(held_out, (tuple, list)) else (held_out,)
+
+
 def forearm_fold(windows, held_out):
-    """H2-learned for one outer fold: match m of every family and display."""
+    """H2-learned for one outer fold: match m of every family and display. held_out: a source, or a
+    tuple of sources left out together (cross-fitting)."""
     keys = list(windows['keys'])
     fb, mv = keys.index('full_body'), keys.index('full_body_movement')
-    train = windows['sources'] != held_out
+    train = ~np.isin(windows['sources'], excluded(held_out))
     hand, band, sources = windows['hand'], windows['band'], windows['sources']
     rows = lambda mask: (np.concatenate([hand[mask, fb], hand[mask, mv]]), np.concatenate([band[mask, fb], band[mask, mv]]))
     training_sources = sorted(set(sources[train]))
@@ -136,8 +148,9 @@ def forearm_fold(windows, held_out):
 
 
 def familiarity_fold(x, sources, conditions, families, held_out):
-    """H4 for one outer fold: x [images, D] encoder features of static frames; returns m per image."""
-    train_fb = (sources != held_out) & (conditions == 'full_body')
+    """H4 for one outer fold: x [images, D] encoder features of static frames; returns m per image.
+    held_out: a source, or a tuple of sources left out together (cross-fitting)."""
+    train_fb = ~np.isin(sources, excluded(held_out)) & (conditions == 'full_body')
 
     def model(mask):
         mean, sd = x[mask].mean(0), x[mask].std(0)
@@ -193,12 +206,55 @@ def build(representations=('openclip', 'dinov2_cls', 'dinov2_patchmean')):
     return means
 
 
+def crossfit(representations=('openclip', 'dinov2_cls', 'dinov2_patchmean'), workers=8):
+    """Cross-fitted m of every training source of every fold (module doc): OUTPUT/gates_crossfit.csv
+    with fold, source, family, display, pathway, m."""
+    import pandas as pd
+    pairs = [(fold, s) for fold in range(1, 21) for s in range(1, 21) if s != fold]
+    with Pool(workers) as pool:
+        tables = pool.starmap(_crossfit_pair, [(fold, s, representations) for fold, s in pairs])
+    table = pd.concat(tables, ignore_index=True)
+    table.to_csv(OUTPUT / 'gates_crossfit.csv', index=False)
+    return table.groupby(['pathway', 'display']).m.mean().unstack()
+
+
+_cache = {}
+
+
+def _crossfit_pair(fold, source, representations):
+    import pandas as pd
+    import bank as bk
+    if 'windows' not in _cache:
+        with np.load(OUTPUT / 'windows.npz') as z:
+            _cache['windows'] = {k: z[k] for k in z.files}
+    windows = _cache['windows']
+    keys = list(windows['keys'])
+    rows = []
+    m, _ = forearm_fold(windows, (fold, source))
+    for i in np.flatnonzero(windows['sources'] == source):
+        rows += [dict(fold=fold, source=source, family=windows['ids'][i], display=d, pathway='forearm',
+                      m=float(m[i, keys.index(d)])) for d in DISPLAYS]
+    for representation in representations:
+        if representation not in _cache:
+            bank = bk.Bank(representation)
+            index = [(f, c) for (f, c, frame) in bank.rows if frame == 'static' and c in DISPLAYS]
+            _cache[representation] = (index, bank.matrix([(f, c, 'static') for f, c in index]),
+                                      np.array([int(f[1:3]) for f, _ in index]), np.array([c for _, c in index]))
+        index, x, sources, conditions = _cache[representation]
+        m, _ = familiarity_fold(x, sources, conditions, None, (fold, source))
+        rows += [dict(fold=fold, source=source, family=f, display=c, pathway=f'familiarity_{representation}', m=float(v))
+                 for (f, c), s, v in zip(index, sources, m) if s == source]
+    return pd.DataFrame(rows)
+
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    parser.add_argument('step', choices=('extract', 'build'))
+    parser.add_argument('step', choices=('extract', 'build', 'crossfit'))
     parser.add_argument('--workers', type=int, default=8)
     args = parser.parse_args()
     if args.step == 'extract':
         extract(args.workers)
+    elif args.step == 'crossfit':
+        print(crossfit(workers=args.workers).round(3).to_string())
     else:
         print(build().round(3).to_string())

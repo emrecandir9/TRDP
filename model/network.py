@@ -136,7 +136,11 @@ class Network(nn.Module):
 
     def fdi_bias_index(self):
         """Entries of b_m that set the FDI population's bias."""
-        return slice(0, 1) if self.pooled else slice(0, self.n_motor)
+        return self.bias_index(FDI)
+
+    def bias_index(self, population):
+        """Entries of b_m that set one population's bias (FDI or ADM)."""
+        return slice(population, population + 1) if self.pooled else slice(population * self.n_motor, (population + 1) * self.n_motor)
 
     def drive(self, x):
         """Visual input current of standardised encoder vectors (constant within a frame)."""

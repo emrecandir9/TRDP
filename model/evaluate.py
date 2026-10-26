@@ -81,6 +81,64 @@ class Model:
         return 1.
 
 
+GATES = ('continuity', 'area', 'forearm', 'familiarity')   # H2, S3(a) visible area, H2-learned, H4
+_tables = {}
+
+
+def attachment(gate, fold=None, representation=None):
+    """a (or m) of a display for a gated model, as a function of (family, display) (model-method §6.6,
+    §7, §7.1): 'continuity' forearm continuity at the wrist (H2); 'area' the global visible-area
+    fraction (S3(a)); 'forearm' and 'familiarity' the learned pathways of outer fold `fold` (H2-learned,
+    H4 with the network's encoder): on the fold's held-out source the fold's own table, on its training
+    sources the cross-fitted table (§6.19), so every source is scored by a pathway that did not see it."""
+    require(gate in GATES, f'Unknown gate: {gate}')
+    if gate == 'continuity':
+        if gate not in _tables:
+            import context
+            _tables[gate] = context.load()
+        table = _tables[gate]
+        return lambda family, display: table[int(family[1:3])][display]
+    if gate == 'area':
+        if gate not in _tables:
+            import bank as bk
+            _tables[gate] = bk.Bank('lowlevel')                # visible_area is its first column
+        b = _tables[gate]
+        return lambda family, display: float(b.vector((family, display, 'static'))[0])
+    require(fold is not None, 'Learned pathways need the outer fold')
+    pathway = 'forearm' if gate == 'forearm' else f'familiarity_{representation}'
+    if 'learned' not in _tables:
+        out = ROOT / 'output/learned_context'
+        own, cross = pd.read_csv(out / 'gates.csv'), pd.read_csv(out / 'gates_crossfit.csv')
+        _tables['learned'] = pd.concat([own[own.source == own.fold], cross])
+    table = _tables['learned']
+    rows = table[(table.fold == fold) & (table.pathway == pathway)]
+    require(len(rows), f'No {pathway} values for fold {fold}')
+    values = dict(zip(zip(rows.family, rows.display), rows.m))
+    return lambda family, display: values[(family, display)]
+
+
+def salience():
+    """H1's s of a display's movement frame: 64 x 64 luminance distance to its static frame."""
+    if 'pixels64' not in _tables:
+        import bank as bk
+        _tables['pixels64'] = bk.Bank('pixels64')
+    b = _tables['pixels64']
+    return lambda family, display: float(np.linalg.norm(b.vector((family, display, 'movement')) - b.vector((family, display, 'static'))))
+
+
+def model_for(report, mean_salience=None, c=None, gate='continuity', ungated=False):
+    """The model a trained network plays: its hypothesis's input and gate (H2 networks: the gated
+    model with `gate` and c, or the ungated network)."""
+    hypothesis = report.get('hypothesis', 'h2')
+    if hypothesis == 'h0':
+        return Model('h0')
+    if hypothesis == 'h1':
+        return Model('h1', salience=salience(), mean_salience=mean_salience)
+    if ungated:
+        return Model('ungated')
+    return Model('gated', c=c, attachment=attachment(gate, report['held_out_source_not_used'], report['representation']))
+
+
 def drives(net, model, bank, scaler, keys, device):
     """Visual drive [n, n_visual] per displayed image; the fixation display has none (§6.8)."""
     mean, sd = scaler
@@ -105,30 +163,68 @@ def trial_keys(trial):
     return first, (trial['family'], trial['display'], 'movement' if trial['kind'] == 'movement' else 'static')
 
 
-def records(session, responses, background):
-    out = pd.DataFrame(session.trials)[['trial', 'block', 'display', 'kind', 'family']]
+def records(trial_list, responses, background):
+    out = pd.DataFrame(trial_list)[['trial', 'block', 'display', 'kind', 'family']]
     out[['fdi', 'adm']] = np.asarray(responses)
     out[['pre_fdi_hz', 'pre_adm_hz']] = np.asarray(background)
     return out
 
 
+def _run_tiled(net, drive, gate, state, noise, copies, probe=None):
+    """Run len(noise[0]) steps of a constant display for `copies` stacked copies of n trials that share
+    their noise: drive [copies * n, n_visual], gate [copies * n], noise [n, T, n_visual + 2 n_motor]
+    (repeated across copies, so the copies differ only in drive, gate or probe). `probe`
+    [copies * n] is applied at the first step. Returns motor output [copies * n, T, 2 n_motor] and
+    the state; for copies = 1 the computation is net.run's."""
+    n_v, n_m = net.config['n_visual'], 2 * net.config['n_motor']
+    zero = torch.zeros(len(gate), device=gate.device)
+    out = []
+    for t in range(noise.shape[1]):
+        z = noise[:, t] if copies == 1 else noise[:, t].repeat(copies, 1)
+        _, m, state = net.step(drive, gate, probe if probe is not None and t == 0 else zero, state, z[:, :n_v], z[:, n_v:n_v + n_m])
+        out.append(m)
+    return torch.stack(out, 1), state
+
+
 @torch.no_grad()
-def simulate_trialwise(net, model, bank, scaler, session, amplitude, device='cpu', settle_ms=SETTLE_MS, salt=0):
-    """All trials in one batch, each from rest `settle_ms` before its second frame (§6.4)."""
-    keys = [trial_keys(t) for t in session.trials]
-    first = drives(net, model, bank, scaler, [k[0] for k in keys], device)
-    second = drives(net, model, bank, scaler, [k[1] for k in keys], device)
-    gate_first = torch.tensor([model.gate(k[0]) for k in keys], dtype=torch.float32, device=device)
-    gate_second = torch.tensor([model.gate(k[1]) for k in keys], dtype=torch.float32, device=device)
+def simulate_grid(net, models, bank, scaler, session, amplitudes, device='cpu', settle_ms=SETTLE_MS, salt=0, task_only=False):
+    """Several runs of one session in one batch, all sharing every noise draw (common random numbers):
+    `models` and `amplitudes` are lists of equal length (one entry per run). Each trial starts from rest
+    `settle_ms` before its second frame (§6.4). task_only leaves out the fixation trials. Returns one
+    record table per run."""
+    require(len(models) == len(amplitudes) > 0, 'One model and one amplitude per run')
+    trial_list = [t for t in session.trials if not (task_only and t['kind'] == 'fixation')]
+    keys = [trial_keys(t) for t in trial_list]
+    n, copies, before = len(keys), len(models), trials.TIMING['probe_after_ms']
+    inputs = {}
+    for model in models:                                   # H0 sees other images than the display models
+        tag = model.hypothesis == 'h0'
+        if tag not in inputs:
+            inputs[tag] = (drives(net, model, bank, scaler, [k[0] for k in keys], device),
+                           drives(net, model, bank, scaler, [k[1] for k in keys], device))
+    first = torch.cat([inputs[m.hypothesis == 'h0'][0] for m in models])
+    second = torch.cat([inputs[m.hypothesis == 'h0'][1] for m in models])
+    gate = lambda i: torch.tensor([m.gate(k[i]) for m in models for k in keys], dtype=torch.float32, device=device)
+    gate_first, gate_second = gate(0), gate(1)
+    amplitude = torch.tensor([a for a in amplitudes for _ in keys], dtype=torch.float32, device=device)
     generator = torch.Generator(device=device).manual_seed(stream(session, salt))
-    n, before = len(keys), trials.TIMING['probe_after_ms']
-    state = nw.settle(net, first, gate_first, settle_ms, generator)
-    gates = gate_second[:, None].expand(n, before)
-    _, m, state = net.run(second[:, None].expand(n, before, -1), gates, gates * 0, state, net.noise(n, before, generator, device))
+    # drawn in the order and shapes of network.settle, the second frame and network.probe_response
+    noise = [net.noise(n, steps, generator, device) for steps in (settle_ms, before, nw.READOUT[1])]
+    _, state = _run_tiled(net, first, gate_first, net.initial(n * copies, device), noise[0], copies)
+    m, state = _run_tiled(net, second, gate_second, state, noise[1], copies)
     tail = m[:, -BACKGROUND_MS:]
     background = 1000 * torch.stack([tail[..., :net.n_motor].mean((1, 2)), tail[..., net.n_motor:].mean((1, 2))], -1)
-    responses = nw.probe_response(net, state, second, gate_second, amplitude, generator)
-    return records(session, responses.cpu().numpy(), background.cpu().numpy())
+    with_probe, _ = _run_tiled(net, second, gate_second, [x.clone() for x in state], noise[2], copies, probe=amplitude)
+    without, _ = _run_tiled(net, second, gate_second, [x.clone() for x in state], noise[2], copies)
+    diff = (with_probe - without)[:, nw.READOUT[0]:nw.READOUT[1]]
+    responses = torch.stack([diff[..., :net.n_motor].sum((1, 2)), diff[..., net.n_motor:].sum((1, 2))], -1)
+    responses, background = responses.cpu().numpy(), background.cpu().numpy()
+    return [records(trial_list, responses[k * n:(k + 1) * n], background[k * n:(k + 1) * n]) for k in range(copies)]
+
+
+def simulate_trialwise(net, model, bank, scaler, session, amplitude, device='cpu', settle_ms=SETTLE_MS, salt=0):
+    """All trials in one batch, each from rest `settle_ms` before its second frame (§6.4)."""
+    return simulate_grid(net, [model], bank, scaler, session, [amplitude], device, settle_ms, salt)[0]
 
 
 @torch.no_grad()
@@ -164,7 +260,7 @@ def simulate_continuous(net, model, bank, scaler, session, amplitude, device='cp
         diff = (with_probe - without)[0, nw.READOUT[0]:nw.READOUT[1]]
         responses.append([diff[:, :net.n_motor].sum().item(), diff[:, net.n_motor:].sum().item()])
         t = end
-    return records(session, responses, background)       # the session's last 445 ms carry no probe
+    return records(session.trials, responses, background)       # the session's last 445 ms carry no probe
 
 
 def instance_cells(table, displays, trim=True):
