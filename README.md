@@ -241,12 +241,25 @@ Done on 24 October:
   (`model/campaign.py`) were added (spec amendment). The corrected spiking network passes every
   health criterion for H2, H0 and H1; the non-spiking twin does not yet learn the task.
 
+Done on 25–26 October:
+
+- Stacked GPU training (about nine times faster); the non-spiking twin repaired; learned context
+  pathways (H2-learned, H4) declared; a spinal motoneuron readout tried and not adopted
+  ([model method](docs/model-method.md) §6.13–6.15, §7.1).
+- **Training campaign finished** ([model method](docs/model-method.md) §6.16): 2,400 networks
+  (H2, H0, H1 spiking and the H2 twin, three encoders, 20 folds × 10 initialisations) on six CREMI
+  GPUs; 1,996 pass every health criterion on their inner training source. Healthy per 200:
+  OpenCLIP 181–200 in every configuration; DINOv2 120–188, lowest for H2 and H1. Failures follow
+  the source, not the seed: on some unseen training sources the motor population is driven past
+  its readout peak, on others it does not respond. With DINOv2, up to six folds per configuration
+  have no healthy network (one for H2 and H1 with OpenCLIP).
+
 Next:
 
-1. Training campaign (20 folds × 10 initialisations per hypothesis, encoder and network type),
-   the recurrent variant, the evaluation simulator and H2's gate fit; Gate 2 on 4 December, single
-   held-out evaluation 14–18 December. Every analysis is repeated without reference 17 (456 families).
-   A fresh CUDA canary is deferred.
+1. Decide how networks that fail health enter the evaluation (before Gate 2, on training-source
+   results only); the recurrent variant, the evaluation simulator and H2's gate fit; Gate 2 on
+   4 December, single held-out evaluation 14–18 December. Every analysis is repeated without
+   reference 17 (456 families). A fresh CUDA canary is deferred.
 
 Image acceptance does not establish physiological or scientific replication.
 

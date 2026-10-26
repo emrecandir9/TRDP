@@ -179,6 +179,21 @@ display.
 | Citations | Three added references checked against publisher records |
 | Tests | 105 CPU tests pass, including 12 for the network, health measures and campaign driver |
 
+## Training campaign — 25–26 October 2026
+
+Health of every campaign network on its inner training source ([model method](model-method.md)
+§6.16). No held-out source was used, and no setting was changed in response.
+
+| Check | Result |
+| --- | --- |
+| Completeness | 12 configurations × 20 folds × 10 initialisations: 2,400 networks trained, 2,400 health reports, none failed to run, no partial stacks left (checked on CREMI, 26 Oct) |
+| Health, OpenCLIP | H2 spiking 181, H0 198, H1 190, H2 twin 200 of 200 |
+| Health, DINOv2 summary token | H2 spiking 143, H0 188, H1 138, H2 twin 162 of 200 |
+| Health, DINOv2 mean patch token | H2 spiking 120, H0 185, H1 126, H2 twin 165 of 200 |
+| Failing criteria | Only task, facilitation and background; all other criteria pass in every network |
+| Failure pattern | Follows the inner source, not the seed: over-driven (pre-probe FDI 8–24 Hz spiking, 14–21 Hz twin, past the readout peak, so facilitation collapses) or no transfer (rest-level rate, task AUC < 0.9). H1's gate on sources 17 and 18 exceeds its training range |
+| Open | In 9 of 12 configurations 1–6 folds have no healthy network (1 for H2 and H1 with OpenCLIP, spiking; most with DINOv2); how failing instances enter the evaluation is to be decided before Gate 2 |
+
 ## Remaining limits
 
 **Single unblinded review.** All 480 families were accepted by one reviewer (the project owner),

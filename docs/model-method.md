@@ -557,6 +557,77 @@ corticospinal volley structure (I-waves), heterogeneous connections and larger p
 literature-based constants; it is left as future work, and "the readout is an analogy, not physiology"
 remains a stated limitation. The stage stays in the code, switched off, with its tests.
 
+### 6.16 Training campaign: health on training sources (25–26 October 2026)
+
+**What ran.** 12 configurations × 20 folds × 10 initialisations = 2,400 networks: the spiking network
+for H2, H0 and H1 and the non-spiking twin (§6.14) for H2, each with OpenCLIP, the DINOv2 summary
+token (`dinov2_cls`) and the DINOv2 mean patch token (`dinov2_patchmean`). They ran on six CREMI GPUs
+(`jessica`, `daniel`, `joe`, `vladimir`, `moneo`, `cheonech`), one configuration per machine at a time,
+from 25 October 01:55 to 26 October 16:27. Every network trained and received its health report
+(`output/model/campaign/<configuration>/`); none failed to run. As in every check before, health is
+measured on each network's inner training source (the source after the held-out one), which the
+network never trained on; no held-out source was used.
+
+| Configuration | Healthy / 200 | Over-driven | No transfer | Facilitation only | Inner sources failing in ≥ 5 of 10 seeds (**none healthy**) |
+| --- | --- | --- | --- | --- | --- |
+| H2, OpenCLIP, spiking | 181 | 18 | 0 | 1 | 9, **18** |
+| H2, DINOv2 summary, spiking | 143 | 41 | 11 | 5 | **3**, 9, **12**, **17**, **18**, **20** |
+| H2, DINOv2 mean patch, spiking | 120 | 48 | 22 | 10 | **1**, **2**, **3**, **9**, **12**, **17**, 18, 20 |
+| H0, OpenCLIP, spiking | 198 | 0 | 2 | 0 | — |
+| H0, DINOv2 summary, spiking | 188 | 6 | 2 | 4 | **20** |
+| H0, DINOv2 mean patch, spiking | 185 | 8 | 3 | 4 | 5 |
+| H1, OpenCLIP, spiking | 190 | 10 | 0 | 0 | **18** |
+| H1, DINOv2 summary, spiking | 138 | 21 | 40 | 1 | 3, **7**, **10**, 15, 17, **18**, 20 |
+| H1, DINOv2 mean patch, spiking | 126 | 23 | 51 | 0 | **2**, **9**, **10**, 15, **17**, 18, **19** |
+| H2, OpenCLIP, twin | 200 | 0 | 0 | 0 | — |
+| H2, DINOv2 summary, twin | 162 | 30 | 8 | 0 | **3**, 12, 18, **20** |
+| H2, DINOv2 mean patch, twin | 165 | 29 | 6 | 0 | 3, **9**, 17 |
+
+In total 1,996 of 2,400 networks pass every criterion. Only three criteria ever fail (task,
+facilitation, background); threshold, dose-response, excitability, fixation, saturation and the
+visual-activity criteria pass in every network.
+
+**Failures follow the inner source, not the initialisation.** Where a source fails, it usually fails
+for every seed, and the remaining failures are scattered (at most 10 per configuration). They take two
+forms, which are the two sides of the same limit: the motor drive learned on the training sources does
+not carry over to an unseen source at the right strength.
+
+- **Over-driven** (background fails, nearly always with facilitation): on the inner source's movement
+  frames the FDI population fires at 8–24 Hz before the probe (twin: 14–21 Hz) (healthy spiking networks: median
+  1.6–3.1 Hz), past its readout peak (about 8 Hz spiking, 14 Hz twin), where the probe response falls
+  (§6.10). The movement−static facilitation then shrinks to about zero or turns negative, so the
+  facilitation failure is a consequence of the background failure. The per-trial limit of 3 Hz (§6.12)
+  holds the trained sources only; nothing holds the rate on a source the network has not seen.
+- **No transfer** (task fails): the population stays at rest (about 0.95 Hz) on the inner source's
+  movement frames, so movement and static trials are not separated (AUC < 0.9) and nothing is
+  facilitated.
+
+**Where they come from.**
+
+- **Encoder.** DINOv2 transfers between sources far less evenly than OpenCLIP: 3–8 failing sources
+  for H2 against 2 (spiking) and 0 (twin). Input statistics explain this only in part: source 9's
+  standardised DINOv2 movement vectors are about twice the typical length of the training sources'
+  (2.3 × summary token, 2.0 × mean patch token), whereas most failing sources look ordinary. A modest
+  shift in the feature vector, passed through a steep motor-pool input, is enough to move the rate
+  from 3 Hz to either rest or past the peak.
+- **H1's gate.** H1's salience gate is one value per source. On sources 17 and 18 it is 3.05 and 2.91,
+  above the 99th percentile of the training movement frames in those folds (2.80 and 2.62), so it
+  multiplies the movement drive beyond the trained range. This alone explains H1 with OpenCLIP (source
+  18 over-driven in every seed); with DINOv2 it amplifies the encoder's uneven transfer in both
+  directions (task AUC down to 0.09 on source 18, a reversed response).
+- **H0** (hand-only input, no gate) is the most robust; its few failures are mostly one source per
+  configuration.
+- **The twin** has more headroom (readout peak about 14 Hz against 8 Hz, §6.14) and fails less with
+  the same encoder: 165 against 120 healthy networks for H2 with the DINOv2 mean patch token, 200
+  against 181 with OpenCLIP.
+
+**Consequence for the evaluation.** A fold whose inner source has no healthy network (the fold is
+the source before it, §6.5) contributes no healthy instance of that configuration: 1 fold for H2 with
+OpenCLIP (spiking), 5–6 for H2 with DINOv2 (spiking), up to 5 for H1 with DINOv2. The spec (§5.1)
+resamples source groups and does not yet say how instances that fail health enter that resampling.
+This must be decided and logged before Gate 2, on these training-source results only; no setting has
+been changed in response to them.
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -747,11 +818,12 @@ for a general check before the network phase continues.
 | Health criteria | Code against §6.5 | "> 200 Hz" not computed and "silent" measured on one batch; task accuracy confounded by source offsets; corrected (§6.10) |
 | Citations | Added references checked against the publishers' records | Fadiga et al. 1995, Kraskov et al. 2009, Vigneswaran et al. 2013 verified |
 
-**Still to do before Gate 2:** the training campaign (`model/campaign.py`, running); the recurrent
-variant; the evaluation simulator (sessions with probes, trimming, normalisation, readout range rule),
-the fit of c, and the hierarchical bootstrap evaluation. Being built (25 October 2026, at the project
-owner's request): a repaired non-spiking twin, a spinal motoneuron readout as a second MEP analogue,
-and a self-supervised attachment pathway as a second H2 variant.
+**Still to do before Gate 2:** the training campaign is finished (26 October 2026, §6.16; 1,996 of
+2,400 networks healthy). Open: how instances that fail health enter the evaluation (§6.16); the
+recurrent variant; the evaluation simulator (sessions with probes, trimming, normalisation, readout
+range rule), the fit of c, and the hierarchical bootstrap evaluation. Done 25 October 2026: the
+non-spiking twin repaired (§6.14), the spinal readout tried and not adopted (§6.15), the learned
+context pathways declared (§7.1).
 
 **Next step after these (decided 25 October 2026, not yet declared in the spec):** robustness
 variations of the choices that have no literature value: visual layer 128 and 512 neurons (256 in
@@ -775,3 +847,4 @@ declared in the spec before the evaluation is opened.
 | 24 Oct 2026, before any campaign run | Training made interruption-safe: checkpoint with optimiser and both random streams every 250 updates, resumed exactly (tested); results written atomically, report last; reconnecting launch command in `model/campaign.py` | CREMI lab PCs kill a user's processes when the SSH session closes and can be switched off; an interrupted run previously restarted from zero, and a run killed while saving could have left a damaged file counted as finished |
 | 24–25 Oct 2026, before any evaluation (first campaign stopped after 3 networks) | Motor limits per trial, rest 1 Hz, movement 3 Hz; background criterion and readout range rule use each network's measured readout peak (§6.12, spec amendment) | The batch-mean limit let unseen sources drive the motor population past the readout's peak, where facilitation was not detected |
 | 25 Oct 2026, during the campaign (no evaluation) | Stacked training (§6.13), about nine times faster; equivalence tested | One network at a time left the GPU waiting on instruction launches; the full design would have taken weeks |
+| 26 Oct 2026, after the campaign (no evaluation) | Campaign health recorded (§6.16): 1,996 of 2,400 networks healthy; failures follow the inner source (over-driven or no transfer); no setting changed | Record before Gate 2; how failing instances enter the evaluation is to be decided before Gate 2 |
