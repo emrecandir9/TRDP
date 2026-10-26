@@ -188,11 +188,13 @@ Health of every campaign network on its inner training source ([model method](mo
 | --- | --- |
 | Completeness | 12 configurations × 20 folds × 10 initialisations: 2,400 networks trained, 2,400 health reports, none failed to run, no partial stacks left (checked on CREMI, 26 Oct) |
 | Health, OpenCLIP | H2 spiking 181, H0 198, H1 190, H2 twin 200 of 200 |
-| Health, DINOv2 summary token | H2 spiking 143, H0 188, H1 138, H2 twin 162 of 200 |
-| Health, DINOv2 mean patch token | H2 spiking 120, H0 185, H1 126, H2 twin 165 of 200 |
+| Health, DINOv2 summary token | H2 spiking 143, H0 188, H1 138, H2 twin 171 of 200 |
+| Health, DINOv2 mean patch token | H2 spiking 120, H0 185, H1 126, H2 twin 176 of 200 |
 | Failing criteria | Only task, facilitation and background; all other criteria pass in every network |
-| Failure pattern | Follows the inner source, not the seed: over-driven (pre-probe FDI 8–24 Hz spiking, 14–21 Hz twin, past the readout peak, so facilitation collapses) or no transfer (rest-level rate, task AUC < 0.9). H1's gate on sources 17 and 18 exceeds its training range |
-| Open | In 9 of 12 configurations 1–6 folds have no healthy network (1 for H2 and H1 with OpenCLIP, spiking; most with DINOv2); how failing instances enter the evaluation is to be decided before Gate 2 |
+| Failure pattern | Follows the fold, not the seed: over-driven (pre-probe FDI 8–24 Hz spiking, 15–21 Hz twin, past the readout peak, so facilitation collapses) or no transfer (rest-level rate, task AUC < 0.9). H1's gate on sources 17 and 18 exceeds its training range |
+| Readout ranges | Excitability sweep extended to 0.6 for all 2,400 networks (model-method §6.17): every curve peaks inside it; spiking ranges unchanged; twin ranges 14.1 → 15.7 Hz, 20 twins no longer over-driven (the twin counts above include this) |
+| Rule for failing networks | Premises tested on all 2,400: network-level criteria pass in all; pre-probe rate rises with excitability in all; readout falls past its peak in all; within-range readouts never exceed the peak (largest ratio 1.005); non-transferring networks read near rest (145 / 145). In 7 of 12 configurations 1–6 folds have no healthy network, which no longer matters: no network is excluded for these failures |
+| Evaluation simulator | Trialwise vs continuous session on trained networks (full body, inner source): identical trials without noise (spiking 100 / 100, twin within 9 × 10⁻⁵); no cell differs with noise (20 repeats, Holm) |
 
 ## Remaining limits
 

@@ -215,6 +215,7 @@ shows identical cell means within simulation noise. The "final frame only vs seq
 | Readouts | Not silent (mean task response > 0) and not saturated (no response ≥ 90% of the population) |
 | **Readout facilitation** (added 24 Oct 2026, §6.10) | On full-body trials of the inner source, the FDI probe response at the task probe is larger on movement than on static trials (95% interval of the paired difference above 0). This checks that the readout measures the trained motor response; it uses the training display only and no context information |
 | **Background activity** (added) | Each motor population's rate in the 100 ms before the probe within the network's validated readout range: at most the pre-probe rate at which its own excitability curve peaks (§6.12; was a fixed 6 Hz, then 5 Hz) on static and movement full-body trials of the inner source (the model's analogue of the paper's background-EMG exclusion) |
+| **Readout peak found** (added 26 Oct 2026, §6.17) | The excitability curve's peak lies inside the tested sweep (extra current 0–0.6), so the readout range is a measured peak, not the end of the test |
 | **Excitability range** (added) | At rest, raising the FDI population's excitability with a constant current raises its probe response monotonically up to the curve's peak (the validated readout range) (Spearman ≥ 0.9) |
 | Distinct predictions | H0, H1 and H2 make different control predictions (spec §8) |
 
@@ -580,21 +581,25 @@ network never trained on; no held-out source was used.
 | H1, DINOv2 summary, spiking | 138 | 21 | 40 | 1 | 3, **7**, **10**, 15, 17, **18**, 20 |
 | H1, DINOv2 mean patch, spiking | 126 | 23 | 51 | 0 | **2**, **9**, **10**, 15, **17**, 18, **19** |
 | H2, OpenCLIP, twin | 200 | 0 | 0 | 0 | — |
-| H2, DINOv2 summary, twin | 162 | 30 | 8 | 0 | **3**, 12, 18, **20** |
-| H2, DINOv2 mean patch, twin | 165 | 29 | 6 | 0 | 3, **9**, 17 |
+| H2, DINOv2 summary, twin | 171 | 21 | 8 | 0 | 3, 12, 18, 20 |
+| H2, DINOv2 mean patch, twin | 176 | 18 | 6 | 0 | 9, 17 |
 
-In total 1,996 of 2,400 networks pass every criterion. Only three criteria ever fail (task,
-facilitation, background); threshold, dose-response, excitability, fixation, saturation and the
+In total 2,016 of 2,400 networks pass every criterion (twin rows with the readout ranges measured
+over the extended sweep, §6.17; 1,996 before). Only three criteria ever fail (task, facilitation,
+background); threshold, dose-response, excitability, fixation, saturation, readout peak and the
 visual-activity criteria pass in every network.
 
-**Failures follow the inner source, not the initialisation.** Where a source fails, it usually fails
-for every seed, and the remaining failures are scattered (at most 10 per configuration). They take two
+**Failures follow the fold, not the initialisation.** Where a fold fails, it usually fails for every
+seed: 367 of the 404 failures before §6.17 (91%) lie in folds where at least 5 of 10 seeds fail. Each
+source is the inner source of exactly one fold, so these data cannot tell a property of the inner
+source from a property of the fold's training set (both exclude the held-out and the inner source):
+on H1's sources 17 and 18, the two highest-salience sources, fold 17 trains without either. They take two
 forms, which are the two sides of the same limit: the motor drive learned on the training sources does
 not carry over to an unseen source at the right strength.
 
 - **Over-driven** (background fails, nearly always with facilitation): on the inner source's movement
-  frames the FDI population fires at 8–24 Hz before the probe (twin: 14–21 Hz) (healthy spiking networks: median
-  1.6–3.1 Hz), past its readout peak (about 8 Hz spiking, 14 Hz twin), where the probe response falls
+  frames the FDI population fires at 8–24 Hz before the probe (twin: 15–21 Hz; healthy spiking networks:
+  median 1.6–3.1 Hz), past its readout peak (about 8 Hz spiking, 15.7 Hz twin), where the probe response falls
   (§6.10). The movement−static facilitation then shrinks to about zero or turns negative, so the
   facilitation failure is a consequence of the background failure. The per-trial limit of 3 Hz (§6.12)
   holds the trained sources only; nothing holds the rate on a source the network has not seen.
@@ -617,16 +622,119 @@ not carry over to an unseen source at the right strength.
   directions (task AUC down to 0.09 on source 18, a reversed response).
 - **H0** (hand-only input, no gate) is the most robust; its few failures are mostly one source per
   configuration.
-- **The twin** has more headroom (readout peak about 14 Hz against 8 Hz, §6.14) and fails less with
-  the same encoder: 165 against 120 healthy networks for H2 with the DINOv2 mean patch token, 200
+- **The twin** has more headroom (readout peak about 15.7 Hz against 8 Hz, §6.17) and fails less with
+  the same encoder: 176 against 120 healthy networks for H2 with the DINOv2 mean patch token, 200
   against 181 with OpenCLIP.
 
-**Consequence for the evaluation.** A fold whose inner source has no healthy network (the fold is
-the source before it, §6.5) contributes no healthy instance of that configuration: 1 fold for H2 with
-OpenCLIP (spiking), 5–6 for H2 with DINOv2 (spiking), up to 5 for H1 with DINOv2. The spec (§5.1)
-resamples source groups and does not yet say how instances that fail health enter that resampling.
-This must be decided and logged before Gate 2, on these training-source results only; no setting has
-been changed in response to them.
+**Consequence for the evaluation.** If failing networks were excluded, a fold with no healthy network
+would contribute no instance: 1 fold for H2 with OpenCLIP (spiking), 5–6 for H2 with DINOv2 (spiking),
+up to 5 for H1 with DINOv2, none for the twin. How networks that fail health enter the evaluation was
+decided on these training-source results only, after the readout ranges were re-measured (§6.17); no
+training setting was changed in response to them.
+
+### 6.17 Readout ranges re-measured, and networks that fail health (26 October 2026, before any evaluation)
+
+**Curve extension (a measurement fault, fixed).** The excitability curve of §6.12 swept the extra FDI
+current from 0 to 0.3 in 13 steps. Testing the premises of the readout range rule on all 2,400
+campaign reports found that every spiking network peaks inside that sweep and falls after it, but no
+twin network does: the twin's response was still rising at the last level, so its "readout range" was
+the end of the test (about 14 Hz), not a peak. The sweep now runs to 0.6 in the same steps
+(25 levels; `train.excitability_curve`), and a new criterion, `readout_peak_found`, requires the peak to
+lie inside it (`train.diagnose`). Every campaign network's curve was recomputed on `joe`'s GPU
+(`model/extend_curves.py`, rest display only); the first 13 levels reproduced the saved curves
+exactly, and the extended curves were written into the health reports, with the 13-level values kept
+under `*_sweep13` keys.
+
+| | Spiking (1,800) | Twin (600) |
+| --- | --- | --- |
+| Peak inside the extended sweep | 1,800 | 600 |
+| Readout range changed | 0 (median 8.0 Hz) | 575 (median 14.1 → 15.7 Hz; plateau, then a slow fall) |
+| Background verdict changed | 0 | 20 fail → pass, 0 pass → fail |
+| Excitability verdict changed | 0 | 0 |
+
+**Premises of the rule, tested on all 2,400 networks (training sources only).**
+
+| Premise | Result |
+| --- | --- |
+| Network-level criteria (visual activity, rest, threshold, dose-response, excitability, saturation, silent readout, readout peak) pass | 2,400 / 2,400 |
+| The pre-probe rate rises with the injected current at every step, so a rate above the peak's means more excitation than at the peak | 2,400 / 2,400 |
+| The readout peaks inside the tested range and falls beyond it | 2,400 / 2,400 |
+| The peak is the readout's maximum: on inner-source movement trials, networks within their range never exceed it (13-level ranges) | 2,159 / 2,166 within range ≤ peak; largest ratio 1.005 |
+| Over-driven networks read below their own peak (13-level ranges) | 216 / 234 (spiking 175 / 175; the 18 twins were those whose range was the end of the old sweep) |
+| Networks that do not transfer read near rest (pre-probe < 2 Hz), a valid measurement | 145 / 145 (117 still facilitate, 19 reversed) |
+
+**Physiology.** In humans the MEP input–output curve is sigmoid; background contraction raises its
+gain 4–7× and leaves its plateau unchanged (Devanne, Lavoie & Capaday, 1997). An MEP does not fall
+when the muscle is active. The model's falling readout above its peak is therefore a model property,
+not physiology, and is reported as a limitation ([decision audit](decision-audit.md)).
+
+**Rule (declared 26 October 2026, before any evaluation; spec §5.1 and §6.4 amended).**
+
+1. A network that fails a network-level criterion is excluded (none does).
+2. No network is excluded for a source-dependent health failure (task, facilitation or background on
+   its inner source). Excluding is never conservative: if a failure reflects the inner source, it
+   would drop an unrelated held-out source; if it reflects the fold's training set, it would drop the
+   networks most likely to show null or invalid held-out effects and so favour P1 and P2. The two
+   cannot be separated (§6.16). Health results are reported per network; the share of failing
+   networks per configuration estimates how often its held-out readouts will be invalid.
+3. Networks that do not respond to a held-out source stay in: their readouts are valid near rest.
+4. A held-out display whose pre-probe FDI or ADM rate (mean over that instance's trials of the display
+   and trial type) exceeds the instance's readout range is **over-driven** for that instance. Every
+   criterion is computed twice: (a) with over-driven instance-displays removed (complete cases per
+   contrast), as the paper removed trials with background EMG; (b) with their readouts set to the
+   instance's readout maximum (the peak of its excitability curve), the least excitation consistent
+   with being past the peak and the analogue of the human MEP plateau. Removing them favours "no
+   detached-hand effect" when detached-hand displays are over-driven; the maximum works against it.
+5. A criterion is **met** only if it is met under both (a) and (b), **not met** only if it fails under
+   both, and otherwise **undetermined**, which never counts in the hypothesis's favour (also not for
+   S3's requirement that a comparison model does not meet P1). These are worst-case bounds for
+   outcomes that cannot be measured (Horowitz & Manski, 2000). The share of over-driven instances is
+   reported per display and model.
+6. The analyses restricted to healthy networks and without trimming are reported, not pass conditions.
+
+### 6.18 Evaluation simulator (26 October 2026, before any evaluation)
+
+`model/evaluate.py` runs one instance (trained network, hypothesis, initialisation) through the
+session of §6.4 on one source and returns, per trial, the FDI and ADM probe readouts and both
+populations' mean rate in the 100 ms before the probe.
+
+- **Hypotheses as input and gate per displayed image.** H0 sees the hand-only image of the same
+  family and frame, g = 1; H1 has g = 1 + s/s̄ on movement frames (1 elsewhere); the gated models (H2,
+  the S3(a) visible-area model, H2-learned, H4) have g = c + (1 − c)·a on every frame of a display,
+  with a from their own attachment estimate; the ungated network has g = 1. On the fixation display
+  there is no visual drive and g = 1, or c for the gated models (§6.6).
+- **Probe.** Resting threshold found on the fixation display with the model's fixation gate
+  (`network.threshold`), task probe 1.2 × threshold on every task and fixation trial, read against the
+  matched no-probe twin.
+- **Two modes.** `continuous` runs the whole session at 1 ms, never reset, with the session continuing
+  from the no-probe branch after each probe. `trialwise` starts each trial from rest 300 ms before its
+  second frame and simulates all trials as one batch. Every model and gate value run on one session
+  uses the same noise seed, so they are compared with common random numbers (a gated model with c = 1
+  reproduces the ungated run exactly, tested).
+- **Per instance**, as the paper per participant: task trials only; readouts beyond ± 2 SD of their
+  cell mean removed (cell = display × trial type × population; untrimmed is the sensitivity
+  analysis); z-normalised over both populations; averaged into cells. Pre-probe rates are kept per
+  cell, untrimmed, for the readout range rule.
+- **Aggregation.** The three primary displays' cells, in the human target's order, go through the
+  human target's own contrast and ratio functions (`analysis/human_target.py`); intervals by the
+  declared hierarchical bootstrap (source groups, then initialisations within each drawn group;
+  10,000 resamples, seed 20261022); P3 from C_FDI per initialisation averaged over source groups.
+- **Safeguard.** The simulator refuses a network's own held-out source unless called with
+  `open_evaluation=True`, which only the frozen evaluation may do (development rule, §6).
+
+**Equivalence of the two modes (§6.4), checked on trained networks without any context display:**
+a full-body-only session on the network's inner training source (H2, OpenCLIP, fold 1, seed 0;
+spiking and twin; `evaluate.py mode-check`, on `joe`).
+
+| Check | Spiking | Twin |
+| --- | --- | --- |
+| Noise off: trials identical between modes | 100 / 100 (largest difference 0) | 100 / 100 within 9 × 10⁻⁵ (float32 rounding) |
+| Noise on: continuous run vs 20 trialwise runs, Welch t per cell (3 trial types × 4 measures), Holm | No cell differs (smallest adjusted p 0.53) | No cell differs (smallest adjusted p 0.14) |
+
+The feedforward networks are therefore simulated trialwise; the recurrent variant will be simulated
+continuously. Tests: `tests/test_evaluate.py` (models and gates, reproducibility, common random
+numbers, mode equivalence without noise, probe twin, held-out refusal, trimming and normalisation,
+contrasts through the human code, the two-level bootstrap).
 
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
@@ -818,10 +926,10 @@ for a general check before the network phase continues.
 | Health criteria | Code against §6.5 | "> 200 Hz" not computed and "silent" measured on one batch; task accuracy confounded by source offsets; corrected (§6.10) |
 | Citations | Added references checked against the publishers' records | Fadiga et al. 1995, Kraskov et al. 2009, Vigneswaran et al. 2013 verified |
 
-**Still to do before Gate 2:** the training campaign is finished (26 October 2026, §6.16; 1,996 of
-2,400 networks healthy). Open: how instances that fail health enter the evaluation (§6.16); the
-recurrent variant; the evaluation simulator (sessions with probes, trimming, normalisation, readout
-range rule), the fit of c, and the hierarchical bootstrap evaluation. Done 25 October 2026: the
+**Still to do before Gate 2:** the training campaign is finished (26 October 2026, §6.16; 2,016 of
+2,400 networks healthy after the readout ranges were re-measured, §6.17); the rule for networks that
+fail health is declared (§6.17); the evaluation simulator is built and its two modes agree (§6.18).
+Open: the criteria code applying §6.17's two treatments, the fit of c, the recurrent variant. Done 25 October 2026: the
 non-spiking twin repaired (§6.14), the spinal readout tried and not adopted (§6.15), the learned
 context pathways declared (§7.1).
 
@@ -848,3 +956,6 @@ declared in the spec before the evaluation is opened.
 | 24–25 Oct 2026, before any evaluation (first campaign stopped after 3 networks) | Motor limits per trial, rest 1 Hz, movement 3 Hz; background criterion and readout range rule use each network's measured readout peak (§6.12, spec amendment) | The batch-mean limit let unseen sources drive the motor population past the readout's peak, where facilitation was not detected |
 | 25 Oct 2026, during the campaign (no evaluation) | Stacked training (§6.13), about nine times faster; equivalence tested | One network at a time left the GPU waiting on instruction launches; the full design would have taken weeks |
 | 26 Oct 2026, after the campaign (no evaluation) | Campaign health recorded (§6.16): 1,996 of 2,400 networks healthy; failures follow the inner source (over-driven or no transfer); no setting changed | Record before Gate 2; how failing instances enter the evaluation is to be decided before Gate 2 |
+| 26 Oct 2026, before any evaluation | Excitability sweep extended to 0.6 and `readout_peak_found` criterion added; every campaign curve recomputed (§6.17): spiking ranges unchanged, twin ranges 14.1 → 15.7 Hz, 20 twins no longer over-driven (2,016 healthy) | The twin had not peaked in the 0.3 sweep, so its readout range was the end of the test, not a measured peak |
+| 26 Oct 2026, before any evaluation | Networks that fail health (§6.17; spec §5.1, §6.4): none excluded for source-dependent failures; over-driven held-out displays counted only if a result holds both with them removed and at the readout maximum | Exclusion is never conservative; the over-driven readout is not measurable, so it is bounded both ways; every premise tested on all 2,400 networks |
+| 26 Oct 2026, before any evaluation | Evaluation simulator (§6.18); trialwise and continuous modes agree on trained networks | Needed for every evaluation and for the fit of c |

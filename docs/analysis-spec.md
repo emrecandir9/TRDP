@@ -169,6 +169,17 @@ averaged into the 12 cells, and passed through the same contrast code as the hum
   resample the 20 source groups with replacement, then initialisations within each group
   (Saravanan, Berman & Sober, 2020). Source groups carry image generalisation, initialisations
   carry optimisation variability; trials, time steps and neurons are never independent units.
+- **Instances and health (amended 26 October 2026, before any evaluation).** Every trained network
+  enters, except one that fails a network-level health criterion (visual activity, rest, threshold,
+  dose-response, excitability, saturation, readout peak; [model-method](model-method.md) §6.17).
+  A failure on the network's inner training source (task, facilitation, background) does not
+  exclude it; it is reported per network.
+- **Over-driven displays (amended 26 October 2026).** A held-out display on which an instance's
+  pre-probe motor rate exceeds its readout range is over-driven for that instance. Every criterion is
+  computed with those instance-displays removed and with their readouts set to the instance's readout
+  maximum; it is met only if met both ways, not met only if not met both ways, and otherwise
+  undetermined, which never counts in the hypothesis's favour (Horowitz & Manski, 2000). The share of
+  over-driven instances is reported per display and model.
 
 ### 5.2 Criteria, fixed now
 
@@ -272,12 +283,13 @@ No condition label enters any model, and no condition receives its own gain.
 - Readout: response of the FDI- and ADM-associated populations 0–55 ms after the probe (amended 24 October 2026: the human 5–60-ms window follows a corticospinal conduction delay the model does not have),
   minus the same window on a matched trial without a probe (same random input stream).
 - Plasticity is frozen during evaluation. Silent or saturated readouts invalidate a run.
-- Readout validity (amended 24 October 2026): a run is usable only if, on full-body trials of a
-  training source, the FDI readout is larger on movement than static trials and the motor
-  populations stay within the background criterion before the probe. On a test display whose
-  pre-probe motor rate exceeds that criterion, the readout no longer grows with excitability, so its
-  contrasts are reported as outside the validated readout range and do not count towards any
-  criterion ([model-method](model-method.md) §6.3, §6.5).
+- Readout validity (amended 24 October 2026; 26 October 2026): on full-body trials of a training
+  source, a run's FDI readout should be larger on movement than static trials with the motor
+  populations within their readout range before the probe; this is reported per run, not used to
+  exclude runs (§5.1). The readout range is the pre-probe rate at which the run's excitability curve
+  peaks, measured inside the tested sweep. On a test display whose pre-probe motor rate exceeds it,
+  the readout no longer grows with excitability; such displays are treated as in §5.1
+  ([model-method](model-method.md) §6.3, §6.5, §6.17).
 
 ## 7. Splits, controls and sensitivity
 
@@ -339,6 +351,7 @@ equal the full-body image, hidden pixels are black, and matched pairs have equal
 | 24 Oct 2026 (before any model result; training campaign stopped after 3 networks) | Motor limits of §6.3 applied to every trial instead of the batch mean, movement limit 4 Hz, background criterion 5 Hz instead of 6 Hz ([model-method](model-method.md) §6.2, §6.12) | In the first campaign networks the batch-mean limit let single sources reach 9 Hz before the probe, past the readout's measured peak (5.4–5.5 Hz), where facilitation was no longer detected (fold 2: +0.46 spikes, 95% interval −0.39 to 1.31, inner training source only). The paper excluded background activity trial by trial. The three networks and four partial ones of the stopped campaign are kept in `output/model/campaign_superseded_batch_mean_cap/` and not used |
 | 25 Oct 2026 (before any model result; before the campaign restart) | Motor limits rest 1 Hz and movement 3 Hz per trial; background criterion and readout range rule use each network's measured readout peak instead of a fixed rate ([model-method](model-method.md) §6.12) | With rest 2 Hz and limit 4 Hz, unseen inner sources were driven up to 6.3 Hz, too close to the readout's peak; with rest 1 Hz the calibrated probe is larger and the readout grows up to about 8 Hz, so a fixed limit taken from the earlier networks no longer described the readout's valid range. Training sources and full-body trials only |
 | 25 Oct 2026 (before any model result) | §5.2 and §6.2: H2-learned and H4 added as comparison models; non-spiking twin's output function replaced by the mean-field rate function of the network's spiking neuron ([model-method](model-method.md) §6.14); a spinal motoneuron readout was built and not adopted (§6.15) | Requested by the project owner to address the hand-designed gate, the failed twin and the abstract readout. In these stimuli attachment coincides with the paper's condition, so any correct attachment estimate partly builds in the main pattern; H2-learned shows whether attachment can be learned without labels, H4 tests a competing own-body familiarity account that is not built in. The twin's softplus output did not train. The spinal readout saturated (nearly all-or-none recruitment) and is left as future work |
+| 26 Oct 2026 (before any evaluation; training-source health results only) | §5.1 instances and health, over-driven displays; §6.4 readout validity | The campaign showed that source-dependent health failures follow the fold, where inner source and training set cannot be separated; excluding those runs is never conservative (it drops an unrelated source or favours P1 and P2). An over-driven readout cannot be measured, so it is bounded both ways; the readout maximum mirrors the human MEP plateau (Devanne et al., 1997). Every premise was tested on all 2,400 networks ([model-method](model-method.md) §6.17). Accepted by the project owner on the condition that it is scientifically validated |
 
 ## 11. References
 
@@ -346,10 +359,14 @@ equal the full-body image, hidden pixels are black, and matched pairs have equal
   system. *Current Biology*, 17, 1527–1531.
 - Cook, R., Bird, G., Catmur, C., Press, C. & Heyes, C. (2014). Mirror neurons: from origin to
   function. *Behavioral and Brain Sciences*, 37, 177–192.
+- Devanne, H., Lavoie, B. A. & Capaday, C. (1997). Input-output properties and gain changes in the
+  human corticospinal pathway. *Experimental Brain Research*, 114, 329–338.
 - Fadiga, L., Fogassi, L., Pavesi, G. & Rizzolatti, G. (1995). Motor facilitation during action
   observation: a magnetic stimulation study. *Journal of Neurophysiology*, 73, 2608–2611.
 - Heyes, C. (2001). Causes and consequences of imitation. *Trends in Cognitive Sciences*, 5,
   253–261.
+- Horowitz, J. L. & Manski, C. F. (2000). Nonparametric analysis of randomized experiments with
+  missing covariate and outcome data. *Journal of the American Statistical Association*, 95, 77–84.
 - Kraskov, A., Dancause, N., Quallo, M. M., Shepherd, S. & Lemon, R. N. (2009). Corticospinal
   neurons in macaque ventral premotor cortex with mirror properties: a potential mechanism for
   action suppression? *Neuron*, 64, 922–930.

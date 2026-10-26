@@ -282,9 +282,10 @@ def task_probe(net, amplitude, static, movement, cfg=TRAIN, device='cpu', repeat
 
 
 @torch.no_grad()
-def excitability_curve(net, amplitude, device='cpu', levels=13, top=.3, n=200, seed=6):
+def excitability_curve(net, amplitude, device='cpu', levels=25, top=.6, n=200, seed=6):
     """FDI probe response at rest while an extra constant current depolarises the FDI population:
-    (pre-probe FDI rate in Hz, mean response) per level. Shows where the readout grows with excitability."""
+    (pre-probe FDI rate in Hz, mean response) per level. Shows where the readout grows with excitability.
+    Steps of 0.025 up to 0.6 (26 Oct 2026; was 0.3, where the non-spiking twin had not yet peaked)."""
     generator = torch.Generator(device=device).manual_seed(seed)
     drive, ones = nw.rest_drive(net, n, device), torch.ones(n, device=device)
     bias = net.b_m.detach().clone()
@@ -333,7 +334,8 @@ def diagnose(net, readout, inner_static, inner_movement, cfg=TRAIN, device='cpu'
         diff = (probes['movement']['responses'] - probes['static']['responses'])[..., nw.FDI].ravel()
         half = stats.t.ppf(.975, len(diff) - 1) * diff.std(ddof=1) / np.sqrt(len(diff))
         curve2 = excitability_curve(net, probe, device)
-        readout_range = max(curve2, key=lambda c: c[1])[0]                 # rate at the curve's peak
+        peak = max(range(len(curve2)), key=lambda i: curve2[i][1])
+        readout_range = curve2[peak][0]                                     # rate at the curve's peak
         within = [c for c in curve2 if c[0] <= readout_range]               # the validated readout range
         rho = float(stats.spearmanr(*zip(*within))[0]) if len(within) >= 3 else float('nan')
         everything = np.concatenate([probes[k]['responses'] for k in probes], 1)
@@ -345,7 +347,8 @@ def diagnose(net, readout, inner_static, inner_movement, cfg=TRAIN, device='cpu'
                       excitability_curve=curve2, excitability_spearman=rho,
                       saturated_share=float((everything >= HEALTH['saturated'] * net.n_motor).mean()))
         report.update(readout_range_hz=readout_range, background_max_hz=background)
-        criteria.update(facilitation=bool(diff.mean() - half > 0), background=bool(background <= readout_range),
+        criteria.update(readout_peak_found=peak < len(curve2) - 1,           # else the range is not established
+                        facilitation=bool(diff.mean() - half > 0), background=bool(background <= readout_range),
                         excitability=bool(rho >= HEALTH['dose_spearman']), not_saturated=report['saturated_share'] == 0,
                         readout_not_silent=bool(everything[..., nw.FDI].mean() > 0))
     report['criteria'] = criteria

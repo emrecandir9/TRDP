@@ -250,7 +250,7 @@ class Training(unittest.TestCase):
         cfg = dict(tr.TRAIN, settle_ms=50, second_ms=120, window=(20, 120))
         report = tr.diagnose(net, readout, static, movement, cfg)
         self.assertEqual(set(report['criteria']), {'task', 'silent_visual', 'fast_visual', 'threshold', 'dose', 'fixation_motor', 'facilitation',
-                                                   'background', 'excitability', 'not_saturated', 'readout_not_silent'})
+                                                   'background', 'excitability', 'not_saturated', 'readout_not_silent', 'readout_peak_found'})
         task = tr.task_probe(net, report['threshold'] * 1.2, static, movement, cfg, repeats=2)
         self.assertEqual(task['movement']['responses'].shape, (2, 6, 2))
         rates = [r for r, _ in report['excitability_curve']]

@@ -46,7 +46,9 @@ TRDP/
 │   ├── train.py                 # Auxiliary training per hypothesis and Gate 2 health check
 │   ├── stack.py                 # Trains many networks at once on the GPU (same networks, ~9x faster)
 │   ├── campaign.py              # Trains every fold × initialisation through the health-checked path
-│   └── learned_context.py       # Learned context pathways: forearm prediction (H2-learned), familiarity (H4)
+│   ├── learned_context.py       # Learned context pathways: forearm prediction (H2-learned), familiarity (H4)
+│   ├── extend_curves.py         # Readout excitability curve of every campaign network over the extended sweep
+│   └── evaluate.py              # Evaluation simulator: sessions, probes, trimming, cells, hierarchical bootstrap
 ├── scripts/
 │   ├── setup.sh                 # Creates .venv for review or Linux CUDA generation
 │   ├── models.py                # Downloads / resolves the three pinned models
@@ -69,7 +71,8 @@ TRDP/
 │   ├── test_trials.py           # Trial simulator and feature bank
 │   ├── test_context.py          # Forearm-continuity estimate
 │   ├── test_network.py          # Network units, probe readout, training, health measures, campaign
-│   └── test_learned_context.py  # Learned context pathways
+│   ├── test_learned_context.py  # Learned context pathways
+│   └── test_evaluate.py         # Evaluation simulator
 ├── data/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
 │   ├── hand_segmentation.json   # Tracked SAM-HQ provenance, prompts and mask hashes
@@ -248,17 +251,25 @@ Done on 25–26 October:
   ([model method](docs/model-method.md) §6.13–6.15, §7.1).
 - **Training campaign finished** ([model method](docs/model-method.md) §6.16): 2,400 networks
   (H2, H0, H1 spiking and the H2 twin, three encoders, 20 folds × 10 initialisations) on six CREMI
-  GPUs; 1,996 pass every health criterion on their inner training source. Healthy per 200:
+  GPUs; 2,016 pass every health criterion on their inner training source. Healthy per 200:
   OpenCLIP 181–200 in every configuration; DINOv2 120–188, lowest for H2 and H1. Failures follow
-  the source, not the seed: on some unseen training sources the motor population is driven past
-  its readout peak, on others it does not respond. With DINOv2, up to six folds per configuration
-  have no healthy network (one for H2 and H1 with OpenCLIP).
+  the fold, not the seed: on some unseen training sources the motor population is driven past
+  its readout peak, on others it does not respond.
+- **Readout ranges re-measured and the rule for failing networks declared** ([model method](docs/model-method.md)
+  §6.17, spec amendment): the excitability sweep was too short for the twin; extended for all 2,400
+  networks. No network is excluded for a source-dependent health failure; over-driven held-out
+  displays count only if a result holds both with them removed and at the readout maximum. Every
+  premise was tested on all 2,400 networks.
+- **Evaluation simulator** built ([model method](docs/model-method.md) §6.18): its fast trialwise mode
+  equals the full session on trained networks.
+- **Decision audit** ([decision audit](docs/decision-audit.md)): all 43 decisions classed by what grounds
+  them, 30 references verified; the model's over-driven readout falls, unlike a human MEP, and is
+  reported as a limitation.
 
 Next:
 
-1. Decide how networks that fail health enter the evaluation (before Gate 2, on training-source
-   results only); the recurrent variant, the evaluation simulator and H2's gate fit; Gate 2 on
-   4 December, single held-out evaluation 14–18 December. Every analysis is repeated without
+1. The criteria code (the two treatments of over-driven displays), H2's gate fit, the recurrent
+   variant; Gate 2 on 4 December, single held-out evaluation 14–18 December. Every analysis is repeated without
    reference 17 (456 families). A fresh CUDA canary is deferred.
 
 Image acceptance does not establish physiological or scientific replication.
