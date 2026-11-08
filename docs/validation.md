@@ -196,6 +196,19 @@ Health of every campaign network on its inner training source ([model method](mo
 | Rule for failing networks | Premises tested on all 2,400: network-level criteria pass in all; pre-probe rate rises with excitability in all; readout falls past its peak in all; within-range readouts never exceed the peak (largest ratio 1.005); non-transferring networks read near rest (145 / 145). In 7 of 12 configurations 1–6 folds have no healthy network, which no longer matters: no network is excluded for these failures |
 | Evaluation simulator | Trialwise vs continuous session on trained networks (full body, inner source): identical trials without noise (spiking 100 / 100, twin within 9 × 10⁻⁵); no cell differs with noise (20 repeats, Holm) |
 
+## Criteria, fit of c, recurrent variant and robustness variations — 26 October to 8 November 2026
+
+Code checks only; no fit of c, Gate 2 check or recurrent network result exists yet
+([model method](model-method.md) §6.19–6.21).
+
+| Check | Result |
+| --- | --- |
+| Criteria, fit of c, Gate 2 checks (26 Oct) | Tested on synthetic data before any run: treatments of over-driven cells, verdicts, paired bootstrap, choice of c (ties, undefined fits), batched grid bit-identical to the §6.18 trialwise simulation for one model |
+| Twin speed (8 Nov) | The rate table was copied to the GPU every millisecond; copied once now; the twin's resting threshold is unchanged (0.0390625 both ways), 62 s → 3.4 s |
+| Recurrent variant (8 Nov) | Zero recurrent weights reproduce the feedforward network of the same seed exactly (spiking and twin); self-connections have no effect; recurrence acts with a one-step delay; training changes W_rec from the first update and never its diagonal; stacked training equals one-at-a-time training; checkpoints round-trip |
+| Robustness variations (8 Nov) | Each changes exactly one declared setting; names and campaign commands carry it; a stack with a changed time constant equals the networks trained alone; real-feature preparation gives the declared sizes, constants and learning rates |
+| Tests | 152 tests pass on the Mac (one GPU-only test skipped); the 143 of 26 Oct pass on `jessica`, GPU tests included |
+
 ## Remaining limits
 
 **Single unblinded review.** All 480 families were accepted by one reviewer (the project owner),

@@ -266,11 +266,32 @@ Done on 25–26 October:
   them, 30 references verified; the model's over-driven readout falls, unlike a human MEP, and is
   reported as a limitation.
 
+- **Criteria, fit of c and Gate 2 checks declared and built** ([model method](model-method.md) §6.19, spec
+  amendment), tested on synthetic data before any run; the learned pathways now score training sources by
+  cross-fitting.
+
+Done on 8 November:
+
+- **Fit of c and Gate 2 checks started** on `jessica`: ADM readout ranges for all 2,400 networks, then c for
+  the 1,200 H2 networks (spiking first, then the twins), the probe-strength sweep on every network and the
+  H0/H1/H2 control predictions, all on training sources (about two days of GPU time).
+- **Recurrent variant declared, built and training** ([model method](model-method.md) §6.20, spec
+  amendment): recurrent weights in the visual layer, starting at zero so that each recurrent network starts
+  as the feedforward network of the same seed; H2, OpenCLIP, 200 networks. Gate 2 keeps the feedforward
+  network as primary unless it fails Gate 2's conditions.
+- **Robustness variations declared and built** ([model method](model-method.md) §6.21, spec amendment):
+  visual layer, learning rate, training length and time constants, one at a time, 60 networks each; queued
+  after the recurrent campaign. The 0.5-ms time step is declared; its implementation is pending.
+- The twin's simulation no longer copies its rate table to the GPU every millisecond (same values, about
+  20 times faster threshold search).
+
 Next:
 
-1. The criteria code (the two treatments of over-driven displays), H2's gate fit, the recurrent
-   variant; Gate 2 on 4 December, single held-out evaluation 14–18 December. Every analysis is repeated without
-   reference 17 (456 families). A fresh CUDA canary is deferred.
+1. Collect the fit of c and the Gate 2 checks; record them (method §6.19) and decide Gate 2 by its declared
+   conditions, with the recurrent variant's mode check and health once its campaign ends.
+2. Implement the 0.5-ms time step; fit c for the recurrent and robustness networks.
+3. Gate 2 on 4 December, configurations frozen 11 December, single held-out evaluation 14–18 December. Every
+   analysis is repeated without reference 17 (456 families). A fresh CUDA canary is deferred.
 
 Image acceptance does not establish physiological or scientific replication.
 
