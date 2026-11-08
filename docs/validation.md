@@ -221,6 +221,7 @@ Training sources only ([model method](model-method.md) §6.19).
 | Distinct predictions | H0–H1, H0–H2, H1–H2 distinct under both treatments for all three encoders (condition: primary encoder) |
 | Probe sweep | 2,397/2,400 smooth; all primary-encoder networks; three H1 DINOv2 networks with a silent readout are not |
 | Gate 2 | Met; feedforward spiking network stays primary (§6.20) |
+| Recurrent mode check | Fold 1, seed 0: noise off 100/100 identical; noise on no cell differs (smallest adjusted p 0.67); trialwise mode used |
 
 ## Remaining limits
 

@@ -880,6 +880,10 @@ before any result of the fit of c or of the Gate 2 checks existed.
   only). The trialwise mode is used for them only if it passes as the feedforward network did (noise off:
   trials identical up to float rounding; noise on: no cell differs after Holm). Otherwise every
   simulation of a recurrent network (fit of c, Gate 2 checks, evaluation) runs the continuous session.
+  *Result (9 November 2026; H2 OpenCLIP recurrent, fold 1, seed 0, `evaluate.py mode-check`):* noise off,
+  100/100 trials identical (largest difference 0); noise on, no cell differs (smallest adjusted p 0.67).
+  The trialwise mode is therefore used for the recurrent networks too (this replaces the expectation in
+  §6.18 that they would be simulated continuously).
 - **Selection at Gate 2 (rule fixed now).** The feedforward spiking network stays the primary variant if
   its configurations meet Gate 2's conditions (§6.19: distinct H0, H1 and H2 control predictions with the
   primary encoder; every network's probe response smooth in strength). The recurrent variant becomes
@@ -1152,3 +1156,4 @@ declared in the spec before the evaluation is opened.
 | 8 Nov 2026 (speed only) | The twin's rate table is copied to the GPU once instead of every millisecond | The twin's threshold search took 62 s instead of 3 s; values identical (threshold 0.0390625 both ways) |
 | 8 Nov 2026, before any of them was trained | Robustness variations declared and built (§6.21): visual layer 128/512, learning rate 3 × 10⁻⁴/3 × 10⁻³, 6,000 updates, membrane 10/40 ms, synaptic 2/10 ms, 20 folds × 3 initialisations each; time step 0.5 ms on a subset, implementation pending | Decided 25 Oct (§8); to be declared before the evaluation |
 | 9 Nov 2026, results on training sources (no evaluation) | Fit of c and Gate 2 checks recorded (§6.19): c = 0 in almost every network because a closed gate gives Δ(DH)/Δ(FB) ≈ 0, never −0.10; H0, H1 and H2 predictions distinct; 2,397 of 2,400 probe responses smooth (all primary-encoder networks); Gate 2 met, feedforward stays primary | Recorded before any evaluation; no setting changed |
+| 9 Nov 2026, before any recurrent fit | Recurrent mode check passed (§6.20): trialwise mode used for recurrent networks | Rule declared 8 Nov; the check decides the mode |
