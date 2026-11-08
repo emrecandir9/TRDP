@@ -79,11 +79,15 @@ def train_stacks(args, spiking, output, logs):
                         active.remove(item)
                         if process.returncode:
                             failed.append(name)
+                            if args.claim:
+                                tr.release('finish', name)   # a later run retries it
                         print(json.dumps(dict(run=name, status='ok' if process.returncode == 0 else f'failed ({process.returncode})',
                                               finish_minutes=round((time.time() - started) / 60, 1))), flush=True)
                 while queue and len(active) < args.finishers:
                     path = queue.pop(0)
                     name = path.name[:-len('.trained.pt')]
+                    if args.claim and not tr.claim('finish', name):
+                        continue                       # another machine runs this health check
                     log = open(logs / f'{name}.txt', 'a')
                     active.append((subprocess.Popen([sys.executable, str(ROOT / 'model/train.py'), '--finish', str(path)],
                                                     stdout=log, stderr=subprocess.STDOUT), log, name, time.time()))
@@ -102,6 +106,8 @@ def train_stacks(args, spiking, output, logs):
         for i in range(0, len(pending), args.stack):
             group = pending[i:i + args.stack]
             names = [name for _, name in group]
+            if args.claim and not tr.claim('campaign', f'{output.name}_seed{seed}_{group[0][0]}-{group[-1][0]}'):
+                continue                               # another machine trains this stack
             prepared = [tr.prepare(args.representation, fold, inner_source(fold), seed, spiking, args.hypothesis, bank,
                                    args.recurrent, args.variation) for fold, _ in group]
             started = time.time()
@@ -145,6 +151,7 @@ def main():
     parser.add_argument('--updates', type=int, help='Override the declared number of updates (smoke tests only)')
     parser.add_argument('--stack', type=int, default=0, help='Train this many folds of a seed together (0: one process per run)')
     parser.add_argument('--finishers', type=int, default=3, help='Parallel health checks in stack mode')
+    parser.add_argument('--claim', action='store_true', help='Claim each stack and health check (several machines, stack mode)')
     parser.add_argument('--output', type=Path)
     parser.add_argument('--logs', type=Path, help='Directory for per-run logs (default: <output>/logs)')
     args = parser.parse_args()

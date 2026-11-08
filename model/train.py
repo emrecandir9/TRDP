@@ -48,16 +48,43 @@ CLAIMS = OUTPUT / 'claims'
 
 def claim(step, name):
     """Claim one network for one step, so that machines sharing the output folder never process it
-    twice: True if this process made the claim (mkdir is atomic), False if another one holds it."""
+    twice: True if this process made the claim (mkdir is atomic), False if another one holds it.
+    A claim left by a process of this machine that has died (out of memory, killed) is taken over,
+    by exactly one process (the takeover is itself an atomic mkdir)."""
     import socket
     folder = CLAIMS / step
     folder.mkdir(parents=True, exist_ok=True)
     try:
         (folder / name).mkdir()
     except FileExistsError:
-        return False
-    (folder / name / 'host').write_text(f'{socket.gethostname()} {os.getpid()}\n')
+        dead = dead_claim(folder / name)
+        if dead is None:
+            return False
+        try:
+            (folder / name / f'retaken_{dead}').mkdir()
+        except FileExistsError:
+            return False
+    atomic(folder / name / 'host', lambda t: t.write_text(f'{socket.gethostname()} {os.getpid()}\n'))
     return True
+
+
+def dead_claim(folder):
+    """The pid of a claim made on this machine by a process that no longer runs, else None."""
+    import socket
+    try:
+        host, pid = (Path(folder) / 'host').read_text().split()
+        pid = int(pid)
+    except (OSError, ValueError):
+        return None                                    # not written yet, or unreadable: leave it
+    if host != socket.gethostname():
+        return None
+    try:
+        os.kill(pid, 0)
+    except ProcessLookupError:
+        return pid
+    except PermissionError:
+        return None
+    return None
 
 
 def release(step, name):

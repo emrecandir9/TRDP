@@ -1,5 +1,6 @@
 """CPU checks for the spiking network, its probe readout and training (small networks)."""
 from pathlib import Path
+import os
 import sys
 import unittest
 
@@ -504,6 +505,25 @@ class Claims(unittest.TestCase):
             found = tr.finished_networks(sorted(str(p) for p in d.glob('health_*.pt')))
             self.assertEqual([Path(p).name for p in found], ['health_a.pt'])
 
+
+    def test_a_dead_claim_of_this_machine_is_taken_over_once(self):
+        import socket
+        import subprocess
+        import tempfile
+        import train as tr
+        dead = subprocess.Popen(['true']); dead.wait()        # a pid that no longer runs
+        with tempfile.TemporaryDirectory() as d:
+            old, tr.CLAIMS = tr.CLAIMS, Path(d)
+            try:
+                for host, expected in ((socket.gethostname(), True), ('elsewhere', False)):
+                    folder = Path(d) / 'fit_gate' / host
+                    folder.mkdir(parents=True)
+                    (folder / 'host').write_text(f'{host} {dead.pid}\n')
+                    self.assertEqual(tr.claim('fit_gate', host), expected)
+                    self.assertFalse(tr.claim('fit_gate', host))   # now held by this live process, or by the other host
+                self.assertTrue(str(os.getpid()) in (Path(d) / 'fit_gate' / socket.gethostname() / 'host').read_text())
+            finally:
+                tr.CLAIMS = old
 
 if __name__ == '__main__':
     unittest.main()

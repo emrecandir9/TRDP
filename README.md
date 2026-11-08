@@ -274,7 +274,10 @@ Done on 8 November:
 
 - **Fit of c and Gate 2 checks started** on four CREMI GPUs (`jessica`, `daniel`, `vladimir`, `cheonech`; machines share the per-network work through claims, `scripts/cremi_parallel.sh`): ADM readout ranges for all 2,400 networks, then c for
   the 1,200 H2 networks (spiking first, then the twins), the probe-strength sweep on every network and the
-  H0/H1/H2 control predictions, all on training sources.
+  H0/H1/H2 control predictions, all on training sources. By 23:40 the sweep (2,400) was complete, c was fitted
+  for 599 of 600 spiking networks and 314 of 600 twins, and 1,799 of 1,800 predictions were done; fits that ran
+  out of GPU memory left claims that are now taken over automatically (a dead process's claim on the same
+  machine is retaken, `train.claim`; `scripts/cremi_retry.sh`).
 - **Recurrent variant declared, built and training** ([model method](model-method.md) §6.20, spec
   amendment): recurrent weights in the visual layer, starting at zero so that each recurrent network starts
   as the feedforward network of the same seed; H2, OpenCLIP, 200 networks. Gate 2 keeps the feedforward
@@ -282,6 +285,10 @@ Done on 8 November:
 - **Robustness variations declared and built** ([model method](model-method.md) §6.21, spec amendment):
   visual layer, learning rate, training length and time constants, one at a time, 60 networks each; training
   in parallel with the recurrent campaign. The 0.5-ms time step is declared; its implementation is pending.
+  From 23:26 the remaining recurrent and robustness stacks run from one shared job list on eight CREMI GPUs
+  (adding `moneo`, `wensicia`, `hayt`, `albans`, two stacks per new GPU): `campaign.py --claim` claims each
+  stack and each health check, so no network is trained twice (`scripts/cremi_work.sh`,
+  `scripts/cremi_handover.sh`).
 - The twin's simulation no longer copies its rate table to the GPU every millisecond (same values, about
   20 times faster threshold search).
 
