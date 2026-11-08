@@ -270,6 +270,16 @@ Done on 25–26 October:
   amendment), tested on synthetic data before any run; the learned pathways now score training sources by
   cross-fitting.
 
+Done on 9 November:
+
+- **Fit of c and Gate 2 checks finished; Gate 2 met** ([model method](docs/model-method.md) §6.19,
+  training sources only). The detached-hand target (Δ(DH)/Δ(FB) = −0.10) is outside what a gate can reach:
+  with the gate fully closed the ratio is ≈ 0, so the declared fit gives c = 0 in almost every network
+  (reported as found; nothing changed). H0, H1 and H2 make distinct control predictions with every encoder,
+  and 2,397 of 2,400 probe responses rise smoothly with strength (all primary-encoder networks; the three
+  exceptions are H1 DINOv2 networks with a silent readout). The feedforward spiking network stays primary;
+  the recurrent network is the ablation.
+
 Done on 8 November:
 
 - **Fit of c and Gate 2 checks started** on four CREMI GPUs (`jessica`, `daniel`, `vladimir`, `cheonech`; machines share the per-network work through claims, `scripts/cremi_parallel.sh`): ADM readout ranges for all 2,400 networks, then c for
@@ -294,9 +304,9 @@ Done on 8 November:
 
 Next:
 
-1. Collect the fit of c and the Gate 2 checks; record them (method §6.19) and decide Gate 2 by its declared
-   conditions, with the recurrent variant's mode check and health once its campaign ends.
-2. Implement the 0.5-ms time step; fit c for the recurrent and robustness networks.
+1. Finish the recurrent and robustness campaigns (training on eight GPUs); then their ADM curves, the
+   recurrent mode check and recurrence measure, and c for each new configuration.
+2. Implement the 0.5-ms time step.
 3. Gate 2 on 4 December, configurations frozen 11 December, single held-out evaluation 14–18 December. Every
    analysis is repeated without reference 17 (456 families). A fresh CUDA canary is deferred.
 

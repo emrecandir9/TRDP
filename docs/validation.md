@@ -208,6 +208,19 @@ Code checks only; no fit of c, Gate 2 check or recurrent network result exists y
 | Recurrent variant (8 Nov) | Zero recurrent weights reproduce the feedforward network of the same seed exactly (spiking and twin); self-connections have no effect; recurrence acts with a one-step delay; training changes W_rec from the first update and never its diagonal; stacked training equals one-at-a-time training; checkpoints round-trip |
 | Robustness variations (8 Nov) | Each changes exactly one declared setting; names and campaign commands carry it; a stack with a changed time constant equals the networks trained alone; real-feature preparation gives the declared sizes, constants and learning rates |
 | Tests | 152 tests pass on the Mac (one GPU-only test skipped); the 143 of 26 Oct pass on `jessica`, GPU tests included |
+| Claims across machines (8 Nov) | A dead process's claim on the same machine is taken over by exactly one process, never another machine's; campaign stacks and health checks are claimed; 154 tests pass |
+
+## Fit of c and Gate 2 checks — 8–9 November 2026
+
+Training sources only ([model method](model-method.md) §6.19).
+
+| Check | Result |
+| --- | --- |
+| Completeness | ADM curves 2,400/2,400 (every peak inside the sweep); c for 1,200/1,200 H2 networks; sweep 2,400/2,400; predictions 1,800/1,800. Fourteen out-of-memory fits rerun |
+| Fit of c | Target −0.10 reachable in ≤ 2 of 200 networks per configuration and gate; closed gate gives a ratio ≈ 0, so c = 0 almost everywhere; flat curves in H2 DINOv2 patch-mean make c uninformative there; treatments agree; no undefined fit |
+| Distinct predictions | H0–H1, H0–H2, H1–H2 distinct under both treatments for all three encoders (condition: primary encoder) |
+| Probe sweep | 2,397/2,400 smooth; all primary-encoder networks; three H1 DINOv2 networks with a silent readout are not |
+| Gate 2 | Met; feedforward spiking network stays primary (§6.20) |
 
 ## Remaining limits
 

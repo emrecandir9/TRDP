@@ -815,6 +815,43 @@ the source means do. H2-learned and H4 use the cross-fitted tables above.
 No model setting is changed in response to any of these results; a fault in code or measurement is
 fixed and reported, as in §6.10–6.17.
 
+**Results (8–9 November 2026; training sources only; `output/model/gate_fit`, `output/model/gate2`).**
+All 2,400 ADM excitability curves peaked inside the sweep (median ADM readout range 4.8 Hz spiking,
+14.1 Hz twin; FDI 7.95 and 15.7 Hz). c was fitted for all 1,200 H2 networks, the sweep ran on all 2,400
+networks and the predictions on all 1,800 H0/H1/H2 spiking networks. Fourteen fits that ran out of GPU
+memory were rerun; no result is missing.
+
+- *Fit of c: the target is outside the reachable range.* With the gate fully closed (c = 0) the source-mean
+  ratio Δ(DH)/Δ(FB) is ≈ 0 (median −0.00 to 0.02 across configurations and gates), never near −0.10: a
+  gate only scales the visual drive, so a closed gate removes the detached hand's facilitation but cannot
+  push it below the static baseline. The target −0.10 lies inside a network's ratio range in at most 2 of
+  200 networks per configuration and gate. The declared rule (closest ratio) therefore gives c = 0 in
+  almost every OpenCLIP and twin network (spiking OpenCLIP: median 0.00, range 0–0.05, all four gates;
+  every twin configuration: median 0.00). Where the curve is flat the choice carries no information:
+  in H2 DINOv2 patch-mean (spiking) the ratio is ≈ 0 at both ends (c = 1: 0.00), and c spreads over 0–1
+  (median 0.95 area, 0.72–0.80 forearm and familiarity, 0.00 continuity). The treatments agree (remove =
+  maximum in 200/200 OpenCLIP networks; 146–200 elsewhere), and no fit is undefined. This is reported
+  as found: the declared target and the declared gate are kept, and the evaluation uses these c.
+- *Distinct control predictions: met.* With the primary encoder (OpenCLIP) H0–H1, H0–H2 and H1–H2 are all
+  distinct under both treatments (200 matched instances each; Holm-corrected p < .05 for 7, 8 and 5 of the
+  8 quantities). The robustness encoders are distinct for all three pairs as well (DINOv2 summary: 6, 7, 5
+  quantities; mean patch token: 6, 6, 3).
+- *Probe-strength sweep.* Every network of ten of the 12 configurations rises smoothly with strength,
+  including the four with the primary encoder (H0, H1, H2 spiking and the H2 twin, 800 networks) and all
+  six H2 configurations. Over all 12 configurations 2,397 of 2,400 networks do; the three that do not
+  are H1 with a DINOv2 encoder (`health_h1_dinov2_cls_snn_fold17_seed3`, `…_fold17_seed8`,
+  `health_h1_dinov2_patchmean_snn_fold9_seed0`), whose movement-trial (or static) FDI readout stays at
+  ≈ 0–0.3 spikes across strengths, so ties put Spearman at 0.83–0.85: a silent readout, not a reversal.
+  Median full-body facilitation rises steadily from 1.0 to 1.5 × threshold in every configuration
+  (H2 OpenCLIP spiking 4.1 → 6.4; positive in 93–96% of its networks at every strength), so the 120%
+  probe is not on a knife edge.
+- **Gate 2: met.** Its conditions (§6.20) are met by the feedforward network with the primary encoder:
+  distinct H0, H1 and H2 control predictions, and every network's probe response smooth in strength. The
+  three non-smooth networks belong to robustness-encoder configurations of H1, which are reported, as
+  the robustness encoders' predictions are. Activity was stable and not saturated on training sources
+  (§6.16–6.17). The feedforward spiking network therefore stays the primary variant (§6.20); the
+  recurrent network is scored as the ablation.
+
 ### 6.20 Recurrent variant (declared 8 November 2026, before any recurrent network is trained)
 
 Spec §6.3 plans a recurrent variant of the network, and Gate 2 selects the primary variant (spec §5.2,
@@ -1080,7 +1117,7 @@ for a general check before the network phase continues.
 **Still to do before Gate 2:** the training campaign is finished (26 October 2026, §6.16; 2,016 of
 2,400 networks healthy after the readout ranges were re-measured, §6.17); the rule for networks that
 fail health is declared (§6.17); the evaluation simulator is built and its two modes agree (§6.18).
-Open: the criteria code applying §6.17's two treatments, the fit of c, the recurrent variant. Done 25 October 2026: the
+Done 26 October–9 November 2026: the criteria code, the fit of c and the Gate 2 checks (§6.19; Gate 2 met); open: the recurrent variant's health and mode check (§6.20) and the robustness variations (§6.21), both training. Done 25 October 2026: the
 non-spiking twin repaired (§6.14), the spinal readout tried and not adopted (§6.15), the learned
 context pathways declared (§7.1).
 
@@ -1114,3 +1151,4 @@ declared in the spec before the evaluation is opened.
 | 8 Nov 2026, before any recurrent network was trained | Recurrent variant declared and built (§6.20): W_rec within V, initialised at 0, trained as §6.2; H2 OpenCLIP, 200 networks; Gate 2 selection rule (feedforward primary unless it fails Gate 2's conditions) | Planned in spec §6.3; Gate 2 selects the variant |
 | 8 Nov 2026 (speed only) | The twin's rate table is copied to the GPU once instead of every millisecond | The twin's threshold search took 62 s instead of 3 s; values identical (threshold 0.0390625 both ways) |
 | 8 Nov 2026, before any of them was trained | Robustness variations declared and built (§6.21): visual layer 128/512, learning rate 3 × 10⁻⁴/3 × 10⁻³, 6,000 updates, membrane 10/40 ms, synaptic 2/10 ms, 20 folds × 3 initialisations each; time step 0.5 ms on a subset, implementation pending | Decided 25 Oct (§8); to be declared before the evaluation |
+| 9 Nov 2026, results on training sources (no evaluation) | Fit of c and Gate 2 checks recorded (§6.19): c = 0 in almost every network because a closed gate gives Δ(DH)/Δ(FB) ≈ 0, never −0.10; H0, H1 and H2 predictions distinct; 2,397 of 2,400 probe responses smooth (all primary-encoder networks); Gate 2 met, feedforward stays primary | Recorded before any evaluation; no setting changed |
