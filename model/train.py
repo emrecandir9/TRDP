@@ -429,12 +429,17 @@ def recheck(path, device='cpu'):
     return report
 
 
-def run_name(hypothesis, representation, spiking, held_out, seed):
+def variant(spiking, recurrent=False):
+    """Name part of a network variant: snn or rate, with _rec for the recurrent variant (§6.20)."""
+    return ('snn' if spiking else 'rate') + ('_rec' if recurrent else '')
+
+
+def run_name(hypothesis, representation, spiking, held_out, seed, recurrent=False):
     tag = '' if hypothesis == 'h2' else f'{hypothesis}_'
-    return f"health_{tag}{representation}_{'snn' if spiking else 'rate'}_fold{held_out}_seed{seed}"
+    return f"health_{tag}{representation}_{variant(spiking, recurrent)}_fold{held_out}_seed{seed}"
 
 
-def prepare(representation='openclip', held_out=1, inner=2, seed=0, spiking=True, hypothesis='h2', bank=None):
+def prepare(representation='openclip', held_out=1, inner=2, seed=0, spiking=True, hypothesis='h2', bank=None, recurrent=False):
     """Everything one run needs before training (§6.5, §6.6): training and inner-source inputs, with
     preprocessing and H1's mean salience from training sources only, and the initial network."""
     bank = bank or bk.Bank(representation)
@@ -444,10 +449,13 @@ def prepare(representation='openclip', held_out=1, inner=2, seed=0, spiking=True
     static, movement, gain, scaler, mean_salience = hypothesis_inputs(bank, hypothesis, train_families, train_families)
     inner_static, inner_movement, inner_gain, _, _ = hypothesis_inputs(bank, hypothesis, None, sources[inner],
                                                                        scaler, mean_salience)
-    return dict(name=run_name(hypothesis, representation, spiking, held_out, seed),
-                meta=dict(representation=representation, hypothesis=hypothesis, spiking=spiking,
-                          held_out_source_not_used=held_out, inner_source=inner, seed=seed),
-                net=nw.Network(static.shape[1], spiking=spiking, seed=seed), static=static, movement=movement, gain=gain,
+    meta = dict(representation=representation, hypothesis=hypothesis, spiking=spiking,
+                held_out_source_not_used=held_out, inner_source=inner, seed=seed)
+    if recurrent:                                    # feedforward reports keep their fields unchanged
+        meta['recurrent'] = True
+    config = dict(nw.CONFIG, recurrent=True) if recurrent else nw.CONFIG
+    return dict(name=run_name(hypothesis, representation, spiking, held_out, seed, recurrent), meta=meta,
+                net=nw.Network(static.shape[1], config, spiking=spiking, seed=seed), static=static, movement=movement, gain=gain,
                 inner=(inner_static, inner_movement, inner_gain), scaler=scaler, mean_salience=mean_salience,
                 activity=activity_sample(bank, hypothesis, sources, held_out, inner, scaler, mean_salience))
 
@@ -485,12 +493,12 @@ def finish_trained(path, device=None):
 
 
 def health(representation='openclip', held_out=1, inner=2, seed=0, device=None, updates=None, spiking=True,
-           output=OUTPUT, hypothesis='h2'):
+           output=OUTPUT, hypothesis='h2', recurrent=False):
     """Gate 2 style health check on one outer fold, using training sources only (§6.5). Trains the
     network of one hypothesis (§6.6): h2 (shared by H2, the ungated network and the S3(a) model),
     h0 or h1."""
     device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
-    run = prepare(representation, held_out, inner, seed, spiking, hypothesis)
+    run = prepare(representation, held_out, inner, seed, spiking, hypothesis, recurrent=recurrent)
     output.mkdir(parents=True, exist_ok=True)
     partial = output / f"{run['name']}.partial.pt"                 # resumable training state
     started = time.time()
@@ -509,6 +517,7 @@ if __name__ == '__main__':
     parser.add_argument('--seed', type=int, default=0)
     parser.add_argument('--updates', type=int)
     parser.add_argument('--rate', action='store_true', help='Non-spiking twin')
+    parser.add_argument('--recurrent', action='store_true', help='Recurrent variant (docs/model-method.md §6.20)')
     parser.add_argument('--hypothesis', default='h2', choices=HYPOTHESES)
     parser.add_argument('--output', type=Path, default=OUTPUT)
     parser.add_argument('--recheck', type=Path, help='Recompute the health measures of a saved network')
@@ -520,6 +529,6 @@ if __name__ == '__main__':
         report = recheck(args.recheck, device='cuda' if torch.cuda.is_available() else 'cpu')
     else:
         report = health(args.representation, args.held_out, args.inner, args.seed, updates=args.updates,
-                        spiking=not args.rate, output=args.output, hypothesis=args.hypothesis)
+                        spiking=not args.rate, output=args.output, hypothesis=args.hypothesis, recurrent=args.recurrent)
     print(json.dumps({k: v for k, v in report.items() if k not in ('dose_response', 'history', 'excitability_curve')},
                      indent=2))

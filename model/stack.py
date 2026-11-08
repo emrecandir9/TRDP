@@ -37,6 +37,10 @@ class Stack(nn.Module):
         self.b_in = stack(lambda n: n.w_in.bias)              # [K, n_v]
         self.w_vm = stack(lambda n: n.w_vm.weight.T)          # [K, n_v, 2]
         self.b_m = stack(lambda n: n.b_m)                     # [K, 2]
+        self.recurrent = first.recurrent
+        if self.recurrent:                                    # docs/model-method.md §6.20
+            self.w_rec = stack(lambda n: n.w_rec.T)           # [K, n_v (from), n_v (to)]
+            self.register_buffer('rec_mask', first.rec_mask.T.clone(), persistent=False)
         self.alpha, self.beta, self.scale = first.alpha, first.beta, first.scale
         self.visual, self.motor, self._rate = first.visual, first.motor, first._rate
         self.n_motor = first.n_motor
@@ -48,7 +52,9 @@ class Stack(nn.Module):
     def step(self, drive, gate, state, noise_v, noise_m):
         """One millisecond for every network: drive, noise [K, B, n]; gate [K, B]. Same arithmetic as
         network.Network.step."""
-        syn_v, mem_v, syn_m, mem_m = state
+        syn_v, mem_v, syn_m, mem_m = state[:4]
+        if self.recurrent:
+            drive = drive + torch.bmm(state[4], self.w_rec * self.rec_mask)
         if self.spiking:
             out_v, syn_v, mem_v = self.visual(self.scale * (drive + noise_v), syn_v, mem_v)
         else:
@@ -60,7 +66,7 @@ class Stack(nn.Module):
             out_m, syn_m, mem_m = self.motor(current, syn_m, mem_m)
         else:
             out_m, syn_m, mem_m = self._rate(current, syn_m, mem_m)
-        return out_v, out_m, [syn_v, mem_v, syn_m, mem_m]
+        return out_v, out_m, [syn_v, mem_v, syn_m, mem_m] + ([out_v] if self.recurrent else [])
 
     def unstack(self, dim):
         """The K trained networks as network.Network objects (CPU)."""
@@ -72,6 +78,8 @@ class Stack(nn.Module):
                 net.w_in.bias.copy_(self.b_in[i])
                 net.w_vm.weight.copy_(self.w_vm[i].T)
                 net.b_m.copy_(self.b_m[i])
+                if self.recurrent:
+                    net.w_rec.copy_(self.w_rec[i].T)
             out.append(net)
         return out
 
@@ -123,7 +131,8 @@ def train_stack(nets, data, seeds, cfg=tr.TRAIN, device='cpu', updates=None, res
         gates = torch.cat([torch.stack(gains), torch.ones(k, rest, steps, device=device)], 1)   # [K, B+R, T]
         noise = torch.stack([stack_noise(batch + rest, steps, g, stack.config, device) for g in generators])
         n_v = stack.config['n_visual']
-        state = [torch.zeros(k, batch + rest, n, device=device) for n in (n_v, n_v, 2 * stack.n_motor, 2 * stack.n_motor)]
+        sizes = (n_v, n_v, 2 * stack.n_motor, 2 * stack.n_motor) + ((n_v,) if stack.recurrent else ())
+        state = [torch.zeros(k, batch + rest, n, device=device) for n in sizes]
         out_v, out_m = [], []
         for t in range(steps):
             drive = first_drive if t < cfg['settle_ms'] else second_drive

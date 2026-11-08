@@ -38,19 +38,19 @@ def inner_source(held_out):
     return held_out % len(SOURCES) + 1
 
 
-def runs(hypothesis, representation, spiking, folds, seeds, output):
-    tag = '' if hypothesis == 'h2' else f'{hypothesis}_'
+def runs(hypothesis, representation, spiking, folds, seeds, output, recurrent=False):
     for seed in seeds:
         for fold in folds:
-            name = f"health_{tag}{representation}_{'snn' if spiking else 'rate'}_fold{fold}_seed{seed}"
+            name = tr.run_name(hypothesis, representation, spiking, fold, seed, recurrent)
             done = (output / f'{name}.json').is_file() and (output / f'{name}.pt').is_file()
             yield fold, seed, name, done
 
 
-def command(hypothesis, representation, spiking, fold, seed, output, updates=None):
+def command(hypothesis, representation, spiking, fold, seed, output, updates=None, recurrent=False):
     return [sys.executable, str(ROOT / 'model/train.py'), '--hypothesis', hypothesis, '--representation', representation,
             '--held-out', str(fold), '--inner', str(inner_source(fold)), '--seed', str(seed), '--output', str(output)] + \
-        ([] if spiking else ['--rate']) + ([] if updates is None else ['--updates', str(updates)])
+        ([] if spiking else ['--rate']) + ([] if updates is None else ['--updates', str(updates)]) + \
+        (['--recurrent'] if recurrent else [])
 
 
 def span(text):
@@ -96,13 +96,14 @@ def train_stacks(args, spiking, output, logs):
     worker = threading.Thread(target=pump, daemon=True)
     worker.start()
     for seed in args.seeds:
-        pending = [(fold, name) for fold, s, name, done in runs(args.hypothesis, args.representation, spiking, args.folds, [seed], output)
+        pending = [(fold, name) for fold, s, name, done in runs(args.hypothesis, args.representation, spiking, args.folds, [seed], output,
+                                                                args.recurrent)
                    if not done and not (output / f'{name}.trained.pt').is_file()]
         for i in range(0, len(pending), args.stack):
             group = pending[i:i + args.stack]
             names = [name for _, name in group]
-            prepared = [tr.prepare(args.representation, fold, inner_source(fold), seed, spiking, args.hypothesis, bank)
-                        for fold, _ in group]
+            prepared = [tr.prepare(args.representation, fold, inner_source(fold), seed, spiking, args.hypothesis, bank,
+                                   args.recurrent) for fold, _ in group]
             started = time.time()
             print(json.dumps(dict(stack=names, device=device)), flush=True)
             partial = output / f'stack_seed{seed}_{group[0][0]}-{group[-1][0]}.partial.pt'
@@ -116,7 +117,7 @@ def train_stacks(args, spiking, output, logs):
                                updates=args.updates,
                                meta_args=dict(representation=args.representation, held_out=run['meta']['held_out_source_not_used'],
                                               inner=run['meta']['inner_source'], seed=seed, spiking=spiking,
-                                              hypothesis=args.hypothesis),
+                                              hypothesis=args.hypothesis, **({'recurrent': True} if args.recurrent else {})),
                                extra=dict(trainer='stack', stack_size=len(prepared), stack_seconds=seconds))
                 path = output / f"{run['name']}.trained.pt"
                 tr.atomic(path, lambda target: torch.save(trained, target))
@@ -135,6 +136,7 @@ def main():
     parser.add_argument('--hypothesis', default='h2', choices=tr.HYPOTHESES)
     parser.add_argument('--representation', default='openclip')
     parser.add_argument('--rate', action='store_true', help='Non-spiking twin')
+    parser.add_argument('--recurrent', action='store_true', help='Recurrent variant (docs/model-method.md §6.20)')
     parser.add_argument('--folds', type=span, default=SOURCES, help='e.g. 1-20')
     parser.add_argument('--seeds', type=span, default=range(10), help='e.g. 0-9')
     parser.add_argument('--workers', type=int, default=1)
@@ -145,11 +147,11 @@ def main():
     parser.add_argument('--logs', type=Path, help='Directory for per-run logs (default: <output>/logs)')
     args = parser.parse_args()
     spiking = not args.rate
-    output = args.output or ROOT / 'output/model/campaign' / f"{args.hypothesis}_{args.representation}_{'snn' if spiking else 'rate'}"
+    output = args.output or ROOT / 'output/model/campaign' / f"{args.hypothesis}_{args.representation}_{tr.variant(spiking, args.recurrent)}"
     logs = args.logs or output / 'logs'
     logs.mkdir(parents=True, exist_ok=True)
-    todo = [(f, s, n) for f, s, n, done in runs(args.hypothesis, args.representation, spiking, args.folds, args.seeds, output)
-            if not done]
+    todo = [(f, s, n) for f, s, n, done in runs(args.hypothesis, args.representation, spiking, args.folds, args.seeds, output,
+                                                args.recurrent) if not done]
     print(json.dumps(dict(output=str(output), runs=len(todo), workers=args.workers, stack=args.stack)), flush=True)
     active, failed = [], []
     if args.stack:
@@ -158,7 +160,7 @@ def main():
         while todo and len(active) < args.workers:
             fold, seed, name = todo.pop(0)
             log = open(logs / f'{name}.txt', 'w')
-            cmd = command(args.hypothesis, args.representation, spiking, fold, seed, output, args.updates)
+            cmd = command(args.hypothesis, args.representation, spiking, fold, seed, output, args.updates, args.recurrent)
             active.append((subprocess.Popen(cmd, stdout=log, stderr=subprocess.STDOUT), log, name, time.time()))
         for item in list(active):
             process, log, name, started = item
@@ -172,7 +174,7 @@ def main():
                                       remaining=len(todo) + len(active))), flush=True)
         time.sleep(5)
     summary = []
-    for fold, seed, name, done in runs(args.hypothesis, args.representation, spiking, args.folds, args.seeds, output):
+    for fold, seed, name, done in runs(args.hypothesis, args.representation, spiking, args.folds, args.seeds, output, args.recurrent):
         if done:
             report = json.loads((output / f'{name}.json').read_text())
             summary.append(dict(run=name, fold=fold, seed=seed, healthy=all(report['criteria'].values()),

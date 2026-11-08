@@ -815,6 +815,47 @@ the source means do. H2-learned and H4 use the cross-fitted tables above.
 No model setting is changed in response to any of these results; a fault in code or measurement is
 fixed and reported, as in §6.10–6.17.
 
+### 6.20 Recurrent variant (declared 8 November 2026, before any recurrent network is trained)
+
+Spec §6.3 plans a recurrent variant of the network, and Gate 2 selects the primary variant (spec §5.2,
+§8). Everything below was written, implemented and tested before any recurrent network was trained, and
+before any result of the fit of c or of the Gate 2 checks existed.
+
+- **Architecture.** As §6.1, plus trainable weights W_rec (256 × 256) between the visual neurons: the
+  visual input becomes s(W_in x + b_V + W_rec S_V(t − 1) + σξ), with S_V(t − 1) the visual output of the
+  previous millisecond (spikes; rates in a twin). No self-connections (diagonal fixed at 0). Nothing else
+  changes (`network.py`, `recurrent=True` in the configuration).
+- **Initialisation: W_rec = 0.** It is created after the other weights without a random draw, so each
+  recurrent network starts as the feedforward network of the same seed, with the same initial weights,
+  trial draws and noise (tested: identical outputs until W_rec changes). The two variants then differ only
+  by what training puts into W_rec, matched per fold and seed. A random initial W_rec would need a scale
+  that no source fixes and would change the starting network as well as the architecture. The gradient
+  reaches W_rec from the first update (tested).
+- **Training.** Identical to §6.2 (objective, regularisers, 3,000 updates, learning rate, data, 650-ms
+  trial windows from rest), stacked as in §6.13 (extended; tested equal to one-at-a-time training).
+  Recurrence is therefore trained on 650-ms windows only; longer memory is not trained for, and the
+  continuous session shows whatever the trained W_rec carries across trials. One update costs about 9%
+  more than the feedforward network's.
+- **Scope.** H2 spiking, OpenCLIP, 20 folds × 10 initialisations (200 networks, `h2_openclip_snn_rec`),
+  with the health check of §6.5 and the FDI and ADM readout ranges of §6.17 and §6.19. This is the
+  "recurrent vs feedforward" ablation of the next-phase plan (W7) on the primary configuration.
+- **Simulation mode.** §6.18's mode check is run on recurrent networks (inner training source, full body
+  only). The trialwise mode is used for them only if it passes as the feedforward network did (noise off:
+  trials identical up to float rounding; noise on: no cell differs after Holm). Otherwise every
+  simulation of a recurrent network (fit of c, Gate 2 checks, evaluation) runs the continuous session.
+- **Selection at Gate 2 (rule fixed now).** The feedforward spiking network stays the primary variant if
+  its configurations meet Gate 2's conditions (§6.19: distinct H0, H1 and H2 control predictions with the
+  primary encoder; every network's probe response smooth in strength). The recurrent variant becomes
+  primary only if the feedforward network fails them; H0 and H1 recurrent networks are then trained, and
+  the recurrent configuration must meet the same conditions. The simpler network is preferred when both
+  are usable (spec §8's fallback simplifies, never adds detail), and the rule uses only Gate 2's
+  conditions, which preview no criterion. Either way the other variant is scored with every criterion and
+  reported as the ablation; neither replaces the primary after results are seen.
+- **Reported per network:** the norm of the trained W_rec and the mean absolute recurrent input relative
+  to the mean absolute feedforward input of the visual layer on full-body trials of the inner training
+  source, so that a network whose training left W_rec near zero is recognisable as effectively
+  feedforward.
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -1038,3 +1079,6 @@ declared in the spec before the evaluation is opened.
 | 26 Oct 2026, before any evaluation | Excitability sweep extended to 0.6 and `readout_peak_found` criterion added; every campaign curve recomputed (§6.17): spiking ranges unchanged, twin ranges 14.1 → 15.7 Hz, 20 twins no longer over-driven (2,016 healthy) | The twin had not peaked in the 0.3 sweep, so its readout range was the end of the test, not a measured peak |
 | 26 Oct 2026, before any evaluation | Networks that fail health (§6.17; spec §5.1, §6.4): none excluded for source-dependent failures; over-driven held-out displays counted only if a result holds both with them removed and at the readout maximum | Exclusion is never conservative; the over-driven readout is not measurable, so it is bounded both ways; every premise tested on all 2,400 networks |
 | 26 Oct 2026, before any evaluation | Evaluation simulator (§6.18); trialwise and continuous modes agree on trained networks | Needed for every evaluation and for the fit of c |
+| 26 Oct 2026, before any criterion, fit or Gate 2 check was run | Criteria code, fit of c under both treatments, Gate 2 checks, ADM readout range, learned pathways cross-fitted on training sources (§6.19, spec amendment) | Computable definitions needed; in-sample learned-pathway scores were not comparable with held-out ones |
+| 8 Nov 2026, before any recurrent network was trained | Recurrent variant declared and built (§6.20): W_rec within V, initialised at 0, trained as §6.2; H2 OpenCLIP, 200 networks; Gate 2 selection rule (feedforward primary unless it fails Gate 2's conditions) | Planned in spec §6.3; Gate 2 selects the variant |
+| 8 Nov 2026 (speed only) | The twin's rate table is copied to the GPU once instead of every millisecond | The twin's threshold search took 62 s instead of 3 s; values identical (threshold 0.0390625 both ways) |

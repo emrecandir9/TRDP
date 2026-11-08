@@ -315,6 +315,99 @@ class Stacked(unittest.TestCase):
 
 
 @unittest.skipIf(torch is None, 'torch and snntorch not installed')
+class Recurrent(unittest.TestCase):
+    """The recurrent variant (docs/model-method.md §6.20)."""
+
+    def recurrent(self):
+        return dict(small(), recurrent=True)
+
+    def run_both(self, a, b, spiking=True):
+        steps, n = 80, 4
+        g = torch.Generator().manual_seed(1)
+        x = torch.randn(n, 8, generator=g)
+        noise = a.noise(n, steps, g)
+        out = []
+        for net in (a, b):
+            drive = net.drive(x)[:, None].expand(n, steps, -1)
+            ones = torch.ones(n, steps)
+            out.append(net.run(drive, ones, ones * 0, net.initial(n), noise))
+        return out
+
+    def test_starts_as_the_feedforward_network_of_the_same_seed(self):
+        import network as nw
+        for spiking in (True, False):
+            ff, rec = nw.Network(8, small(), spiking, seed=5), nw.Network(8, self.recurrent(), spiking, seed=5)
+            for name, value in ff.state_dict().items():
+                self.assertTrue(torch.equal(value, rec.state_dict()[name]), name)
+            self.assertEqual(rec.w_rec.abs().sum().item(), 0.)
+            (v1, m1, s1), (v2, m2, s2) = self.run_both(ff, rec)
+            self.assertTrue(torch.equal(v1, v2) and torch.equal(m1, m2))
+            self.assertEqual((len(s1), len(s2)), (4, 5))
+            self.assertTrue(torch.equal(s2[4], v2[:, -1]))                  # the state carries the last visual output
+
+    def test_recurrent_weights_act_with_one_step_delay_and_no_self_connection(self):
+        import network as nw
+        ff, rec = nw.Network(8, small(), seed=5), nw.Network(8, self.recurrent(), seed=5)
+        with torch.no_grad():
+            rec.w_rec.copy_(torch.eye(32) * 5)                              # self-connections only: ignored
+        (v1, m1, _), (v2, m2, _) = self.run_both(ff, rec)
+        self.assertTrue(torch.equal(v1, v2) and torch.equal(m1, m2))
+        with torch.no_grad():
+            rec.w_rec.copy_(torch.full((32, 32), .5))
+        (v1, _, _), (v2, _, _) = self.run_both(ff, rec)
+        self.assertTrue(torch.equal(v1[:, 0], v2[:, 0]))                    # nothing to feed back at the first step
+        self.assertGreater(v2.mean().item(), v1.mean().item())              # excitatory recurrence raises the rate
+
+    def test_training_uses_the_recurrent_weights(self):
+        import network as nw
+        import train as tr
+        rng = np.random.default_rng(0)
+        static = rng.normal(0, 1, (12, 8)).astype(np.float32)
+        cfg = dict(tr.TRAIN, settle_ms=20, second_ms=40, window=(5, 40), batch=4, rest_trials=2)
+        net = nw.Network(8, self.recurrent(), seed=0)
+        tr.train(net, static, static + 1, cfg=cfg, updates=3)
+        self.assertGreater(net.w_rec.abs().sum().item(), 0)
+        self.assertEqual(torch.diagonal(net.w_rec).abs().sum().item(), 0.)  # no gradient reaches self-connections
+
+    def test_stack_trains_the_same_recurrent_networks_as_one_at_a_time(self):
+        import network as nw
+        import stack as st
+        import train as tr
+        rng = np.random.default_rng(3)
+        data = [(s, s + 1, None) for s in (rng.normal(0, 1, (10, 8)).astype(np.float32) for _ in range(2))]
+        cfg = dict(tr.TRAIN, settle_ms=20, second_ms=40, window=(5, 40), batch=4, rest_trials=2)
+        seeds = [2, 9]
+        alone = []
+        for (static, movement, gain), seed in zip(data, seeds):
+            net = nw.Network(8, self.recurrent(), seed=seed)
+            alone.append((net, tr.train(net, static, movement, cfg=cfg, seed=seed, updates=4)))
+        nets, readouts, _ = st.train_stack([nw.Network(8, self.recurrent(), seed=s) for s in seeds], data, seeds, cfg=cfg,
+                                           updates=4)
+        for (net, (readout, _)), other, other_readout in zip(alone, nets, readouts):
+            self.assertTrue(other.recurrent)
+            for name, a in net.state_dict().items():
+                self.assertTrue(torch.allclose(a, other.state_dict()[name], atol=1e-5), name)
+            self.assertGreater(other.w_rec.abs().sum().item(), 0)
+            self.assertAlmostEqual(readout['n0'].item(), other_readout['n0'].item(), places=5)
+
+    def test_names_and_checkpoint_round_trip(self):
+        import tempfile
+        import network as nw
+        import train as tr
+        self.assertEqual(tr.run_name('h2', 'openclip', True, 3, 1, recurrent=True), 'health_openclip_snn_rec_fold3_seed1')
+        self.assertEqual(tr.run_name('h0', 'openclip', True, 3, 1), 'health_h0_openclip_snn_fold3_seed1')
+        net = nw.Network(8, self.recurrent(), seed=0)
+        with torch.no_grad():
+            net.w_rec.normal_()
+        with tempfile.TemporaryDirectory() as d:
+            path = Path(d) / 'health_x.pt'
+            torch.save(dict(state=net.state_dict(), readout={}, config=net.config, scaler=[[0.] * 8, [1.] * 8]), path)
+            path.with_suffix('.json').write_text('{"spiking": true, "seed": 0}')
+            loaded = tr.checkpoint(path)[0]
+        self.assertTrue(loaded.recurrent and torch.equal(loaded.w_rec, net.w_rec))
+
+
+@unittest.skipIf(torch is None, 'torch and snntorch not installed')
 class Campaign(unittest.TestCase):
     def test_folds_inner_sources_and_resume(self):
         """Every source is an inner source once, never its own fold's held-out source, and finished

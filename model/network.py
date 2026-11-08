@@ -18,6 +18,10 @@ from torch import nn
 # have per-neuron weights (motor_pool=False).
 CONFIG = dict(n_visual=256, n_motor=64, tau_syn=5., tau_mem=20., dt=1., membrane_sd=.1, threshold=1., slope=25.,
               rate_slope=4., visual_bias=.8, motor_bias=.6, input_gain=.5, motor_pool=True, rate_transfer='lif')
+# recurrent (8 Nov 2026, docs/model-method.md §6.20): the recurrent variant adds trainable weights between
+# the visual neurons (no self-connections), driven by the previous millisecond's visual output and
+# initialised at 0, so that it starts as the feedforward network of the same seed. Absent from the
+# feedforward configuration (read with .get, False), so feedforward checkpoints and reports are unchanged.
 # rate_transfer: output function of the non-spiking twin. 'lif' (25 Oct 2026): the mean-field rate
 # function of the network's own noisy spiking neuron (lif_transfer); 'softplus':
 # softplus(k(U - threshold))/k, used before, which gave large output below threshold and did not train
@@ -40,6 +44,11 @@ FDI, ADM = 0, 1
 # units discharge together. NOT ADOPTED (25 Oct 2026, §6.15): recruitment is nearly all-or-none, so the
 # pool saturates on task trials; a valid spinal readout needs further physiological structure.
 SPINAL = dict(bias=0., weight=.0193, at_hz=3., silent_hz=.1)
+
+
+def trials_require(condition, message):
+    if not condition:
+        raise ValueError(message)
 
 
 def decay(tau, dt):
@@ -102,6 +111,11 @@ class Network(nn.Module):
         nn.init.normal_(self.w_in.weight, 0, c['input_gain'] / math.sqrt(dim))
         nn.init.constant_(self.w_in.bias, c['visual_bias'])
         nn.init.normal_(self.w_vm.weight, 0, 1 / math.sqrt(c['n_visual']))
+        if self.recurrent:
+            # Created after every other weight and set to 0 without a random draw, so the other initial
+            # weights are those of the feedforward network with the same seed.
+            self.w_rec = nn.Parameter(torch.zeros(c['n_visual'], c['n_visual']))
+            self.register_buffer('rec_mask', 1 - torch.eye(c['n_visual']), persistent=False)
         self.alpha, self.beta = decay(c['tau_syn'], c['dt']), decay(c['tau_mem'], c['dt'])
         self.scale = (1 - self.alpha) * (1 - self.beta)     # constant input x -> membrane x at rest
         self.sigma = noise_sd(self.alpha, self.beta, c['membrane_sd'])
@@ -118,6 +132,14 @@ class Network(nn.Module):
         # motor output is the motoneuron pools they drive (second readout, §6.15).
         self.readout_stage = 'cortical'
         self.spinal_weight = SPINAL['weight']
+
+    @property
+    def recurrent(self):
+        return bool(self.config.get('recurrent'))
+
+    def recurrent_input(self, previous):
+        """Recurrent input of the visual layer from its previous output [B, n_visual] (no self-connections)."""
+        return previous @ (self.w_rec * self.rec_mask).T
 
     @property
     def n_motor(self):
@@ -150,6 +172,9 @@ class Network(nn.Module):
         z = lambda n: torch.zeros(batch, n, device=device)
         c = self.config
         state = [z(c['n_visual']), z(c['n_visual']), z(2 * c['n_motor']), z(2 * c['n_motor'])]
+        if self.recurrent:                                   # the visual layer's previous output, last
+            trials_require(self.readout_stage != 'spinal', 'The recurrent variant has no spinal readout')
+            return state + [z(c['n_visual'])]
         return state + [z(2 * c['n_motor']), z(2 * c['n_motor'])] if self.readout_stage == 'spinal' else state
 
     def _rate(self, current, syn, mem):
@@ -160,7 +185,12 @@ class Network(nn.Module):
             k = c['rate_slope']
             return nn.functional.softplus(k * (mem - c['threshold'])) / k, syn, mem
         low, step, table = lif_transfer(self.alpha, self.beta, c['membrane_sd'], c['threshold'])
-        table = table.to(mem.device)
+        # One copy of the table per device, kept: copying it to the GPU on every simulated millisecond
+        # made the twin's threshold search 60 s long (8 Nov 2026; same values, so results are unchanged).
+        cache = self.__dict__.setdefault('_tables', {})
+        if cache.get(mem.device) is None or cache[mem.device][0] is not table:
+            cache[mem.device] = (table, table.to(mem.device))
+        table = cache[mem.device][1]
         position = ((mem - low) / step).clamp(0, len(table) - 1.001)     # linear interpolation, differentiable in mem
         index = position.floor().long()
         frac = position - index
@@ -172,6 +202,8 @@ class Network(nn.Module):
         motor output is the motoneuron pools' (noise_s their noise)."""
         syn_v, mem_v, syn_m, mem_m = state[:4]
         layer = self.visual if self.spiking else None
+        if self.recurrent:
+            drive = drive + self.recurrent_input(state[4])
         if self.spiking:
             out_v, syn_v, mem_v = layer(self.scale * (drive + noise_v), syn_v, mem_v)
         else:
@@ -182,6 +214,8 @@ class Network(nn.Module):
             out_m, syn_m, mem_m = self.motor(current, syn_m, mem_m)
         else:
             out_m, syn_m, mem_m = self._rate(current, syn_m, mem_m)
+        if self.recurrent:
+            return out_v, out_m, [syn_v, mem_v, syn_m, mem_m, out_v]
         if self.readout_stage != 'spinal':
             return out_v, out_m, [syn_v, mem_v, syn_m, mem_m]
         syn_s, mem_s = state[4:]
