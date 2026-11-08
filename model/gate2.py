@@ -161,6 +161,8 @@ def main():
     parser.add_argument('step', choices=('predictions', 'sweep', 'summary'))
     parser.add_argument('--shard', type=int, default=0)
     parser.add_argument('--shards', type=int, default=1)
+    parser.add_argument('--claim', action='store_true', help='Claim each network (several machines)')
+    parser.add_argument('--configurations', nargs='+', help='Sweep: only these campaign folders')
     args = parser.parse_args()
     if args.step == 'summary':
         print(json.dumps(summary(), indent=1)[:6000])
@@ -170,12 +172,17 @@ def main():
         configs = [f'{h}_{e}_snn' for h in HYPOTHESES for e in ENCODERS]
         run = predictions_network
     else:
-        configs = sorted(Path(p).name for p in glob.glob(str(ROOT / 'output/model/campaign/*')))
+        configs = args.configurations or sorted(Path(p).name for p in glob.glob(str(ROOT / 'output/model/campaign/*')))
         run = sweep_network
-    paths = sorted(p for c in configs for p in glob.glob(str(ROOT / 'output/model/campaign' / c / 'health_*.pt')))
+    paths = tr.finished_networks(sorted(p for c in configs for p in glob.glob(str(ROOT / 'output/model/campaign' / c / 'health_*.pt'))))
     for path in paths[args.shard::args.shards]:
         target = OUTPUT / args.step / Path(path).parent.name / (Path(path).stem + '.json')
         if target.exists():
+            continue
+        fit = FIT / Path(path).parent.name / (Path(path).stem + '.json')
+        if args.step == 'predictions' and Path(path).parent.name.startswith('h2_') and not fit.exists():
+            continue                                   # its c is not fitted yet; a later pass takes it
+        if args.claim and not tr.claim(f'gate2_{args.step}', Path(path).stem):
             continue
         target.parent.mkdir(parents=True, exist_ok=True)
         start = time.time()

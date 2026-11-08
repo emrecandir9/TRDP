@@ -484,5 +484,26 @@ class Variations(unittest.TestCase):
                 self.assertTrue(torch.allclose(x, b.state_dict()[name], atol=1e-5), name)
 
 
+class Claims(unittest.TestCase):
+    def test_a_network_is_claimed_once_and_unfinished_files_are_skipped(self):
+        import tempfile
+        import train as tr
+        with tempfile.TemporaryDirectory() as d:
+            d = Path(d)
+            old, tr.CLAIMS = tr.CLAIMS, d / 'claims'
+            try:
+                self.assertTrue(tr.claim('fit_gate', 'health_x'))
+                self.assertFalse(tr.claim('fit_gate', 'health_x'))
+                self.assertTrue(tr.claim('gate2_sweep', 'health_x'))       # claims are per step
+                tr.release('fit_gate', 'health_x')
+                self.assertTrue(tr.claim('fit_gate', 'health_x'))
+            finally:
+                tr.CLAIMS = old
+            for name in ('health_a.pt', 'health_a.json', 'health_b.pt', 'health_c.trained.pt', 'health_c.trained.json'):
+                (d / name).write_text('{}')
+            found = tr.finished_networks(sorted(str(p) for p in d.glob('health_*.pt')))
+            self.assertEqual([Path(p).name for p in found], ['health_a.pt'])
+
+
 if __name__ == '__main__':
     unittest.main()

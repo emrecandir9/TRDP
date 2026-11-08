@@ -110,14 +110,20 @@ def main():
     parser.add_argument('--shards', type=int, default=1)
     parser.add_argument('--configurations', nargs='+', default=list(CONFIGURATIONS))
     parser.add_argument('--summary', action='store_true')
+    parser.add_argument('--claim', action='store_true', help='Claim each network (several machines)')
     args = parser.parse_args()
     if args.summary:
         return summary(args.configurations)
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
-    paths = sorted(p for c in args.configurations for p in glob.glob(str(ROOT / 'output/model/campaign' / c / 'health_*.pt')))
+    paths = tr.finished_networks(sorted(p for c in args.configurations
+                                        for p in glob.glob(str(ROOT / 'output/model/campaign' / c / 'health_*.pt'))))
     for path in paths[args.shard::args.shards]:
         target = OUTPUT / Path(path).parent.name / (Path(path).stem + '.json')
         if target.exists():
+            continue
+        if 'adm_readout_range_hz' not in json.loads(Path(path).with_suffix('.json').read_text()):
+            continue                                   # ADM readout range not applied yet (§6.19)
+        if args.claim and not tr.claim('fit_gate', Path(path).stem):
             continue
         target.parent.mkdir(parents=True, exist_ok=True)
         start = time.time()

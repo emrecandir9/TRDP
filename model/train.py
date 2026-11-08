@@ -43,6 +43,35 @@ VARIATIONS = {'nv128': (dict(n_visual=128), {}), 'nv512': (dict(n_visual=512), {
 HYPOTHESES = ('h2', 'h0', 'h1')   # h2: display features, gate 1 on full body (shared by H2, ungated, S3(a))
 
 
+CLAIMS = OUTPUT / 'claims'
+
+
+def claim(step, name):
+    """Claim one network for one step, so that machines sharing the output folder never process it
+    twice: True if this process made the claim (mkdir is atomic), False if another one holds it."""
+    import socket
+    folder = CLAIMS / step
+    folder.mkdir(parents=True, exist_ok=True)
+    try:
+        (folder / name).mkdir()
+    except FileExistsError:
+        return False
+    (folder / name / 'host').write_text(f'{socket.gethostname()} {os.getpid()}\n')
+    return True
+
+
+def release(step, name):
+    """Give a claim back (the work could not be done yet)."""
+    import shutil
+    shutil.rmtree(CLAIMS / step / name, ignore_errors=True)
+
+
+def finished_networks(paths):
+    """Saved networks whose report exists: a stack's `<run>.trained.pt` (health check pending) and
+    resumable checkpoints are left out."""
+    return [p for p in paths if not str(p).endswith(('.trained.pt', '.partial.pt')) and Path(p).with_suffix('.json').is_file()]
+
+
 def atomic(path, write):
     """Write through a temporary file and rename, so an interrupted save never leaves a partial file."""
     path = Path(path)

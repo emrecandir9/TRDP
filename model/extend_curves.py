@@ -109,6 +109,7 @@ def main():
     parser.add_argument('--shards', type=int, default=1)
     parser.add_argument('--apply', action='store_true')
     parser.add_argument('--population', choices=('fdi', 'adm'), default='fdi')
+    parser.add_argument('--claim', action='store_true', help='Claim each network (several machines)')
     args = parser.parse_args()
     adm = args.population == 'adm'
     if args.apply:
@@ -116,10 +117,10 @@ def main():
     device = 'cuda' if torch.cuda.is_available() else 'cpu'
     output = OUTPUT_ADM if adm else OUTPUT
     output.mkdir(parents=True, exist_ok=True)
-    paths = sorted(glob.glob(str(ROOT / 'output/model/campaign/*/health_*.pt')))[args.shard::args.shards]
+    paths = tr.finished_networks(sorted(glob.glob(str(ROOT / 'output/model/campaign/*/health_*.pt'))))[args.shard::args.shards]
     for path in paths:
         target = output / (Path(path).stem + '.json')
-        if target.exists():
+        if target.exists() or (args.claim and not tr.claim(f'curve_{args.population}', Path(path).stem)):
             continue
         start = time.time()
         net, _, _, _, report = tr.checkpoint(path, device)
