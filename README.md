@@ -272,16 +272,16 @@ Done on 25–26 October:
 
 Done on 8 November:
 
-- **Fit of c and Gate 2 checks started** on `jessica`: ADM readout ranges for all 2,400 networks, then c for
+- **Fit of c and Gate 2 checks started** on four CREMI GPUs (`jessica`, `daniel`, `vladimir`, `cheonech`; machines share the per-network work through claims, `scripts/cremi_parallel.sh`): ADM readout ranges for all 2,400 networks, then c for
   the 1,200 H2 networks (spiking first, then the twins), the probe-strength sweep on every network and the
-  H0/H1/H2 control predictions, all on training sources (about two days of GPU time).
+  H0/H1/H2 control predictions, all on training sources.
 - **Recurrent variant declared, built and training** ([model method](model-method.md) §6.20, spec
   amendment): recurrent weights in the visual layer, starting at zero so that each recurrent network starts
   as the feedforward network of the same seed; H2, OpenCLIP, 200 networks. Gate 2 keeps the feedforward
   network as primary unless it fails Gate 2's conditions.
 - **Robustness variations declared and built** ([model method](model-method.md) §6.21, spec amendment):
-  visual layer, learning rate, training length and time constants, one at a time, 60 networks each; queued
-  after the recurrent campaign. The 0.5-ms time step is declared; its implementation is pending.
+  visual layer, learning rate, training length and time constants, one at a time, 60 networks each; training
+  in parallel with the recurrent campaign. The 0.5-ms time step is declared; its implementation is pending.
 - The twin's simulation no longer copies its rate table to the GPU every millisecond (same values, about
   20 times faster threshold search).
 
