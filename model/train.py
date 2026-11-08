@@ -34,6 +34,12 @@ TRAIN = dict(settle_ms=300, second_ms=350, window=(50, 300), updates=3000, batch
 HEALTH = dict(task_auc=.9, silent_visual=.10, fast_visual=.05, fixation_motor_hz=(.5, 20.), dose_spearman=.9,
               saturated=.9, spinal_background_hz=.5)   # motoneurons before the probe: near silent (no background EMG)
 OUTPUT = ROOT / 'output/model'
+# Robustness variations (docs/model-method.md §6.21): one setting of the primary network changed at a
+# time, (network configuration, training configuration) overrides by name.
+VARIATIONS = {'nv128': (dict(n_visual=128), {}), 'nv512': (dict(n_visual=512), {}),
+              'lr3e-4': ({}, dict(lr=3e-4)), 'lr3e-3': ({}, dict(lr=3e-3)), 'u6000': ({}, dict(updates=6000)),
+              'tm10': (dict(tau_mem=10.), {}), 'tm40': (dict(tau_mem=40.), {}),
+              'ts2': (dict(tau_syn=2.), {}), 'ts10': (dict(tau_syn=10.), {})}
 HYPOTHESES = ('h2', 'h0', 'h1')   # h2: display features, gate 1 on full body (shared by H2, ungated, S3(a))
 
 
@@ -429,17 +435,19 @@ def recheck(path, device='cpu'):
     return report
 
 
-def variant(spiking, recurrent=False):
-    """Name part of a network variant: snn or rate, with _rec for the recurrent variant (§6.20)."""
-    return ('snn' if spiking else 'rate') + ('_rec' if recurrent else '')
+def variant(spiking, recurrent=False, variation=None):
+    """Name part of a network variant: snn or rate, with _rec for the recurrent variant (§6.20) and
+    the name of a robustness variation (§6.21)."""
+    return ('snn' if spiking else 'rate') + ('_rec' if recurrent else '') + (f'_{variation}' if variation else '')
 
 
-def run_name(hypothesis, representation, spiking, held_out, seed, recurrent=False):
+def run_name(hypothesis, representation, spiking, held_out, seed, recurrent=False, variation=None):
     tag = '' if hypothesis == 'h2' else f'{hypothesis}_'
-    return f"health_{tag}{representation}_{variant(spiking, recurrent)}_fold{held_out}_seed{seed}"
+    return f"health_{tag}{representation}_{variant(spiking, recurrent, variation)}_fold{held_out}_seed{seed}"
 
 
-def prepare(representation='openclip', held_out=1, inner=2, seed=0, spiking=True, hypothesis='h2', bank=None, recurrent=False):
+def prepare(representation='openclip', held_out=1, inner=2, seed=0, spiking=True, hypothesis='h2', bank=None, recurrent=False,
+            variation=None):
     """Everything one run needs before training (§6.5, §6.6): training and inner-source inputs, with
     preprocessing and H1's mean salience from training sources only, and the initial network."""
     bank = bank or bk.Bank(representation)
@@ -454,7 +462,12 @@ def prepare(representation='openclip', held_out=1, inner=2, seed=0, spiking=True
     if recurrent:                                    # feedforward reports keep their fields unchanged
         meta['recurrent'] = True
     config = dict(nw.CONFIG, recurrent=True) if recurrent else nw.CONFIG
-    return dict(name=run_name(hypothesis, representation, spiking, held_out, seed, recurrent), meta=meta,
+    cfg = TRAIN
+    if variation:
+        trials.require(variation in VARIATIONS, f'Unknown variation: {variation}')
+        meta['variation'] = variation
+        config, cfg = dict(config, **VARIATIONS[variation][0]), dict(TRAIN, **VARIATIONS[variation][1])
+    return dict(name=run_name(hypothesis, representation, spiking, held_out, seed, recurrent, variation), meta=meta, cfg=cfg,
                 net=nw.Network(static.shape[1], config, spiking=spiking, seed=seed), static=static, movement=movement, gain=gain,
                 inner=(inner_static, inner_movement, inner_gain), scaler=scaler, mean_salience=mean_salience,
                 activity=activity_sample(bank, hypothesis, sources, held_out, inner, scaler, mean_salience))
@@ -464,10 +477,11 @@ def finish(run, readout, history, seconds, output=OUTPUT, device='cpu', updates=
     """Health measures of a trained run, then its network and report (report last, atomically)."""
     net = run['net'].to(device)
     readout = {k: v.to(device) for k, v in readout.items()}
-    report = dict(run['meta'], updates=updates or TRAIN['updates'], device=str(device), seconds=seconds,
+    cfg = run.get('cfg', TRAIN)
+    report = dict(run['meta'], updates=updates or cfg['updates'], device=str(device), seconds=seconds,
                   final=history[-1], **(extra or {}))
     inner_static, inner_movement, inner_gain = run['inner']
-    report.update(diagnose(net, readout, inner_static, inner_movement, device=device, gain=inner_gain,
+    report.update(diagnose(net, readout, inner_static, inner_movement, cfg, device=device, gain=inner_gain,
                            activity=run['activity']))
     network = dict(state={k: v.detach().cpu() for k, v in net.state_dict().items()},
                    readout={k: v.detach().cpu() for k, v in readout.items()}, config=net.config,
@@ -493,16 +507,16 @@ def finish_trained(path, device=None):
 
 
 def health(representation='openclip', held_out=1, inner=2, seed=0, device=None, updates=None, spiking=True,
-           output=OUTPUT, hypothesis='h2', recurrent=False):
+           output=OUTPUT, hypothesis='h2', recurrent=False, variation=None):
     """Gate 2 style health check on one outer fold, using training sources only (§6.5). Trains the
     network of one hypothesis (§6.6): h2 (shared by H2, the ungated network and the S3(a) model),
     h0 or h1."""
     device = device or ('cuda' if torch.cuda.is_available() else 'cpu')
-    run = prepare(representation, held_out, inner, seed, spiking, hypothesis, recurrent=recurrent)
+    run = prepare(representation, held_out, inner, seed, spiking, hypothesis, recurrent=recurrent, variation=variation)
     output.mkdir(parents=True, exist_ok=True)
     partial = output / f"{run['name']}.partial.pt"                 # resumable training state
     started = time.time()
-    readout, history = train(run['net'], run['static'], run['movement'], seed=seed, device=device, updates=updates,
+    readout, history = train(run['net'], run['static'], run['movement'], cfg=run['cfg'], seed=seed, device=device, updates=updates,
                              gain=run['gain'], log=lambda h: print(json.dumps(h), flush=True), resume=partial)
     report = finish(run, readout, history, round(time.time() - started), output, device, updates)
     partial.unlink(missing_ok=True)
@@ -518,6 +532,7 @@ if __name__ == '__main__':
     parser.add_argument('--updates', type=int)
     parser.add_argument('--rate', action='store_true', help='Non-spiking twin')
     parser.add_argument('--recurrent', action='store_true', help='Recurrent variant (docs/model-method.md §6.20)')
+    parser.add_argument('--variation', choices=sorted(VARIATIONS), help='Robustness variation (docs/model-method.md §6.21)')
     parser.add_argument('--hypothesis', default='h2', choices=HYPOTHESES)
     parser.add_argument('--output', type=Path, default=OUTPUT)
     parser.add_argument('--recheck', type=Path, help='Recompute the health measures of a saved network')
@@ -529,6 +544,7 @@ if __name__ == '__main__':
         report = recheck(args.recheck, device='cuda' if torch.cuda.is_available() else 'cpu')
     else:
         report = health(args.representation, args.held_out, args.inner, args.seed, updates=args.updates,
-                        spiking=not args.rate, output=args.output, hypothesis=args.hypothesis, recurrent=args.recurrent)
+                        spiking=not args.rate, output=args.output, hypothesis=args.hypothesis, recurrent=args.recurrent,
+                        variation=args.variation)
     print(json.dumps({k: v for k, v in report.items() if k not in ('dose_response', 'history', 'excitability_curve')},
                      indent=2))

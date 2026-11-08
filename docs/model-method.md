@@ -856,6 +856,37 @@ before any result of the fit of c or of the Gate 2 checks existed.
   source, so that a network whose training left W_rec near zero is recognisable as effectively
   feedforward.
 
+### 6.21 Robustness variations (declared 8 November 2026, before any of them is trained)
+
+The settings of §6.1–6.2 that no literature value fixes are varied one at a time from the primary
+configuration (H2, spiking, feedforward, OpenCLIP), as decided on 25 October 2026 (§8) and listed in spec
+§6.3 for the time constants and the time step:
+
+| Name | Change (primary value) |
+| --- | --- |
+| `nv128`, `nv512` | Visual layer of 128 or 512 neurons (256) |
+| `lr3e-4`, `lr3e-3` | Learning rate 3 × 10⁻⁴ or 3 × 10⁻³ (10⁻³) |
+| `u6000` | 6,000 updates (3,000) |
+| `tm10`, `tm40` | Membrane time constant 10 or 40 ms (20) |
+| `ts2`, `ts10` | Synaptic time constant 2 or 10 ms (5) |
+| `dt0.5` | Time step 0.5 ms (1 ms), on a subset |
+
+- **Each variation:** 20 folds × initialisations 0–2 (the primary's seeds, so every network has a matched
+  primary network), trained, health-checked and given FDI and ADM readout ranges exactly as the primary;
+  c fitted per network as in §6.19; evaluated once, in the frozen evaluation, with the primary model H2
+  under both treatments and scored with every criterion of spec §5.2. Nothing else changes: the input
+  noise is re-derived from the time constants so that the resting membrane SD stays 0.1 θ, and the motor
+  limits stay in Hz (`train.VARIATIONS`, `campaign.py --variation`; tested: each variation changes one
+  declared setting, and stacks follow it).
+- **P3 with three initialisations** requires C_FDI positive in all three (at least 80%).
+- **Role.** Reported beside the robustness encoders as robustness of the primary result; not part of the
+  decision rule of spec §5.2, and never a replacement for the primary configuration. A variation whose
+  networks fail health is treated by the rule of §6.17 (no exclusion).
+- **Time step 0.5 ms**, on a subset (H2, OpenCLIP, 20 folds × initialisation 0): the trial simulator,
+  trainer, probe and readout count in 1-ms steps in about 60 places, so this variation needs every one of
+  them expressed in time. Its implementation and tests will be committed before it is run, and before the
+  evaluation is opened.
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -1053,7 +1084,7 @@ Open: the criteria code applying §6.17's two treatments, the fit of c, the recu
 non-spiking twin repaired (§6.14), the spinal readout tried and not adopted (§6.15), the learned
 context pathways declared (§7.1).
 
-**Next step after these (decided 25 October 2026, not yet declared in the spec):** robustness
+**Next step after these (decided 25 October 2026; declared 8 November 2026 in §6.21 and the spec):** robustness
 variations of the choices that have no literature value: visual layer 128 and 512 neurons (256 in
 the primary), learning rate 3 × 10⁻⁴ and 3 × 10⁻³ (10⁻³), 6,000 updates (3,000), and the time
 constants and time step already listed in spec §6.3 (10/40 ms and 2/10 ms; 0.5 ms). Each would run on
@@ -1082,3 +1113,4 @@ declared in the spec before the evaluation is opened.
 | 26 Oct 2026, before any criterion, fit or Gate 2 check was run | Criteria code, fit of c under both treatments, Gate 2 checks, ADM readout range, learned pathways cross-fitted on training sources (§6.19, spec amendment) | Computable definitions needed; in-sample learned-pathway scores were not comparable with held-out ones |
 | 8 Nov 2026, before any recurrent network was trained | Recurrent variant declared and built (§6.20): W_rec within V, initialised at 0, trained as §6.2; H2 OpenCLIP, 200 networks; Gate 2 selection rule (feedforward primary unless it fails Gate 2's conditions) | Planned in spec §6.3; Gate 2 selects the variant |
 | 8 Nov 2026 (speed only) | The twin's rate table is copied to the GPU once instead of every millisecond | The twin's threshold search took 62 s instead of 3 s; values identical (threshold 0.0390625 both ways) |
+| 8 Nov 2026, before any of them was trained | Robustness variations declared and built (§6.21): visual layer 128/512, learning rate 3 × 10⁻⁴/3 × 10⁻³, 6,000 updates, membrane 10/40 ms, synaptic 2/10 ms, 20 folds × 3 initialisations each; time step 0.5 ms on a subset, implementation pending | Decided 25 Oct (§8); to be declared before the evaluation |

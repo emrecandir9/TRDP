@@ -390,6 +390,19 @@ class Recurrent(unittest.TestCase):
             self.assertGreater(other.w_rec.abs().sum().item(), 0)
             self.assertAlmostEqual(readout['n0'].item(), other_readout['n0'].item(), places=5)
 
+    def test_recurrent_share_is_zero_without_recurrent_weights(self):
+        import network as nw
+        import recurrence as rc
+        import train as tr
+        rng = np.random.default_rng(1)
+        static = rng.normal(0, 1, (6, 8)).astype(np.float32)
+        cfg = dict(tr.TRAIN, settle_ms=20, second_ms=40)
+        net = nw.Network(8, self.recurrent(), seed=0)
+        self.assertEqual(rc.recurrent_share(net, static, static + 1, cfg), 0.)
+        with torch.no_grad():
+            net.w_rec.fill_(.3)
+        self.assertGreater(rc.recurrent_share(net, static, static + 1, cfg), 0.)
+
     def test_names_and_checkpoint_round_trip(self):
         import tempfile
         import network as nw
@@ -426,6 +439,50 @@ class Campaign(unittest.TestCase):
             command = cp.command('h1', 'openclip', False, 4, 0, d)
             self.assertEqual(command[command.index('--inner') + 1], '5')
             self.assertIn('--rate', command)
+
+@unittest.skipIf(torch is None, 'torch and snntorch not installed')
+class Variations(unittest.TestCase):
+    """Robustness variations (docs/model-method.md §6.21)."""
+
+    def test_each_variation_changes_one_declared_setting(self):
+        import network as nw
+        import train as tr
+        for name, (net, cfg) in tr.VARIATIONS.items():
+            self.assertEqual(len(net) + len(cfg), 1, name)
+            self.assertTrue(set(net) <= set(nw.CONFIG) and set(cfg) <= set(tr.TRAIN), name)
+            changed = {**net, **cfg}
+            key = next(iter(changed))
+            self.assertNotEqual(changed[key], {**nw.CONFIG, **tr.TRAIN}[key], name)
+        self.assertEqual(tr.run_name('h2', 'openclip', True, 2, 0, variation='tm10'), 'health_openclip_snn_tm10_fold2_seed0')
+
+    def test_campaign_passes_the_variation(self):
+        import campaign as cp
+        command = cp.command('h2', 'openclip', True, 4, 0, Path('.'), variation='lr3e-3')
+        self.assertEqual(command[command.index('--variation') + 1], 'lr3e-3')
+        names = [n for _, _, n, _ in cp.runs('h2', 'openclip', True, [4], [0], Path('.'), variation='nv128')]
+        self.assertEqual(names, ['health_openclip_snn_nv128_fold4_seed0'])
+
+    def test_stack_follows_changed_time_constants(self):
+        """A stack of networks with a changed membrane constant trains as each network alone."""
+        import network as nw
+        import stack as st
+        import train as tr
+        config = dict(small(), tau_mem=10.)
+        rng = np.random.default_rng(4)
+        data = [(s, s + 1, None) for s in (rng.normal(0, 1, (10, 8)).astype(np.float32) for _ in range(2))]
+        cfg = dict(tr.TRAIN, settle_ms=20, second_ms=40, window=(5, 40), batch=4, rest_trials=2, lr=3e-3)
+        seeds = [1, 6]
+        alone = []
+        for (static, movement, _), seed in zip(data, seeds):
+            net = nw.Network(8, config, seed=seed)
+            tr.train(net, static, movement, cfg=cfg, seed=seed, updates=3)
+            alone.append(net)
+        nets, _, _ = st.train_stack([nw.Network(8, config, seed=s) for s in seeds], data, seeds, cfg=cfg, updates=3)
+        for a, b in zip(alone, nets):
+            self.assertEqual(b.config['tau_mem'], 10.)
+            for name, x in a.state_dict().items():
+                self.assertTrue(torch.allclose(x, b.state_dict()[name], atol=1e-5), name)
+
 
 if __name__ == '__main__':
     unittest.main()
