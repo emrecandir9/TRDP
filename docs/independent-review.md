@@ -9,14 +9,14 @@ Updated as each item is handled; the commit that handled it is given. Open items
 | Item | Status |
 | --- | --- |
 | F2: record ungated results, withdraw "clean target" | **done** 10 Nov (model-method §6.19 table, §7 note, baselines note, README; `fit_gate.py --summary` prints the ungated ratio) |
-| F16: document contradictions (answer 37) | open |
+| F16: document contradictions (answer 37) | **done** 10 Nov, except the items inside the spec and `config/analysis.json` (handled with the amendment below) |
 | F1, F2, F7, F8: declared reporting amendments (informative criteria, necessity test, raw readouts, c sensitivity) | open |
 | F2, F7, F8: code for the necessity test, raw reporting and c sensitivity | open |
 | F9: amendment list and spec hash in `config/analysis.json`; "frozen" wording; external timestamp | open |
 | F3–F6, F11, F12: limitations written into the documents | open |
 | All-context training ablation: specify, then train | open |
 | F10: evaluation driver, tested and hashed | open |
-| F13–F15, F17: wording and provenance fixes | open |
+| F13–F15, F17: wording and provenance fixes | F14 **done** 10 Nov (model-method §6.13, README); F13, F15, F17 open |
 | 0.5-ms time step (already declared) | open |
 
 Labels: **[V]** verified by me in code, data or output; **[D]** stated by the project, not independently checked; **[I]** my inference, premises given.

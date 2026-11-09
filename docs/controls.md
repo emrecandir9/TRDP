@@ -27,7 +27,7 @@ middle-knuckle axis.
 | `window_hand` | Same rectangle without arm, extended sideways over desk to the same area | Does visible area alone explain the effect? | No facilitation |
 | `scrambled` | Upper-limb view in 32 px blocks; blocks touching the hand stay, all others are permuted | Does any surround work, or only a body? | Like the detached hand |
 | `occluded_wrist` (exploratory) | Upper-limb view with an opaque black band over 0.5 P of the wrist | Does an occluder break continuity? | Not declared |
-| `detached_hand` (archive rectangle) | Hand rectangle with desk patch | Does a surface without a body matter? | Like the detached hand |
+| `detached_hand` (archive rectangle) | Hand rectangle with desk patch | Does a surface without a body matter? | Declared at freezing: like the detached hand. Corrected 24 Oct 2026 (spec §7.2): it shows 0.80 palm widths of connected forearm, so H2 predicts facilitation close to the upper limb |
 
 ### Design decisions
 

@@ -8,6 +8,9 @@ The accepted archive holds 2,880 PNGs in three contexts; the paper-matched
 [detached-hand silhouette](docs/detached-hand-silhouette.md) adds 960 PNGs derived from
 the same full-body pixels.
 
+`docs/TRDP Study Short Version.pdf` and `docs/TRDP Study Progress.pptx` describe the state before the
+fit of c (they predate 9 November) and the [independent review](docs/independent-review.md).
+
 Read the [illustrated project guide](docs/project-guide.pdf) for the complete workflow:
 original references, source generation, hand and clothing repairs, V7 approval, masks,
 final expansion and earlier methods. The guide dates from 11 October and is partly superseded:
@@ -44,7 +47,7 @@ TRDP/
 │   ├── context.py               # H2 context pathway: forearm continuity at the wrist
 │   ├── network.py               # Spiking visuomotor network, rate twin, probe readout, threshold
 │   ├── train.py                 # Auxiliary training per hypothesis and Gate 2 health check
-│   ├── stack.py                 # Trains many networks at once on the GPU (same networks, ~9x faster)
+│   ├── stack.py                 # Trains many networks at once on the GPU (same procedure, ~9x faster)
 │   ├── campaign.py              # Trains every fold × initialisation through the health-checked path
 │   ├── learned_context.py       # Learned context pathways: forearm prediction (H2-learned), familiarity (H4)
 │   ├── extend_curves.py         # Readout excitability curve of every campaign network over the extended sweep
@@ -106,6 +109,9 @@ TRDP/
 │   ├── controls-approval.json   # Hash-bound human approval of the controls
 │   ├── figures/                 # Silhouette and control review sheets
 │   ├── validation.md            # Validation scope, results and limitations
+│   ├── independent-review.md    # Independent review of 10 Nov 2026 and progress on its findings
+│   ├── decision-audit.md        # What each decision rests on
+│   ├── model-method.md          # Model methods, health checks, fit of c, Gate 2
 │   ├── next-phase-plan.md       # Priorities and schedule to 18 December 2026
 │   ├── analysis-spec.md         # Endpoints, splits, models and success criteria
 │   ├── baselines.md             # Gate 1 baselines: method fixed before results, then results
@@ -262,13 +268,35 @@ Done on 25–26 October:
   premise was tested on all 2,400 networks.
 - **Evaluation simulator** built ([model method](docs/model-method.md) §6.18): its fast trialwise mode
   equals the full session on trained networks.
-- **Decision audit** ([decision audit](docs/decision-audit.md)): all 43 decisions classed by what grounds
-  them, 30 references verified; the model's over-driven readout falls, unlike a human MEP, and is
+- **Decision audit** ([decision audit](docs/decision-audit.md)): all 48 decisions classed by what grounds
+  them, 29 references verified; the model's over-driven readout falls, unlike a human MEP, and is
   reported as a limitation.
 
-- **Criteria, fit of c and Gate 2 checks declared and built** ([model method](model-method.md) §6.19, spec
+- **Criteria, fit of c and Gate 2 checks declared and built** ([model method](docs/model-method.md) §6.19, spec
   amendment), tested on synthetic data before any run; the learned pathways now score training sources by
   cross-fitting.
+
+Done on 8 November:
+
+- **Fit of c and Gate 2 checks started** on four CREMI GPUs (`jessica`, `daniel`, `vladimir`, `cheonech`; machines share the per-network work through claims, `scripts/cremi_parallel.sh`): ADM readout ranges for all 2,400 networks, then c for
+  the 1,200 H2 networks (spiking first, then the twins), the probe-strength sweep on every network and the
+  H0/H1/H2 control predictions, all on training sources. By 23:40 the sweep (2,400) was complete, c was fitted
+  for 599 of 600 spiking networks and 314 of 600 twins, and 1,799 of 1,800 predictions were done; fits that ran
+  out of GPU memory left claims that are now taken over automatically (a dead process's claim on the same
+  machine is retaken, `train.claim`; `scripts/cremi_retry.sh`).
+- **Recurrent variant declared, built and training** ([model method](docs/model-method.md) §6.20, spec
+  amendment): recurrent weights in the visual layer, starting at zero so that each recurrent network starts
+  as the feedforward network of the same seed; H2, OpenCLIP, 200 networks. Gate 2 keeps the feedforward
+  network as primary unless it fails Gate 2's conditions.
+- **Robustness variations declared and built** ([model method](docs/model-method.md) §6.21, spec amendment):
+  visual layer, learning rate, training length and time constants, one at a time, 60 networks each; training
+  in parallel with the recurrent campaign. The 0.5-ms time step is declared; its implementation is pending.
+  From 23:26 the remaining recurrent and robustness stacks run from one shared job list on eight CREMI GPUs
+  (adding `moneo`, `wensicia`, `hayt`, `albans`, two stacks per new GPU): `campaign.py --claim` claims each
+  stack and each health check, so no network is trained twice (`scripts/cremi_work.sh`,
+  `scripts/cremi_handover.sh`).
+- The twin's simulation no longer copies its rate table to the GPU every millisecond (same values, about
+  20 times faster threshold search).
 
 Done on 9 November:
 
@@ -285,28 +313,6 @@ Done on 9 November:
   feedforward input; trialwise simulation valid, mode check passed). The fit of c gives c = 0 in every one
   of these 740 networks, so the closed-gate boundary holds for recurrence and every varied setting
   ([model method](docs/model-method.md) §6.20–6.21).
-
-Done on 8 November:
-
-- **Fit of c and Gate 2 checks started** on four CREMI GPUs (`jessica`, `daniel`, `vladimir`, `cheonech`; machines share the per-network work through claims, `scripts/cremi_parallel.sh`): ADM readout ranges for all 2,400 networks, then c for
-  the 1,200 H2 networks (spiking first, then the twins), the probe-strength sweep on every network and the
-  H0/H1/H2 control predictions, all on training sources. By 23:40 the sweep (2,400) was complete, c was fitted
-  for 599 of 600 spiking networks and 314 of 600 twins, and 1,799 of 1,800 predictions were done; fits that ran
-  out of GPU memory left claims that are now taken over automatically (a dead process's claim on the same
-  machine is retaken, `train.claim`; `scripts/cremi_retry.sh`).
-- **Recurrent variant declared, built and training** ([model method](model-method.md) §6.20, spec
-  amendment): recurrent weights in the visual layer, starting at zero so that each recurrent network starts
-  as the feedforward network of the same seed; H2, OpenCLIP, 200 networks. Gate 2 keeps the feedforward
-  network as primary unless it fails Gate 2's conditions.
-- **Robustness variations declared and built** ([model method](model-method.md) §6.21, spec amendment):
-  visual layer, learning rate, training length and time constants, one at a time, 60 networks each; training
-  in parallel with the recurrent campaign. The 0.5-ms time step is declared; its implementation is pending.
-  From 23:26 the remaining recurrent and robustness stacks run from one shared job list on eight CREMI GPUs
-  (adding `moneo`, `wensicia`, `hayt`, `albans`, two stacks per new GPU): `campaign.py --claim` claims each
-  stack and each health check, so no network is trained twice (`scripts/cremi_work.sh`,
-  `scripts/cremi_handover.sh`).
-- The twin's simulation no longer copies its rate table to the GPU every millisecond (same values, about
-  20 times faster threshold search).
 
 Done on 10 November:
 

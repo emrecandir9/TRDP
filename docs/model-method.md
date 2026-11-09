@@ -5,7 +5,7 @@ Code: [`model/trials.py`](../model/trials.py) (trial simulator), [`model/bank.py
 the parts of the [analysis spec](analysis-spec.md) §2, §5.1 and §6.3–6.4 that define what a model
 instance sees, and fixes the details the spec and the paper leave open.
 
-**Status, 24 October 2026: draft.** Sections 1–4 are fixed: the trial simulator is built and
+**Status: started as a draft on 24 October 2026 and extended since (last change 10 November 2026; change log at the end).** Sections 1–4 are fixed: the trial simulator is built and
 tested, and nothing has been trained. Section 5 (encoder) was decided on 24 October 2026
 (option A, spec amendment). Section 6 fixes the network before any training; section 7 records
 the H2 context pathway and the S3 amendment; section 8 is a validation of all methods. Later changes go
@@ -41,7 +41,7 @@ Each rule below is an assumption, chosen to be neutral, and is tested in `tests/
 | Instance and block order | Instance = (held-out source, initialisation). Order index = (source rank + initialisation) mod 6, over the six permutations in lexicographic order | Every source meets every order across its 10 initialisations, and every initialisation uses every order across sources. The naive `instance mod 6` would give each source only three orders |
 | Rectangle sensitivity | Same random stream as the primary session; only the detached-hand images differ | Paired comparison: any difference is caused by the display alone |
 | Control sessions | Separate sessions, one block per control display (six), same block structure; orders from a Williams square (first-order carry-over balanced) indexed as above | The controls have no human data; a balanced order prevents systematic carry-over |
-| Random streams | `SeedSequence([20261022, source, initialisation, session kind])`; every trial gets its own noise seed for the matched no-probe trial (spec §6.4) | Reproducible, independent across instances |
+| Random streams | `SeedSequence([20261022, source, initialisation, session kind])`; one noise stream per session, `SeedSequence([20261022, source, initialisation, salt])`, shared by every model run on that session; the probe and no-probe branches of a trial share their noise (spec §6.4). The per-trial `noise_seed` the simulator records is not used | Reproducible, independent across instances |
 
 Resulting sessions: the primary session lasts 15.8 simulated minutes (220 trials, about 145
 distinct images); a control session lasts 29.3 minutes (400 trials).
@@ -132,7 +132,10 @@ diagnostics use training sources only, and H2's gate fit (§6.6) uses training s
 ### 6.2 Auxiliary training (spec §6.3)
 
 - **Data:** full-body trials of the training sources only (`trials.training_session`), half of
-  them movement trials. Upper-limb, detached-hand and control images are never used in training.
+  them movement trials. **Each network trains on 18 sources:** the fold's held-out source and one inner
+  source (the next source, cyclically) are left out; the inner source serves the health check (§6.5) and
+  is, like the held-out source, never trained on. Standardisation and H1's mean salience use the same 18.
+  The fit of c and the learned pathways use the fold's 19 non-held-out sources (the 18 and the inner one). Upper-limb, detached-hand and control images are never used in training.
 - **Window:** each training trial is simulated from rest for the last 300 ms of its first frame
   and the first 350 ms of its second frame; the first 300 ms let the network settle.
 - **Objective:** detect the index movement from the FDI population. With `n_FDI` the FDI
@@ -504,7 +507,12 @@ Nothing is shared between the networks. Each keeps its own initial weights (buil
 seeded the same way, drawn in the same order), its own readout and its own loss; the summed loss gives
 each network exactly its own gradient, and Adam acts element by element. A stacked network is
 therefore the network `train.train` gives alone, up to the rounding of batched matrix products: the
-largest weight difference after 20 updates was 6 × 10⁻⁸ (test in `tests/test_network.py`).
+largest weight difference after 20 updates was 6 × 10⁻⁸ in a trial run; the test in `tests/test_network.py`
+covers 5 updates on small networks (tolerance 10⁻⁵). Over 3,000 updates the rounding differences grow, as they do in
+any spiking simulation: fold 4 of seed 0, trained alone (§6.12) and in a stack, ends with different weights (largest
+difference 0.067 in the input weights, whose mean size is 0.014) and the same health measures (threshold identical,
+facilitation 6.48 and 6.46 spikes, readout range 7.95 and 7.96 Hz; checked 10 November 2026). A stack is the same
+training procedure, not a bit-identical network.
 
 | Networks trained together (alone on the GPU) | Seconds per update | Per network |
 | --- | --- | --- |
@@ -969,6 +977,14 @@ configuration (H2, spiking, feedforward, OpenCLIP), as decided on 25 October 202
   them expressed in time. Its implementation and tests will be committed before it is run, and before the
   evaluation is opened.
 
+**Results (9 November 2026; training sources only).** All 540 networks trained (60 per variation).
+Healthy on their inner source: `nv128` 55, `nv512` 54, `lr3e-4` 54, `lr3e-3` 55, `u6000` 57, `tm10` 60,
+`tm40` 52, `ts2` 54, `ts10` 55 of 60 (primary 181 of 200), failing on facilitation and background as the
+primary does. ADM curves measured and applied for all of them. The fit of c gives c = 0 for every
+network, gate and treatment in every variation; the −0.10 target lies inside a network's ratio range in 9
+of 2,160 network–gate pairs (`u6000` 7, `lr3e-3` 2). The closed-gate boundary of §6.19 therefore holds
+across every varied setting. The 0.5-ms time step is still to be implemented.
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -1052,14 +1068,6 @@ visible-context account in its control predictions. Because the gate is computed
 masks rather than learned from the image, it does not show how such a signal could arise from vision,
 and it does not show that humans use continuity rather than visible context (spec §1).
 
-
-**Results (9 November 2026; training sources only).** All 540 networks trained (60 per variation).
-Healthy on their inner source: `nv128` 55, `nv512` 54, `lr3e-4` 54, `lr3e-3` 55, `u6000` 57, `tm10` 60,
-`tm40` 52, `ts2` 54, `ts10` 55 of 60 (primary 181 of 200), failing on facilitation and background as the
-primary does. ADM curves measured and applied for all of them. The fit of c gives c = 0 for every
-network, gate and treatment in every variation; the −0.10 target lies inside a network's ratio range in 9
-of 2,160 network–gate pairs (`u6000` 7, `lr3e-3` 2). The closed-gate boundary of §6.19 therefore holds
-across every varied setting. The 0.5-ms time step is still to be implemented.
 
 ### 7.1 Learned context pathways (declared 25 October 2026, before any gate value is computed)
 

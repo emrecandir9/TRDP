@@ -16,11 +16,11 @@ GPU work runs on the CREMI lab PC `daniel` (RTX 4000 Ada, 20 GB).
 
 | Area | Status |
 | --- | --- |
-| Stimuli | 480 accepted families from 20 V7 source pairs, plus the approved detached-hand silhouette. Integrity checks pass; 28 CPU tests pass |
+| Stimuli | 480 accepted families from 20 V7 source pairs, plus the approved detached-hand silhouette. Integrity checks pass; 154 tests pass (10 Nov) |
 | Action | Left index abduction, 10.5–24.7° (median 18.3°), matches the paper |
 | Effective sample size | **20 distinct movements**: desk, seed and white balance are nuisance variation |
 | Human target | Built: `analysis/human_target.py`; reproduces the paper's published statistics exactly ([analysis spec](analysis-spec.md) §4) |
-| Analysis spec | Frozen 22 Oct; one logged amendment (§7.2 controls) before any result |
+| Analysis spec | Frozen 22 Oct; 12 logged amendments since (spec §10), all before the held-out evaluation |
 | Control stimuli | Six controls for all 20 sources, approved 22 Oct ([controls](controls.md)) |
 | Rater validation | Package prepared 24 Oct ([protocol](rater-protocol.md)); **not run**, by the project owner's decision (24 Oct): recruiting naive raters was not feasible. Single unblinded review remains a stated limitation |
 | Visual baselines | Done 23 Oct ([baselines](baselines.md)): method fixed before extraction; 10,560 images; every baseline shows the reverse pattern (largest movement signal for the detached hand), 0/20 sources positive; Gate 1 passed. 24 Oct, Addendum A: the reversal persists in hand-centred views where the hand is up to twice as large (28,800 images) |
