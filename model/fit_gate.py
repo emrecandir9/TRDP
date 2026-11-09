@@ -149,6 +149,12 @@ def summary(configurations):
                             f"[{min(defined, default=float('nan')):.2f}, {max(defined, default=float('nan')):.2f}], undefined {len(cs) - len(defined)}")
             same = sum(r['fits'][gate]['remove']['c'] == r['fits'][gate]['maximum']['c'] for r in results)
             print(f'  {gate}: ' + '; '.join(line) + f'; remove = maximum in {same}/{len(results)}')
+        # The ungated network is the gated model at c = 1 (g = 1 on every display), whatever the gate.
+        ends = np.array([[r['fits'][ev.GATES[0]]['raw']['curve'][k][1:4] for k in (0, -1)] for r in results], float)
+        over = np.mean([r['fits'][ev.GATES[0]]['raw']['curve'][-1][6] for r in results])
+        q = lambda v: ', '.join(f'{x:.2f}' for x in np.nanquantile(v, [.05, .5, .95]))
+        print(f'  ratio DH/FB (5%, median, 95% of networks): closed gate c = 0 [{q(ends[:, 0, 0])}]; ungated c = 1 [{q(ends[:, 1, 0])}], '
+              f'delta FB [{q(ends[:, 1, 1])}], delta DH [{q(ends[:, 1, 2])}], over-driven DH share {over:.3f}')
 
 
 if __name__ == '__main__':

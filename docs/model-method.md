@@ -832,6 +832,40 @@ memory were rerun; no result is missing.
   (median 0.95 area, 0.72–0.80 forearm and familiarity, 0.00 continuity). The treatments agree (remove =
   maximum in 200/200 OpenCLIP networks; 146–200 elsewhere), and no fit is undefined. This is reported
   as found: the declared target and the declared gate are kept, and the evaluation uses these c.
+- *The ungated network already separates the displays (recorded 10 November 2026 from the saved fit curves,
+  after the [independent review](independent-review.md), finding F2; nothing new was simulated).* The grid's
+  last value, c = 1, is the ungated network (g = 1 on every display). Its source-mean ratio Δ(DH)/Δ(FB) on the
+  19 training sources, as median [5%, 95%] over networks (`fit_gate.py --summary`):
+
+  | Configuration | Ungated ratio | Δ(FB), Δ(DH) (instance SDs) | Ungated ratio inside the human interval [−0.67, 0.35] |
+  | --- | --- | --- | --- |
+  | OpenCLIP, spiking | 0.49 [0.35, 0.71] | 1.80, 0.91 | 6% of networks |
+  | OpenCLIP, twin | 0.37 [0.17, 0.59] | 2.31, 0.85 | 43% |
+  | DINOv2 summary, spiking | 0.04 [0.01, 0.14] | 1.52, 0.07 | 100% |
+  | DINOv2 summary, twin | 0.08 [0.02, 0.21] | 1.86, 0.14 | 100% |
+  | DINOv2 mean patch, spiking | 0.00 [−0.00, 0.02] | 1.48, 0.00 | 100% |
+  | DINOv2 mean patch, twin | 0.03 [0.01, 0.08] | 1.89, 0.06 | 100% |
+  | OpenCLIP recurrent | 0.53 [0.35, 0.72] | 1.81, 0.95 | 4% |
+  | OpenCLIP robustness variations | medians 0.28 (`lr3e-4`) to 0.64 (`lr3e-3`) | — | 0–62% |
+
+  No detached-hand cell is over-driven in the ungated run (share 0.000 in every configuration), so these are
+  valid readouts of a weak response, not the falling readout of §6.10. Three consequences, stated before the
+  evaluation and without changing any setting:
+  1. **§7's expectation was wrong.** It expected the ungated detached-hand effect to be at least as large as
+     the full-body one (from the Gate 1 transfer gains of 1.24–1.75). The trained network responds to the
+     silhouette half as much as to the full body with OpenCLIP and hardly at all with DINOv2. The network is
+     trained and standardised on full-body images only, so the silhouette lies outside its training
+     distribution and the learned mapping transfers weakly. Gate 1's reversal concerned the size of the feature
+     change, not a trained, direction-specific readout.
+  2. **The gate is probably not necessary for P1.** With Δ(FB) = 1.80 and Δ(DH) = 0.91, the ungated C_FDI is
+     positive unless the upper-limb effect is near zero or negative (the upper limb has not been simulated).
+     With OpenCLIP the gate matters for S1 (the ungated ratio is outside the human interval in 94% of networks);
+     with DINOv2 the gate does nothing, so P1 with the robustness encoders does not test it.
+  3. **The fit of c is not identified.** With OpenCLIP every c from 0 to a median of 0.45 keeps the training-source
+     ratio inside the human interval; with DINOv2 the ratio is not monotone in c (it peaks near 0.15 around
+     c = 0.3–0.4 and is about 0 at both ends), so c is arbitrary there.
+  The comparison of H2 with the ungated network is therefore the test of necessity and is reported beside every
+  H2 result (spec amendment of 10 November 2026).
 - *Distinct control predictions: met.* With the primary encoder (OpenCLIP) H0–H1, H0–H2 and H1–H2 are all
   distinct under both treatments (200 matched instances each; Holm-corrected p < .05 for 7, 8 and 5 of the
   8 quantities). The robustness encoders are distinct for all three pairs as well (DINOv2 summary: 6, 7, 5
@@ -984,7 +1018,9 @@ to the human ratio Δ(DH, FDI)/Δ(FB, FDI) = −0.10. The ungated network's deta
 be positive (Gate 1 transfer gains for the detached hand are 1.24–1.75, so the movement moves the
 silhouette along the full-body readout axis at least as much as the full body), and the gate scales
 it towards 0 as c falls, so the fit is expected to reach c = 0. H2 then effectively uses no human data
-beyond the bound; the fitted value is reported.
+beyond the bound; the fitted value is reported. (*Checked on 9–10 November 2026, §6.19: the fit did reach
+c = 0, but the premise was wrong: the ungated detached-hand effect is half the full-body one with OpenCLIP
+and near zero with DINOv2.*)
 
 **Criterion S3.** A low-level gate fitted to the same human ratio could match it through visible
 area alone, since the detached hand shows far less of the image. S3(a) as frozen would then reject

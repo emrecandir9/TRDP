@@ -308,6 +308,16 @@ Done on 8 November:
 - The twin's simulation no longer copies its rate table to the GPU every millisecond (same values, about
   20 times faster threshold search).
 
+Done on 10 November:
+
+- **Independent review** ([review](docs/independent-review.md)): verdict "sound with major revisions", 18
+  ranked findings; its progress table tracks what has been handled. No setting is changed in response to it.
+- **Ungated results recorded** (review finding F2; [model method](docs/model-method.md) §6.19, from the saved
+  fit curves, training sources only): without any gate the trained network already responds less to the
+  detached hand than to the full body (ratio Δ(DH)/Δ(FB) 0.49 with OpenCLIP, 0.04 and 0.00 with DINOv2). The
+  gate is therefore probably not necessary for the main contrast, and the "clean target" reading of Gate 1 is
+  qualified ([baselines](docs/baselines.md)). The H2 − ungated comparison is the test of necessity.
+
 Next:
 
 1. Implement the 0.5-ms time step (declared, §6.21), train its subset and fit its c.

@@ -421,6 +421,13 @@ replicates, which supports source-level inference (spec §3).
 5. **Paired decoding accuracy is uninformative here** (ceiling); single-image accuracy, transfer
    gain and the movement signal are not.
 
+**Note added 10 November 2026 (independent review, finding F2).** "H2 has a clean target" was the wording of
+spec §8's branch and is kept above as written on 23 October. It should not be read as "a trained model must
+suppress a stronger detached-hand signal". The baselines measure the size of the feature change; the trained
+network's readout is direction-specific, and on training sources the ungated network responds *less* to the
+silhouette than to the full body ([model method](model-method.md) §6.19: ratio 0.49 with OpenCLIP, 0.04 and
+0.00 with DINOv2). What Gate 1 shows is that the raw visual change does not give the human pattern.
+
 ### Limits of these results
 
 - Baselines describe information in image representations, not motor excitability; no human

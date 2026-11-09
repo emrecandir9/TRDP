@@ -7,7 +7,7 @@ free for writing the report.
 *Status 23 Oct:* the human target, the frozen analysis spec, the silhouette and the
 control stimuli were completed on 22 October; **Gate 1 (visual baselines) was completed on
 23 October, three weeks early: no baseline reproduces `C_FDI`, and every one shows the
-reverse pattern**, so H2 has a clean target ([baselines](baselines.md)). No model has been
+reverse pattern**, so H2 has a clean target ([baselines](baselines.md); *qualified 10 Nov: the trained ungated network responds less to the detached hand, [model method](model-method.md) §6.19*). No model has been
 run. The rater validation (issue 5) is prepared but not run: the project owner decided on 24 Oct
 to skip it. Next: the trial simulator (built 24 Oct) and the spiking model (W4).
 GPU work runs on the CREMI lab PC `daniel` (RTX 4000 Ada, 20 GB).
