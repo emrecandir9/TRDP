@@ -222,6 +222,7 @@ Training sources only ([model method](model-method.md) §6.19).
 | Probe sweep | 2,397/2,400 smooth; all primary-encoder networks; three H1 DINOv2 networks with a silent readout are not |
 | Gate 2 | Met; feedforward spiking network stays primary (§6.20) |
 | Recurrent mode check | Fold 1, seed 0: noise off 100/100 identical; noise on no cell differs (smallest adjusted p 0.67); trialwise mode used |
+| Recurrent and robustness networks | 740/740 trained, ADM curves applied, c fitted (two fits on `vladimir` ran out of memory beside another user's job and were rerun on `jessica`); c = 0 in every network; recurrent input median 29% of feedforward |
 
 ## Remaining limits
 

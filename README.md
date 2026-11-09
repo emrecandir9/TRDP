@@ -279,6 +279,12 @@ Done on 9 November:
   and 2,397 of 2,400 probe responses rise smoothly with strength (all primary-encoder networks; the three
   exceptions are H1 DINOv2 networks with a silent readout). The feedforward spiking network stays primary;
   the recurrent network is the ablation.
+- **Recurrent and robustness campaigns finished** (eight CREMI GPUs, 23:26–03:10): 200 recurrent networks
+  (180 healthy; the feedforward network has 181) and 540 robustness networks (52–60 of 60 healthy per
+  variation). The recurrent networks use their recurrent weights (recurrent input a median 29% of the
+  feedforward input; trialwise simulation valid, mode check passed). The fit of c gives c = 0 in every one
+  of these 740 networks, so the closed-gate boundary holds for recurrence and every varied setting
+  ([model method](docs/model-method.md) §6.20–6.21).
 
 Done on 8 November:
 
@@ -304,9 +310,9 @@ Done on 8 November:
 
 Next:
 
-1. Finish the recurrent and robustness campaigns (training on eight GPUs); then their ADM curves, the
-   recurrent mode check and recurrence measure, and c for each new configuration.
-2. Implement the 0.5-ms time step.
+1. Implement the 0.5-ms time step (declared, §6.21), train its subset and fit its c.
+2. Discuss the closed-gate boundary of the fit of c (a gate cannot make the detached hand fall below
+   baseline) before the configurations are frozen; no setting is changed in response to it.
 3. Gate 2 on 4 December, configurations frozen 11 December, single held-out evaluation 14–18 December. Every
    analysis is repeated without reference 17 (456 families). A fresh CUDA canary is deferred.
 

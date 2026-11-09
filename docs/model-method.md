@@ -884,6 +884,13 @@ before any result of the fit of c or of the Gate 2 checks existed.
   100/100 trials identical (largest difference 0); noise on, no cell differs (smallest adjusted p 0.67).
   The trialwise mode is therefore used for the recurrent networks too (this replaces the expectation in
   §6.18 that they would be simulated continuously).
+- **Results (9 November 2026; training sources only).** All 200 recurrent networks trained; 180 healthy on
+  their inner source (feedforward: 181), failing on the same criteria (facilitation, background). The
+  recurrent weights are used: the mean absolute recurrent input of the visual layer is a median 29% of the
+  feedforward input (range 19–50%), and the norm of W_rec (median 21.9) is twice that of W_in (10.9), so no
+  network is effectively feedforward (`model/recurrence.py`, `output/model/recurrence`). The fit of c gives
+  c = 0 for every recurrent network and gate, under every treatment; the −0.10 target lies inside no
+  network's ratio range (as in the feedforward network, §6.19).
 - **Selection at Gate 2 (rule fixed now).** The feedforward spiking network stays the primary variant if
   its configurations meet Gate 2's conditions (§6.19: distinct H0, H1 and H2 control predictions with the
   primary encoder; every network's probe response smooth in strength). The recurrent variant becomes
@@ -1009,6 +1016,15 @@ visible-context account in its control predictions. Because the gate is computed
 masks rather than learned from the image, it does not show how such a signal could arise from vision,
 and it does not show that humans use continuity rather than visible context (spec §1).
 
+
+**Results (9 November 2026; training sources only).** All 540 networks trained (60 per variation).
+Healthy on their inner source: `nv128` 55, `nv512` 54, `lr3e-4` 54, `lr3e-3` 55, `u6000` 57, `tm10` 60,
+`tm40` 52, `ts2` 54, `ts10` 55 of 60 (primary 181 of 200), failing on facilitation and background as the
+primary does. ADM curves measured and applied for all of them. The fit of c gives c = 0 for every
+network, gate and treatment in every variation; the −0.10 target lies inside a network's ratio range in 9
+of 2,160 network–gate pairs (`u6000` 7, `lr3e-3` 2). The closed-gate boundary of §6.19 therefore holds
+across every varied setting. The 0.5-ms time step is still to be implemented.
+
 ### 7.1 Learned context pathways (declared 25 October 2026, before any gate value is computed)
 
 Requested by the project owner to address the hand-designed gate. In these stimuli, attachment and the
@@ -1121,7 +1137,7 @@ for a general check before the network phase continues.
 **Still to do before Gate 2:** the training campaign is finished (26 October 2026, §6.16; 2,016 of
 2,400 networks healthy after the readout ranges were re-measured, §6.17); the rule for networks that
 fail health is declared (§6.17); the evaluation simulator is built and its two modes agree (§6.18).
-Done 26 October–9 November 2026: the criteria code, the fit of c and the Gate 2 checks (§6.19; Gate 2 met); open: the recurrent variant's health and mode check (§6.20) and the robustness variations (§6.21), both training. Done 25 October 2026: the
+Done 26 October–9 November 2026: the criteria code, the fit of c and the Gate 2 checks (§6.19; Gate 2 met); the recurrent variant and the robustness variations trained, checked and fitted (§6.20–6.21); open: the 0.5-ms time step. Done 25 October 2026: the
 non-spiking twin repaired (§6.14), the spinal readout tried and not adopted (§6.15), the learned
 context pathways declared (§7.1).
 
@@ -1157,3 +1173,4 @@ declared in the spec before the evaluation is opened.
 | 8 Nov 2026, before any of them was trained | Robustness variations declared and built (§6.21): visual layer 128/512, learning rate 3 × 10⁻⁴/3 × 10⁻³, 6,000 updates, membrane 10/40 ms, synaptic 2/10 ms, 20 folds × 3 initialisations each; time step 0.5 ms on a subset, implementation pending | Decided 25 Oct (§8); to be declared before the evaluation |
 | 9 Nov 2026, results on training sources (no evaluation) | Fit of c and Gate 2 checks recorded (§6.19): c = 0 in almost every network because a closed gate gives Δ(DH)/Δ(FB) ≈ 0, never −0.10; H0, H1 and H2 predictions distinct; 2,397 of 2,400 probe responses smooth (all primary-encoder networks); Gate 2 met, feedforward stays primary | Recorded before any evaluation; no setting changed |
 | 9 Nov 2026, before any recurrent fit | Recurrent mode check passed (§6.20): trialwise mode used for recurrent networks | Rule declared 8 Nov; the check decides the mode |
+| 9 Nov 2026, results on training sources (no evaluation) | Recurrent and robustness campaigns finished; health, recurrence measure and fit of c recorded (§6.20, §6.21): c = 0 throughout | Recorded before any evaluation; no setting changed |
