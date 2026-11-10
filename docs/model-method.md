@@ -1018,6 +1018,19 @@ configuration (H2, spiking, feedforward, OpenCLIP), as decided on 25 October 202
   excitability curve, fixation rates; `jessica`, 10 November); six new tests cover the grid, units and noise,
   equal rates in Hz at both steps (within 15%), the probe and readout, training and stacked training, and an
   evaluation session at 0.5 ms. A stack of 20 needs about twice the memory and time of a 1-ms stack.
+  *Results (10 November 2026, `jessica`, 21:52–23:18; training sources only).* All 20 networks trained in one
+  stack; 18 are healthy on their inner source (matched primary networks of seed 0: 19), failing on
+  facilitation and background in folds 8 and 17 (the primary fails fold 17). Compared with the matched primary
+  networks, median over networks: full-body facilitation 5.8 against 5.0 spikes, highest pre-probe rate 3.0
+  against 3.1 Hz, rest 0.95 against 0.98 Hz, task AUC 1.00 in both. Three quantities move with the step: the
+  resting threshold halves (0.011 against 0.021, the 1-ms probe being two steps of the same current), the FDI
+  readout range falls from 7.95 to 6.37 Hz and the ADM range rises from 4.79 to 6.47 Hz (every curve peaks
+  inside the sweep), so the position of the readout peak depends on the time step and is not a constant of
+  the model. Fit of c: c = 0 in every network, gate and treatment; ungated ratio 0.51 [0.42, 0.64] against
+  0.60 [0.43, 0.78]; c⁺ 0.50 against 0.45 for the 200 primary networks. The closed-gate ratio is 0.05
+  [0.03, 0.05] instead of 0.00: with one initialisation every network meets the same noise draws on a source,
+  so a noise-level detached-hand difference repeats across networks; it is far inside the human interval. The
+  closed-gate boundary of §6.19 therefore holds at 0.5 ms.
 
 **Results (9 November 2026; training sources only).** All 540 networks trained (60 per variation).
 Healthy on their inner source: `nv128` 55, `nv512` 54, `lr3e-4` 54, `lr3e-3` 55, `u6000` 57, `tm10` 60,
@@ -1025,7 +1038,7 @@ Healthy on their inner source: `nv128` 55, `nv512` 54, `lr3e-4` 54, `lr3e-3` 55,
 primary does. ADM curves measured and applied for all of them. The fit of c gives c = 0 for every
 network, gate and treatment in every variation; the −0.10 target lies inside a network's ratio range in 9
 of 2,160 network–gate pairs (`u6000` 7, `lr3e-3` 2). The closed-gate boundary of §6.19 therefore holds
-across every varied setting. The 0.5-ms time step is still to be implemented.
+across every varied setting. The 0.5-ms time step was implemented and run on 10 November 2026 (above).
 
 ### 6.22 Evaluation driver and its lock (10 November 2026, before any evaluation)
 
@@ -1090,6 +1103,38 @@ all-context network is trained.
   facilitates for them, and only then does a gate have work to do in producing the human pattern. If the
   ratio stays near the primary's, the weak response is not explained by unfamiliarity with the display.
   Either outcome is reported; neither changes the primary analysis.
+
+**Results (10 November 2026, `jessica`; training sources only; no upper-limb readout and no held-out source).**
+All 60 networks trained in three stacks (19:32–21:10); 57 are healthy on their inner source (the matched 60
+primary networks: 55), the three failures being fold 8 (inner source 9) in every seed, on facilitation and
+background as in the primary. Thresholds, rest rates and readout ranges equal the primary's (FDI 7.95 Hz, ADM
+4.77 Hz; every ADM curve peaks inside the sweep). Fit of c from the saved curves (`fit_gate.py --summary`):
+
+| | Primary, same folds and seeds (60) | All-context (60) |
+| --- | --- | --- |
+| Ungated ratio Δ(DH)/Δ(FB), median [5%, 95%] of networks | 0.53 [0.35, 0.72] | **1.14 [1.03, 1.25]** |
+| Δ(FB), Δ(DH), ungated (instance SDs) | 1.77, 0.94 | 1.80, 2.05 |
+| Ungated ratio inside the human interval [−0.67, 0.35] | 5% of networks | 0% |
+| Over-driven detached-hand share, ungated | 0.000 | 0.003 |
+| Closed-gate ratio (c = 0) | 0.00 [−0.05, 0.02] | 0.00 [−0.05, 0.02] |
+| Fitted c, every gate and treatment | 0 | 0 |
+| c⁺ (continuity gate), median [range] | 0.45 [0.30, 1.00] | 0.25 [0.20, 0.30] |
+
+By the reading declared above, **the primary network's weak detached-hand response is a training-distribution
+effect.** A network that has seen detached hands facilitates for them slightly more than for the full body
+(the ratio rises almost linearly with c, from 0 to 1.14), as Gate 1's larger detached-hand signal suggested.
+Full-body facilitation is unchanged (1.80 against 1.77), so the difference lies in the detached hand alone.
+Two things follow, both stated before the evaluation:
+
+1. The human-like ordering of the primary *ungated* network (§6.19) reflects what it was trained on, not a
+   property of the displays or of attachment. It must not be offered as evidence for the hypothesis.
+2. With experience of every display, the ungated network does not give the human pattern (ratio above 1,
+   outside the human interval in every network), and a gate is then needed to obtain it: there the gate has
+   work to do, and c is better constrained (c⁺ 0.25 against 0.45). Whether the gate is necessary therefore
+   depends on the training diet, and the report must give both diets side by side.
+
+The ratio is largely in-sample for the silhouette (18 of 19 fit sources were trained on in that display); the
+evaluation scores this configuration on held-out sources, as the ungated network and as H2.
 
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
@@ -1329,3 +1374,4 @@ declared in the spec before the evaluation is opened.
 | 10 Nov 2026, before any all-context network was trained | All-context training ablation declared and built (§6.23): three displays in training, 60 networks, OpenCLIP | Listed as exploratory in the spec without a procedure; the ungated results make it the direct test of a training-distribution explanation |
 | 10 Nov 2026 (provenance only) | Every new health report, fit, Gate 2 and evaluation record carries the hashes of the model code and the commit (`train.provenance`); the Gate 1 feature manifest and the learned gate tables are pinned in `config/analysis.json` and checked at load | Review finding F15: outputs could not be tied to the code that made them |
 | 10 Nov 2026, before any 0.5-ms network was trained | Time step 0.5 ms implemented (§6.21): durations and rates expressed in time throughout the trainer, health check, probe and evaluator; 1-ms results bit-identical on stored networks | Declared on 8 November with its implementation pending |
+| 10 Nov 2026, results on training sources (no evaluation) | All-context ablation trained, checked and fitted (§6.23): ungated ratio 1.14 against 0.53, so the primary network's weak detached-hand response is a training-distribution effect; 0.5-ms subset trained, checked and fitted (§6.21): c = 0, health as the primary, readout ranges shift with the step | Recorded before any evaluation; no setting changed |

@@ -346,11 +346,18 @@ Done on 10 November:
   trained on all three displays, to test whether the weak detached-hand response is a training-distribution effect.
 - **0.5-ms time step implemented** ([model method](docs/model-method.md) §6.21): durations and rates are expressed in
   time throughout; the 1-ms results are unchanged (four stored networks reproduce their health values exactly).
+- **All-context ablation finished** ([model method](docs/model-method.md) §6.23; `jessica`, 19:32–21:52): 60
+  networks, 57 healthy. Trained on all three displays, the ungated network facilitates for the detached hand
+  slightly more than for the full body (ratio 1.14 [1.03, 1.25]; primary, same folds and seeds: 0.53). The
+  primary network's weak detached-hand response is therefore a training-distribution effect, and with
+  experience of every display a gate is needed to obtain the human pattern.
+- **0.5-ms subset finished** (§6.21; 21:52–23:18): 20 networks, 18 healthy (matched primary: 19); c = 0 in every
+  one; ungated ratio 0.51. The readout ranges shift with the step (FDI 7.95 → 6.37 Hz, ADM 4.79 → 6.47 Hz).
 
 Next:
 
-1. Train the 0.5-ms subset (implemented 10 November, §6.21) and the all-context ablation (§6.23), then their ADM
-   curves and fits of c.
+1. Decide how the report presents the two training diets (full body only, all displays) side by side; no
+   setting changes.
 2. Discuss the closed-gate boundary of the fit of c (a gate cannot make the detached hand fall below
    baseline) before the configurations are frozen; no setting is changed in response to it.
 3. Gate 2 on 4 December, configurations frozen 11 December, single held-out evaluation 14–18 December. Every

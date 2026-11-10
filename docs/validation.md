@@ -231,7 +231,7 @@ CREMI; no held-out source or upper-limb display simulated.
 
 | Check | Result |
 | --- | --- |
-| Tests | 154 pass on the Mac (one GPU-only test skipped) and 154 on `jessica` with none skipped; 175 after this day's additions |
+| Tests | 154 pass on the Mac (one GPU-only test skipped) and 154 on `jessica` with none skipped; 176 after this day's additions |
 | Human target | Re-run: 18 of 18 published statistics reproduced; tables byte-identical to the stored ones |
 | Integrity scripts | `dataset.py check`, `silhouette.py check` and `verify-archive`, `controls.py check` pass |
 | Criteria code | Hand-built cases: bootstrap at source level (two implementations identical), treatments, ratios, verdicts as declared. A model with full-body facilitation only meets P1, P3 and S1 |
@@ -240,8 +240,9 @@ CREMI; no held-out source or upper-limb display simulated.
 | Stacked training | Fold 4, seed 0, alone vs in a stack: different weights, same health measures |
 | Provenance (added the same day) | New outputs record the hash of every model source file and the commit; the feature manifest and both learned gate tables are pinned in `config/analysis.json` (identical on the Mac and CREMI) and checked at load |
 | 0.5-ms time step (implemented the same day) | Six tests; four stored campaign networks give exactly their stored health values with the refactored code at 1 ms |
+| All-context ablation and 0.5-ms subset (run the same evening) | 60 and 20 networks trained, none failed to run; 57 and 18 healthy; ADM curves peak inside the sweep in all 80; c fitted for all 80 (c = 0 throughout, no undefined fit, no error in any log) |
 | Verdict | Sound with major revisions; findings and progress in the review |
-| Evaluation driver (built the same day) | 9 tests (lock, runs and labels, open gate = ungated, verdicts, repetitions); rehearsal on four real networks' inner sources reproduces the stored Gate 2 control predictions; 175 tests pass at the end of the day |
+| Evaluation driver (built the same day) | 9 tests (lock, runs and labels, open gate = ungated, verdicts, repetitions); rehearsal on four real networks' inner sources reproduces the stored Gate 2 control predictions; 176 tests pass at the end of the day |
 
 ## Remaining limits
 
