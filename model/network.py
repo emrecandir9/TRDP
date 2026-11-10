@@ -30,6 +30,7 @@ CONFIG = dict(n_visual=256, n_motor=64, tau_syn=5., tau_mem=20., dt=1., membrane
 # about 20 ms; the model reads its motor population directly, which answers within 1-5 ms, so the
 # window keeps the human length (55 ms) but starts at the probe (spec amendment, 24 Oct 2026).
 READOUT = (0, 55)
+PROBE_MS = 1          # duration of the probe current
 FDI, ADM = 0, 1
 # Spinal stage of the second MEP analogue (docs/model-method.md §6.15), used only by health checks and
 # the evaluation, never in training; no parameter is fitted. Each muscle's cortical pool drives a pool
@@ -49,6 +50,13 @@ SPINAL = dict(bias=0., weight=.0193, at_hz=3., silent_hz=.1)
 def trials_require(condition, message):
     if not condition:
         raise ValueError(message)
+
+
+def steps(ms, dt):
+    """Time steps in `ms` milliseconds at a time step of `dt` ms; `ms` must fall on the time grid."""
+    n = int(round(ms / dt))
+    trials_require(abs(n * dt - ms) < 1e-9, f'{ms} ms is not a whole number of {dt}-ms steps')
+    return n
 
 
 def decay(tau, dt):
@@ -132,6 +140,15 @@ class Network(nn.Module):
         # motor output is the motoneuron pools they drive (second readout, §6.15).
         self.readout_stage = 'cortical'
         self.spinal_weight = SPINAL['weight']
+
+    def steps(self, ms):
+        """Number of time steps in `ms` milliseconds (the time step is config['dt'] ms)."""
+        return steps(ms, self.config['dt'])
+
+    @property
+    def hz(self):
+        """Factor from mean output per time step to a rate in Hz."""
+        return 1000. / self.config['dt']
 
     @property
     def recurrent(self):
@@ -261,16 +278,16 @@ def probe_response(net, state, drive, gate, amplitude, generator):
     """Probe-evoked FDI and ADM response: population output 0-55 ms after a 1-ms probe of the
     given amplitude, minus the matched no-probe twin (same state, same noise). Returns [B, 2]
     as summed outputs of each population (spikes for the spiking network)."""
-    batch, steps = drive.shape[0], READOUT[1]
+    batch, steps = drive.shape[0], net.steps(READOUT[1])
     noise = net.noise(batch, steps, generator, drive.device)
     drives = drive[:, None].expand(batch, steps, -1)
     gates = gate[:, None].expand(batch, steps)
     probes = torch.zeros(batch, steps, device=drive.device)
-    probes[:, 0] = amplitude
+    probes[:, :net.steps(PROBE_MS)] = amplitude        # the probe lasts 1 ms whatever the time step
     copy = lambda s: [x.clone() for x in s]
     _, with_probe, _ = net.run(drives, gates, probes, copy(state), noise)
     _, without, _ = net.run(drives, gates, torch.zeros_like(probes), copy(state), noise)
-    window = slice(READOUT[0], READOUT[1])
+    window = slice(net.steps(READOUT[0]), net.steps(READOUT[1]))
     n = net.n_motor
     if net.readout_stage == 'spinal':                     # recruited motoneurons: each counts once
         diff = (with_probe[:, window].sum(1) > 0).float() - (without[:, window].sum(1) > 0).float()
@@ -281,7 +298,7 @@ def probe_response(net, state, drive, gate, amplitude, generator):
 
 @torch.no_grad()
 def settle(net, drive, gate, steps, generator):
-    """State after `steps` ms of a constant display, from rest."""
+    """State after `steps` time steps of a constant display, from rest."""
     batch = drive.shape[0]
     state = net.initial(batch, drive.device)
     noise = net.noise(batch, steps, generator, drive.device)
@@ -307,7 +324,7 @@ def threshold(net, a_max=20., trials=40, criterion=6, halvings=14, seed=0, settl
     gate = torch.full((trials,), float(gate), device=device)
     low, high = 0., a_max
     def passes(amplitude):
-        state = settle(net, drive, gate, settle_ms, generator)
+        state = settle(net, drive, gate, net.steps(settle_ms), generator)
         response = probe_response(net, state, drive, gate, amplitude, generator)[:, FDI]
         return (response >= criterion).float().mean().item() >= .5
     if not passes(a_max):

@@ -510,6 +510,124 @@ class Variations(unittest.TestCase):
                 self.assertTrue(torch.allclose(x, b.state_dict()[name], atol=1e-5), name)
 
 
+@unittest.skipIf(torch is None, 'torch and snntorch not installed')
+class HalfMillisecondStep(unittest.TestCase):
+    """The 0.5-ms time step (docs/model-method.md §6.21): durations and rates are expressed in time, so
+    halving the step changes the grid and nothing else."""
+
+    def nets(self):
+        import network as nw
+        a = nw.Network(8, small(), seed=2)
+        b = nw.Network(8, dict(small(), dt=.5), seed=2)
+        return nw, a, b
+
+    def test_steps_rates_and_the_time_grid(self):
+        nw, a, b = self.nets()
+        self.assertEqual((a.steps(55), b.steps(55), b.steps(1), a.hz, b.hz), (55, 110, 2, 1000., 2000.))
+        with self.assertRaisesRegex(ValueError, 'whole number'):
+            a.steps(.5)
+        for name in ('w_in.weight', 'w_vm.weight', 'b_m'):                   # same initial weights for a seed
+            self.assertTrue(torch.equal(a.state_dict()[name], b.state_dict()[name]))
+
+    def test_units_and_resting_noise_hold_at_half_a_millisecond(self):
+        _, _, net = self.nets()
+        syn = torch.zeros(1); mem = torch.zeros(1)
+        for _ in range(4000):
+            syn = net.alpha * syn + net.scale * .7
+            mem = net.beta * mem + syn
+        self.assertAlmostEqual(mem.item(), .7, places=4)
+        g = torch.Generator().manual_seed(0)
+        eps = net.sigma * torch.randn(4000, 4000, generator=g)
+        syn = torch.zeros(4000); mem = torch.zeros(4000)
+        for k in range(4000):
+            syn = net.alpha * syn + net.scale * eps[:, k]
+            mem = net.beta * mem + syn
+        self.assertAlmostEqual(mem.std().item(), .1, delta=.005)
+
+    def test_rates_in_hz_agree_between_the_two_steps(self):
+        """The same network at rest and under a strong drive fires at the same rate in Hz at 1 and 0.5 ms
+        (within sampling and discretisation error)."""
+        import train as tr
+        nw, a, b = self.nets()
+        x = torch.randn(64, 8, generator=torch.Generator().manual_seed(3))
+        for net in (a, b):
+            with torch.no_grad():
+                net.b_m.fill_(1.02)                                        # motor pools just above threshold
+        rates = []
+        for net in (a, b):
+            steps = net.steps(1000)
+            g = torch.Generator().manual_seed(4)
+            with torch.no_grad():
+                v, m, _ = net.run(net.drive(x)[:, None].expand(64, steps, -1), torch.ones(64, steps), torch.zeros(64, steps),
+                                  net.initial(64), net.noise(64, steps, g))
+            rates.append((net.hz * v[:, net.steps(200):].mean().item(), net.hz * m[:, net.steps(200):].mean().item()))
+            self.assertEqual(set(tr.fixation_rates(net)), {'visual_hz', 'fdi_hz', 'adm_hz'})
+        (v1, m1), (v2, m2) = rates
+        self.assertGreater(min(v1, m1), 5.)
+        self.assertLess(abs(v1 - v2) / v1, .15, rates)
+        self.assertLess(abs(m1 - m2) / m1, .15, rates)
+
+    def test_probe_lasts_one_millisecond_and_the_window_55(self):
+        """At 0.5 ms the probe is two steps and the readout 110; zero amplitude still reads exactly 0 and
+        the response grows with amplitude."""
+        nw, _, net = self.nets()
+        n = 32
+        drive, gate = nw.rest_drive(net, n), torch.ones(n)
+        g = torch.Generator().manual_seed(5)
+        state = nw.settle(net, drive, gate, net.steps(200), g)
+        means = []
+        for amplitude in (0., .5, 2., 8.):
+            g.manual_seed(6)
+            means.append(nw.probe_response(net, state, drive, gate, amplitude, g)[:, nw.FDI].mean().item())
+        self.assertEqual(means[0], 0.)
+        self.assertTrue(all(y >= x for x, y in zip(means, means[1:])) and means[-1] > 0, means)
+        self.assertTrue(np.isfinite(nw.threshold(net, trials=8, halvings=6)))
+
+    def test_training_and_stack_follow_the_step(self):
+        """A training trial spans the same time, twice the steps; a stack trains as each network alone."""
+        import network as nw
+        import stack as st
+        import train as tr
+        config = dict(small(), dt=.5)
+        rng = np.random.default_rng(5)
+        data = [(s, s + 1, None) for s in (rng.normal(0, 1, (10, 8)).astype(np.float32) for _ in range(2))]
+        cfg = dict(tr.TRAIN, settle_ms=20, second_ms=40, window=(5, 40), batch=4, rest_trials=2)
+        net = nw.Network(8, config, seed=1)
+        drives = tr.batch_drives(net, torch.as_tensor(data[0][0][:4]), torch.as_tensor(data[0][1][:4]), torch.tensor([0., 1., 0., 1.]), cfg)
+        self.assertEqual(drives.shape[1], 120)
+        alone = []
+        for (static, movement, _), seed in zip(data, (1, 6)):
+            net = nw.Network(8, config, seed=seed)
+            _, history = tr.train(net, static, movement, cfg=cfg, seed=seed, updates=3)
+            alone.append((net, history))
+        nets, _, histories = st.train_stack([nw.Network(8, config, seed=s) for s in (1, 6)], data, [1, 6], cfg=cfg, updates=3)
+        for (a, ha), b, hb in zip(alone, nets, histories):
+            self.assertEqual(b.config['dt'], .5)
+            for name, x in a.state_dict().items():
+                self.assertTrue(torch.allclose(x, b.state_dict()[name], atol=1e-5), name)
+            self.assertAlmostEqual(ha[-1]['fdi_static_hz'], hb[-1]['fdi_static_hz'], places=3)
+
+    def test_evaluation_session_follows_the_step(self):
+        sys.path.insert(0, str(Path(__file__).resolve().parent))
+        sys.path.insert(0, str(Path(__file__).resolve().parents[1] / 'analysis'))
+        import evaluate as ev
+        import test_evaluate as te
+        import trials
+        nw, _, _ = self.nets()
+        net = nw.Network(8, dict(nw.CONFIG, n_visual=32, n_motor=16, dt=.5), seed=0)
+        b = te.bank()
+        with te.ShortSession():
+            s = trials.session(te.FAMILIES, 3, 2, 0, trials.BODIES)
+            quiet = ev.simulate_trialwise(net, ev.Model('ungated'), b, b.scaler(te.FAMILIES), s, 0.)
+            probed = ev.simulate_trialwise(net, ev.Model('ungated'), b, b.scaler(te.FAMILIES), s, 1.2 * nw.threshold(net))
+            with self.assertRaisesRegex(ValueError, '1-ms'):
+                ev.simulate_continuous(net, ev.Model('ungated'), b, b.scaler(te.FAMILIES), s, 0.)
+        self.assertTrue((quiet.fdi == 0).all() and (quiet.adm == 0).all())
+        self.assertGreater(probed.fdi.mean(), 0)
+        self.assertTrue((probed.pre_fdi_hz >= 0).all() and probed.pre_fdi_hz.max() < 2000)
+        self.assertEqual(list(probed.pre_fdi_hz), list(quiet.pre_fdi_hz))      # same noise before the probe
+
+
 class Provenance(unittest.TestCase):
     def test_outputs_record_what_produced_them(self):
         import hashlib

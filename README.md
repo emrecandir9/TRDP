@@ -344,10 +344,13 @@ Done on 10 November:
   reproduces the stored Gate 2 predictions.
 - **All-context training ablation declared and built** ([model method](docs/model-method.md) §6.23): 60 networks
   trained on all three displays, to test whether the weak detached-hand response is a training-distribution effect.
+- **0.5-ms time step implemented** ([model method](docs/model-method.md) §6.21): durations and rates are expressed in
+  time throughout; the 1-ms results are unchanged (four stored networks reproduce their health values exactly).
 
 Next:
 
-1. Implement the 0.5-ms time step (declared, §6.21), train its subset and fit its c.
+1. Train the 0.5-ms subset (implemented 10 November, §6.21) and the all-context ablation (§6.23), then their ADM
+   curves and fits of c.
 2. Discuss the closed-gate boundary of the fit of c (a gate cannot make the detached hand fall below
    baseline) before the configurations are frozen; no setting is changed in response to it.
 3. Gate 2 on 4 December, configurations frozen 11 December, single held-out evaluation 14–18 December. Every

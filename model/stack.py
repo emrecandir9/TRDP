@@ -111,8 +111,11 @@ def train_stack(nets, data, seeds, cfg=tr.TRAIN, device='cpu', updates=None, res
         for g, s in zip(generators, state['generators']):
             g.set_state(s.cpu())                                   # RNG states must be CPU ByteTensors
         histories, first = state['histories'], state['update']
-    steps = cfg['settle_ms'] + cfg['second_ms']
-    proxy = type('Net', (), dict(n_motor=stack.n_motor))()        # train.objective needs n_motor only
+    dt = stack.config['dt']
+    settle, second = nw.steps(cfg['settle_ms'], dt), nw.steps(cfg['second_ms'], dt)
+    steps = settle + second
+    # train.objective needs the population size and the time grid only
+    proxy = type('Net', (), dict(n_motor=stack.n_motor, hz=1000. / dt, steps=staticmethod(lambda ms: nw.steps(ms, dt))))()
     total = updates or cfg['updates']
     for update in range(first, total):
         statics, movements, labels, gains = [], [], [], []
@@ -122,7 +125,7 @@ def train_stack(nets, data, seeds, cfg=tr.TRAIN, device='cpu', updates=None, res
             statics.append(static[pick])
             movements.append(movement[pick])
             labels.append(label)
-            gains.append(tr.batch_gates(label, None if gain is None else gain[pick], cfg['settle_ms'], cfg['second_ms']))
+            gains.append(tr.batch_gates(label, None if gain is None else gain[pick], settle, second))
         labels = torch.stack(labels)                                    # [K, B]
         first_drive = stack.drive(torch.stack(statics))                 # [K, B, n_v]
         second_drive = torch.where(labels[..., None].bool(), stack.drive(torch.stack(movements)), first_drive)
@@ -135,7 +138,7 @@ def train_stack(nets, data, seeds, cfg=tr.TRAIN, device='cpu', updates=None, res
         state = [torch.zeros(k, batch + rest, n, device=device) for n in sizes]
         out_v, out_m = [], []
         for t in range(steps):
-            drive = first_drive if t < cfg['settle_ms'] else second_drive
+            drive = first_drive if t < settle else second_drive
             v, m, state = stack.step(drive, gates[:, :, t], state, noise[:, :, t, :n_v], noise[:, :, t, n_v:])
             out_v.append(v)
             out_m.append(m)

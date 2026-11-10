@@ -1007,6 +1007,17 @@ configuration (H2, spiking, feedforward, OpenCLIP), as decided on 25 October 202
   trainer, probe and readout count in 1-ms steps in about 60 places, so this variation needs every one of
   them expressed in time. Its implementation and tests will be committed before it is run, and before the
   evaluation is opened.
+  *Implemented 10 November 2026, before any 0.5-ms network was trained* (`train.VARIATIONS['dt0.5']`, one
+  changed setting, `dt`). Every duration (settling, second frame, task window, probe delay, 100-ms background
+  window, 55-ms readout, the sweeps of the health check) is converted by `Network.steps(ms)`, every rate by
+  `Network.hz`, and the probe lasts 1 ms (two steps); the decay constants and the input noise already followed
+  the step (resting membrane SD 0.1 θ, tested at 0.5 ms). The continuous session is not written for it and
+  refuses it; the feedforward network is simulated trialwise (§6.18). Checks: the 169 earlier tests pass
+  unchanged; with the refactored code four stored campaign networks (H2 spiking, H2 twin, H1 DINOv2, H0) give
+  **exactly** their stored health values at 1 ms (threshold, dose-response, facilitation, background rate,
+  excitability curve, fixation rates; `jessica`, 10 November); six new tests cover the grid, units and noise,
+  equal rates in Hz at both steps (within 15%), the probe and readout, training and stacked training, and an
+  evaluation session at 0.5 ms. A stack of 20 needs about twice the memory and time of a 1-ms stack.
 
 **Results (9 November 2026; training sources only).** All 540 networks trained (60 per variation).
 Healthy on their inner source: `nv128` 55, `nv512` 54, `lr3e-4` 54, `lr3e-3` 55, `u6000` 57, `tm10` 60,
@@ -1315,3 +1326,4 @@ declared in the spec before the evaluation is opened.
 | 10 Nov 2026, before any evaluation | Evaluation driver `model/run_evaluation.py` with a freeze lock (§6.22); rehearsed on inner sources, reproducing stored Gate 2 predictions | Review finding F10: no program assembled the criteria into the decision, and the held-out guard was an argument |
 | 10 Nov 2026, before any all-context network was trained | All-context training ablation declared and built (§6.23): three displays in training, 60 networks, OpenCLIP | Listed as exploratory in the spec without a procedure; the ungated results make it the direct test of a training-distribution explanation |
 | 10 Nov 2026 (provenance only) | Every new health report, fit, Gate 2 and evaluation record carries the hashes of the model code and the commit (`train.provenance`); the Gate 1 feature manifest and the learned gate tables are pinned in `config/analysis.json` and checked at load | Review finding F15: outputs could not be tied to the code that made them |
+| 10 Nov 2026, before any 0.5-ms network was trained | Time step 0.5 ms implemented (§6.21): durations and rates expressed in time throughout the trainer, health check, probe and evaluator; 1-ms results bit-identical on stored networks | Declared on 8 November with its implementation pending |

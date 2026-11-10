@@ -43,7 +43,9 @@ VARIATIONS = {'nv128': (dict(n_visual=128), {}), 'nv512': (dict(n_visual=512), {
               'ts2': (dict(tau_syn=2.), {}), 'ts10': (dict(tau_syn=10.), {}),
               # All-context training, the exploratory ablation of spec §6.3 (docs/model-method.md §6.23):
               # training trials from the three paper displays instead of the full body only.
-              'allctx': ({}, dict(displays=trials.BODIES))}
+              'allctx': ({}, dict(displays=trials.BODIES)),
+              # Time step 0.5 ms (§6.21): every duration and rate is expressed in time, so only the step changes.
+              'dt0.5': (dict(dt=.5), {})}
 HYPOTHESES = ('h2', 'h0', 'h1')   # h2: display features, gate 1 on full body (shared by H2, ungated, S3(a))
 
 
@@ -177,20 +179,20 @@ def batch_drives(net, static, movement, labels, cfg=TRAIN):
     """Visual drive [B, T, n_v]: settle on the static frame, then the second frame."""
     first = net.drive(static)
     second = torch.where(labels[:, None].bool(), net.drive(movement), first)
-    return torch.cat([first[:, None].expand(-1, cfg['settle_ms'], -1),
-                      second[:, None].expand(-1, cfg['second_ms'], -1)], 1)
+    return torch.cat([first[:, None].expand(-1, net.steps(cfg['settle_ms']), -1),
+                      second[:, None].expand(-1, net.steps(cfg['second_ms']), -1)], 1)
 
 
 def objective(net, out_v, out_m, labels, readout, cfg=TRAIN, rest_m=None):
     """Detection loss plus the declared activity regularisers; returns loss and diagnostics.
     rest_m: motor output of no-stimulus (rest) trials, whose populations are held near the rest rate."""
     n = net.n_motor
-    start = cfg['settle_ms']
-    window = slice(start + cfg['window'][0], start + cfg['window'][1])
+    start = net.steps(cfg['settle_ms'])
+    window = slice(start + net.steps(cfg['window'][0]), start + net.steps(cfg['window'][1]))
     counts = nw.population_counts(out_m[:, window], n)            # [B, 2] mean count per neuron
     logit = readout['kappa'] * (counts[:, nw.FDI] - readout['n0'])
     task = torch.nn.functional.binary_cross_entropy_with_logits(logit, labels)
-    hz = lambda x: 1000 * x.mean((0, 1))                           # per-neuron rate in Hz
+    hz = lambda x: net.hz * x.mean((0, 1))                         # per-neuron rate in Hz
     visual = hz(out_v[:, start:])
     low, high = cfg['visual_rate_hz']
     reg_visual = (torch.relu(low - visual) ** 2 + torch.relu(visual - high) ** 2).mean() / 100
@@ -198,7 +200,7 @@ def objective(net, out_v, out_m, labels, readout, cfg=TRAIN, rest_m=None):
     static = labels == 0
     n_m = net.n_motor
     # Per-trial rate of each population (FDI, ADM) in Hz: [trials, 2].
-    per_trial = lambda m: 1000 * torch.stack([m[..., :n_m].mean((1, 2)), m[..., n_m:].mean((1, 2))], -1)
+    per_trial = lambda m: net.hz * torch.stack([m[..., :n_m].mean((1, 2)), m[..., n_m:].mean((1, 2))], -1)
     zero = second.sum() * 0
     # Every static trial: each population near the rest rate.
     pops = per_trial(second[static]) if static.any() else zero + torch.zeros(1, 2, device=second.device) + cfg['motor_rest_hz']
@@ -262,7 +264,7 @@ def train(net, static, movement, cfg=TRAIN, seed=0, device='cpu', log=None, upda
         # rest trials (no stimulus) run in the same batch: zero visual drive, gate 1
         drives = torch.cat([drives, nw.rest_drive(net, cfg['rest_trials'], device)[:, None].expand(-1, steps, -1)])
         noise = net.noise(rows, steps, generator, device)
-        gates = batch_gates(labels, None if gain is None else gain[pick], cfg['settle_ms'], cfg['second_ms'])
+        gates = batch_gates(labels, None if gain is None else gain[pick], net.steps(cfg['settle_ms']), net.steps(cfg['second_ms']))
         gates = torch.cat([gates, torch.ones(cfg['rest_trials'], steps, device=device)])
         out_v, out_m, _ = net.run(drives, gates, gates * 0, net.initial(rows, device), noise)
         b = cfg['batch']
@@ -297,15 +299,16 @@ def evaluate_task(net, readout, static, movement, cfg=TRAIN, seed=1, device='cpu
             labels = torch.full((len(static),), label, device=device)
             drives = batch_drives(net, static, movement, labels, cfg)
             steps = drives.shape[1]
-            gates = batch_gates(labels, gain, cfg['settle_ms'], cfg['second_ms'])
+            gates = batch_gates(labels, gain, net.steps(cfg['settle_ms']), net.steps(cfg['second_ms']))
             out_v, out_m, _ = net.run(drives, gates, gates * 0, net.initial(len(static), device),
                                       net.noise(len(static), steps, generator, device))
             _, info = objective(net, out_v, out_m, labels, readout, cfg)
             correct += info['accuracy'] * len(static)
             total += len(static)
             rates.append(info['visual_hz'])
-            per_neuron.append(1000 * out_v[:, cfg['settle_ms']:].mean((0, 1)))
-            window = slice(cfg['settle_ms'] + cfg['window'][0], cfg['settle_ms'] + cfg['window'][1])
+            start = net.steps(cfg['settle_ms'])
+            per_neuron.append(net.hz * out_v[:, start:].mean((0, 1)))
+            window = slice(start + net.steps(cfg['window'][0]), start + net.steps(cfg['window'][1]))
             counts[label].append(nw.population_counts(out_m[:, window], net.n_motor)[:, nw.FDI].cpu().numpy())
     moving, still = np.concatenate(counts[1.]), np.concatenate(counts[0.])
     auc = float(((moving[:, None] > still[None]).mean() + .5 * (moving[:, None] == still[None]).mean()))
@@ -317,10 +320,11 @@ def evaluate_task(net, readout, static, movement, cfg=TRAIN, seed=1, device='cpu
 def fixation_rates(net, device='cpu', ms=1000, n=16, seed=4):
     """Visual and per-population motor rates (Hz) at rest, the fixation display (§6.8)."""
     generator = torch.Generator(device=device).manual_seed(seed)
-    drive = nw.rest_drive(net, n, device)[:, None].expand(n, ms, -1)
-    ones = torch.ones(n, ms, device=device)
-    v, m, _ = net.run(drive, ones, ones * 0, net.initial(n, device), net.noise(n, ms, generator, device))
-    hz = lambda x: 1000 * x[:, 200:].mean().item()
+    steps = net.steps(ms)
+    drive = nw.rest_drive(net, n, device)[:, None].expand(n, steps, -1)
+    ones = torch.ones(n, steps, device=device)
+    v, m, _ = net.run(drive, ones, ones * 0, net.initial(n, device), net.noise(n, steps, generator, device))
+    hz = lambda x: net.hz * x[:, net.steps(200):].mean().item()
     return dict(visual_hz=hz(v), fdi_hz=hz(m[..., :net.n_motor]), adm_hz=hz(m[..., net.n_motor:]))
 
 
@@ -332,7 +336,7 @@ def dose_response(net, amplitude, device='cpu', levels=10, trials_per=40, seed=3
     gate = torch.ones(trials_per, device=device)
     out = []
     for factor in np.linspace(.5, 2, levels):
-        state = nw.settle(net, drive, gate, 300, generator)
+        state = nw.settle(net, drive, gate, net.steps(300), generator)
         out.append((float(factor), nw.probe_response(net, state, drive, gate, factor * amplitude, generator)[:, nw.FDI]
                     .mean().item()))
     return out
@@ -345,19 +349,20 @@ def task_probe(net, amplitude, static, movement, cfg=TRAIN, device='cpu', repeat
     for static and movement trials, and each population's rate (Hz) in the 100 ms before the probe."""
     static, movement = (torch.as_tensor(a, dtype=torch.float32, device=device) for a in (static, movement))
     generator = torch.Generator(device=device).manual_seed(seed)
-    n, before = len(static), trials.TIMING['probe_after_ms']
+    n, before = len(static), net.steps(trials.TIMING['probe_after_ms'])
     ones = torch.ones(n, device=device)
     out = {}
     for kind, second in (('static', static), ('movement', movement)):
         gate = torch.as_tensor(gain, dtype=torch.float32, device=device) if kind == 'movement' and gain is not None else ones
         responses, background = [], []
         for _ in range(repeats):
-            state = nw.settle(net, net.drive(static), ones, cfg['settle_ms'], generator)
+            state = nw.settle(net, net.drive(static), ones, net.steps(cfg['settle_ms']), generator)
             drive = net.drive(second)
             gates = gate[:, None].expand(n, before)
             _, m, state = net.run(drive[:, None].expand(n, before, -1), gates, gates * 0, state,
                                   net.noise(n, before, generator, device))
-            background.append([1000 * m[:, -100:, :net.n_motor].mean().item(), 1000 * m[:, -100:, net.n_motor:].mean().item()])
+            tail = m[:, -net.steps(100):]
+            background.append([net.hz * tail[..., :net.n_motor].mean().item(), net.hz * tail[..., net.n_motor:].mean().item()])
             responses.append(nw.probe_response(net, state, drive, gate, amplitude, generator))
         out[kind] = dict(responses=torch.stack(responses).cpu().numpy(), background_hz=np.mean(background, 0).tolist())
     return out
@@ -377,12 +382,13 @@ def excitability_curve(net, amplitude, device='cpu', levels=25, top=.6, n=200, s
         for extra in np.linspace(0, top, levels):
             net.b_m.data = bias.clone()
             net.b_m.data[net.bias_index(population)] += float(extra)
-            state = nw.settle(net, drive, ones, 300, generator)
-            ones_t = torch.ones(n, 100, device=device)
-            _, m, state = net.run(drive[:, None].expand(n, 100, -1), ones_t, ones_t * 0, state,
-                                  net.noise(n, 100, generator, device))
+            state = nw.settle(net, drive, ones, net.steps(300), generator)
+            before = net.steps(100)
+            ones_t = torch.ones(n, before, device=device)
+            _, m, state = net.run(drive[:, None].expand(n, before, -1), ones_t, ones_t * 0, state,
+                                  net.noise(n, before, generator, device))
             cells = slice(population * net.n_motor, (population + 1) * net.n_motor)
-            rate = 1000 * m[..., cells].mean().item()
+            rate = net.hz * m[..., cells].mean().item()
             out.append((rate, nw.probe_response(net, state, drive, ones, amplitude, generator)[:, population].mean().item()))
     finally:
         net.b_m.data = bias

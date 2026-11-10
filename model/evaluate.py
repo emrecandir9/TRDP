@@ -188,7 +188,8 @@ def _run_tiled(net, drive, gate, state, noise, copies, probe=None):
     out = []
     for t in range(noise.shape[1]):
         z = noise[:, t] if copies == 1 else noise[:, t].repeat(copies, 1)
-        _, m, state = net.step(drive, gate, probe if probe is not None and t == 0 else zero, state, z[:, :n_v], z[:, n_v:n_v + n_m])
+        pulse = probe if probe is not None and t < net.steps(nw.PROBE_MS) else zero
+        _, m, state = net.step(drive, gate, pulse, state, z[:, :n_v], z[:, n_v:n_v + n_m])
         out.append(m)
     return torch.stack(out, 1), state
 
@@ -202,7 +203,7 @@ def simulate_grid(net, models, bank, scaler, session, amplitudes, device='cpu', 
     require(len(models) == len(amplitudes) > 0, 'One model and one amplitude per run')
     trial_list = [t for t in session.trials if not (task_only and t['kind'] == 'fixation')]
     keys = [trial_keys(t) for t in trial_list]
-    n, copies, before = len(keys), len(models), trials.TIMING['probe_after_ms']
+    n, copies, before = len(keys), len(models), net.steps(trials.TIMING['probe_after_ms'])
     inputs = {}
     for model in models:                                   # H0 sees other images than the display models
         tag = model.hypothesis == 'h0'
@@ -216,14 +217,14 @@ def simulate_grid(net, models, bank, scaler, session, amplitudes, device='cpu', 
     amplitude = torch.tensor([a for a in amplitudes for _ in keys], dtype=torch.float32, device=device)
     generator = torch.Generator(device=device).manual_seed(stream(session, salt))
     # drawn in the order and shapes of network.settle, the second frame and network.probe_response
-    noise = [net.noise(n, steps, generator, device) for steps in (settle_ms, before, nw.READOUT[1])]
+    noise = [net.noise(n, steps, generator, device) for steps in (net.steps(settle_ms), before, net.steps(nw.READOUT[1]))]
     _, state = _run_tiled(net, first, gate_first, net.initial(n * copies, device), noise[0], copies)
     m, state = _run_tiled(net, second, gate_second, state, noise[1], copies)
-    tail = m[:, -BACKGROUND_MS:]
-    background = 1000 * torch.stack([tail[..., :net.n_motor].mean((1, 2)), tail[..., net.n_motor:].mean((1, 2))], -1)
+    tail = m[:, -net.steps(BACKGROUND_MS):]
+    background = net.hz * torch.stack([tail[..., :net.n_motor].mean((1, 2)), tail[..., net.n_motor:].mean((1, 2))], -1)
     with_probe, _ = _run_tiled(net, second, gate_second, [x.clone() for x in state], noise[2], copies, probe=amplitude)
     without, _ = _run_tiled(net, second, gate_second, [x.clone() for x in state], noise[2], copies)
-    diff = (with_probe - without)[:, nw.READOUT[0]:nw.READOUT[1]]
+    diff = (with_probe - without)[:, net.steps(nw.READOUT[0]):net.steps(nw.READOUT[1])]
     responses = torch.stack([diff[..., :net.n_motor].sum((1, 2)), diff[..., net.n_motor:].sum((1, 2))], -1)
     responses, background = responses.cpu().numpy(), background.cpu().numpy()
     return [records(trial_list, responses[k * n:(k + 1) * n], background[k * n:(k + 1) * n]) for k in range(copies)]
@@ -238,6 +239,7 @@ def simulate_trialwise(net, model, bank, scaler, session, amplitude, device='cpu
 def simulate_continuous(net, model, bank, scaler, session, amplitude, device='cpu', salt=0):
     """The whole session at 1 ms, never reset; at each probe the probe and no-probe branches share
     state and noise, and the session continues from the no-probe branch (§6.3)."""
+    require(net.config['dt'] == 1, 'The continuous session is written for the 1-ms time step')
     keys = session.keys()
     index = {k: i for i, k in enumerate(keys)}
     drive = drives(net, model, bank, scaler, keys, device)
