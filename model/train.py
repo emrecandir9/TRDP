@@ -97,6 +97,22 @@ def release(step, name):
     shutil.rmtree(CLAIMS / step / name, ignore_errors=True)
 
 
+def provenance():
+    """What produced an output: the hash of every model source file and of the analysis
+    configuration, and the git commit if the working copy has one (review finding F15)."""
+    import hashlib
+    import subprocess
+    digest = lambda p: hashlib.sha256(p.read_bytes()).hexdigest()
+    files = sorted((ROOT / 'model').glob('*.py')) + [ROOT / 'analysis/human_target.py', ROOT / 'config/analysis.json']
+    out = dict(files={str(p.relative_to(ROOT)): digest(p) for p in files})
+    try:
+        git = lambda *a: subprocess.run(['git', '-C', str(ROOT), *a], capture_output=True, text=True, timeout=10).stdout.strip()
+        out.update(commit=git('rev-parse', 'HEAD'), clean=git('status', '--porcelain', '--untracked-files=no') == '')
+    except (OSError, subprocess.SubprocessError):
+        pass
+    return out
+
+
 def finished_networks(paths):
     """Saved networks whose report exists: a stack's `<run>.trained.pt` (health check pending) and
     resumable checkpoints are left out."""
@@ -551,7 +567,7 @@ def finish(run, readout, history, seconds, output=OUTPUT, device='cpu', updates=
     readout = {k: v.to(device) for k, v in readout.items()}
     cfg = run.get('cfg', TRAIN)
     report = dict(run['meta'], updates=updates or cfg['updates'], device=str(device), seconds=seconds,
-                  final=history[-1], **(extra or {}))
+                  final=history[-1], provenance=provenance(), **(extra or {}))
     inner_static, inner_movement, inner_gain = run['inner']
     report.update(diagnose(net, readout, inner_static, inner_movement, cfg, device=device, gain=inner_gain,
                            activity=run['activity']))

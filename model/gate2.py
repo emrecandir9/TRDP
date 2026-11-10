@@ -188,6 +188,7 @@ def main():
         start = time.time()
         result = run(path, device)
         result['seconds'] = time.time() - start
+        result['provenance'] = tr.provenance()
         tr.atomic(target, lambda t: t.write_text(json.dumps(result)))
     print(f'{args.step} shard {args.shard}/{args.shards}: done')
 

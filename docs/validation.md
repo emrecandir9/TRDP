@@ -231,15 +231,16 @@ CREMI; no held-out source or upper-limb display simulated.
 
 | Check | Result |
 | --- | --- |
-| Tests | 154 pass on the Mac (one GPU-only test skipped) and 154 on `jessica` with none skipped; 167 after this day's additions |
+| Tests | 154 pass on the Mac (one GPU-only test skipped) and 154 on `jessica` with none skipped; 169 after this day's additions |
 | Human target | Re-run: 18 of 18 published statistics reproduced; tables byte-identical to the stored ones |
 | Integrity scripts | `dataset.py check`, `silhouette.py check` and `verify-archive`, `controls.py check` pass |
 | Criteria code | Hand-built cases: bootstrap at source level (two implementations identical), treatments, ratios, verdicts as declared. A model with full-body facilitation only meets P1, P3 and S1 |
 | Campaign and fit numbers | Health counts and fitted c match the documents; ungated ratios newly recorded (model-method §6.19) |
 | Code on CREMI | `model/*.py` hash-identical to the repository |
 | Stacked training | Fold 4, seed 0, alone vs in a stack: different weights, same health measures |
+| Provenance (added the same day) | New outputs record the hash of every model source file and the commit; the feature manifest and both learned gate tables are pinned in `config/analysis.json` (identical on the Mac and CREMI) and checked at load |
 | Verdict | Sound with major revisions; findings and progress in the review |
-| Evaluation driver (built the same day) | 9 tests (lock, runs and labels, open gate = ungated, verdicts, repetitions); rehearsal on four real networks' inner sources reproduces the stored Gate 2 control predictions; 167 tests pass |
+| Evaluation driver (built the same day) | 9 tests (lock, runs and labels, open gate = ungated, verdicts, repetitions); rehearsal on four real networks' inner sources reproduces the stored Gate 2 control predictions; 169 tests pass at the end of the day |
 
 ## Remaining limits
 

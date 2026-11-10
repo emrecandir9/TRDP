@@ -19,6 +19,8 @@ Development rule (spec §8): no context contrast or MEP-analogue summary on a he
 the evaluation is opened. `simulate_instance` refuses a network's own held-out source unless called
 with open_evaluation=True, which only the frozen evaluation may do.
 """
+import hashlib
+import json
 import sys
 from dataclasses import dataclass
 from pathlib import Path
@@ -108,6 +110,11 @@ def attachment(gate, fold=None, representation=None):
     pathway = 'forearm' if gate == 'forearm' else f'familiarity_{representation}'
     if 'learned' not in _tables:
         out = ROOT / 'output/learned_context'
+        pinned = json.loads((ROOT / 'config/analysis.json').read_text())['model'].get('input_hashes', {})
+        for name in ('gates.csv', 'gates_crossfit.csv'):
+            expected = pinned.get(f'output/learned_context/{name}')
+            require(expected is None or hashlib.sha256((out / name).read_bytes()).hexdigest() == expected,
+                    f'output/learned_context/{name} is not the one recorded in config/analysis.json')
         own, cross = pd.read_csv(out / 'gates.csv'), pd.read_csv(out / 'gates_crossfit.csv')
         _tables['learned'] = pd.concat([own[own.source == own.fold], cross])
     table = _tables['learned']

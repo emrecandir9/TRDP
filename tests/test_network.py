@@ -510,6 +510,16 @@ class Variations(unittest.TestCase):
                 self.assertTrue(torch.allclose(x, b.state_dict()[name], atol=1e-5), name)
 
 
+class Provenance(unittest.TestCase):
+    def test_outputs_record_what_produced_them(self):
+        import hashlib
+        import train as tr
+        p = tr.provenance()
+        self.assertEqual(p['files']['model/train.py'], hashlib.sha256(Path(tr.__file__).read_bytes()).hexdigest())
+        self.assertIn('config/analysis.json', p['files'])
+        self.assertTrue(all(len(v) == 64 for v in p['files'].values()))
+
+
 class Claims(unittest.TestCase):
     def test_a_network_is_claimed_once_and_unfinished_files_are_skipped(self):
         import tempfile

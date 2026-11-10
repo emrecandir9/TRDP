@@ -35,6 +35,11 @@ class Bank:
     def __init__(self, representation, directory=FEATURES, extra=EXTRA, arrays=None, index=None, black=None):
         if arrays is None:
             manifest = json.loads((directory / 'manifest.json').read_text())
+            if Path(directory) == FEATURES:          # the Gate 1 features are pinned in the tracked configuration
+                pinned = json.loads((ROOT / 'config/analysis.json').read_text())['model'].get('input_hashes', {})
+                expected = pinned.get('output/features/manifest.json')
+                require(expected is None or sha(directory / 'manifest.json') == expected,
+                        'output/features/manifest.json is not the one recorded in config/analysis.json')
             for name in ('features.npz', 'index.csv'):
                 require(sha(directory / name) == manifest['files'][name], f'Changed feature file: {directory / name}')
             index = pd.read_csv(directory / 'index.csv')

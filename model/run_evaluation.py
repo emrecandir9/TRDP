@@ -304,6 +304,7 @@ def main():
         start = time.time()
         result = dict(simulate_network(path, device), freeze_date=record['date'], seconds=None)
         result['seconds'] = time.time() - start
+        result['provenance'] = tr.provenance()
         target.parent.mkdir(parents=True, exist_ok=True)
         tr_atomic(target, json.dumps(result))
     print(f'simulate shard {args.shard}/{args.shards}: done')

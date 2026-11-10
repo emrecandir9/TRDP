@@ -16,7 +16,7 @@ GPU work runs on the CREMI lab PC `daniel` (RTX 4000 Ada, 20 GB).
 
 | Area | Status |
 | --- | --- |
-| Stimuli | 480 accepted families from 20 V7 source pairs, plus the approved detached-hand silhouette. Integrity checks pass; 167 tests pass (10 Nov) |
+| Stimuli | 480 accepted families from 20 V7 source pairs, plus the approved detached-hand silhouette. Integrity checks pass; 169 tests pass (10 Nov) |
 | Action | Left index abduction, 10.5–24.7° (median 18.3°), matches the paper |
 | Effective sample size | **20 distinct movements**: desk, seed and white balance are nuisance variation |
 | Human target | Built: `analysis/human_target.py`; reproduces the paper's published statistics exactly ([analysis spec](analysis-spec.md) §4) |

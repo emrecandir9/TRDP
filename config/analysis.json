@@ -289,6 +289,12 @@
     "necessity_of_gate": "paired difference C_FDI(H2) - C_FDI(ungated) over matched instances, hierarchical bootstrap, both treatments; the ungated network scored with every criterion (model/criteria.py necessity)",
     "readouts_as_simulated": "every criterion also reported without either treatment of over-driven cells",
     "h2_gate_sensitivity": "c+ = largest grid c whose training-source DH/FB ratio stays inside the human 95% interval for every grid value from 0 (model/fit_gate.py sensitivity_c); H2 also evaluated at c+, outside the decision rule",
-    "training_sources_per_network": 18
+    "training_sources_per_network": 18,
+    "input_hashes": {
+      "note": "checked at load (model/bank.py for the features; model/evaluate.py for the learned gate tables)",
+      "output/features/manifest.json": "5853dd256eb643b6028e9ecadbe3ba027bff761ccd209db524eac51f182b58e5",
+      "output/learned_context/gates.csv": "e32310e321b8eb5c46dd25110270153241c3d768b509968176f27d26540e3492",
+      "output/learned_context/gates_crossfit.csv": "8bcea87a211a07dc695b1ecc5d3f3abe01a505d18c45735e6a5a3db1d03189ea"
+    }
   }
 }

@@ -144,6 +144,7 @@ def main():
         start = time.time()
         result = fit_network(path, device)
         result['seconds'] = time.time() - start
+        result['provenance'] = tr.provenance()
         tr.atomic(target, lambda t: t.write_text(json.dumps(result)))
     print(f'shard {args.shard}/{args.shards}: done')
 

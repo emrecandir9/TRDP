@@ -16,7 +16,7 @@ Updated as each item is handled; the commit that handled it is given. Open items
 | F3–F6, F11, F12: limitations written into the documents | F3, F5, F6 **done** 10 Nov (spec §1, §5.2, §8; validation "Remaining limits"); F4, F11, F12 to be carried into the report |
 | All-context training ablation: specify, then train | specified and built 10 Nov (model-method §6.23, `--variation allctx`); training **not started yet** (next step: `python model/campaign.py --hypothesis h2 --representation openclip --variation allctx --seeds 0-2 --stack 20` on a lab-PC GPU, then ADM curves and `fit_gate.py --configurations h2_openclip_snn_allctx`); results **open** |
 | F10: evaluation driver, tested and hashed | built, tested and rehearsed **done** 10 Nov (`model/run_evaluation.py`, model-method §6.22); its hash is recorded by `run_evaluation.py freeze` on 11 Dec (**open**, run on CREMI where the outputs are) |
-| F13–F15, F17: wording and provenance fixes | F13, F14, F17 **done** 10 Nov (model-method §6.13, §6.19a; decision audit); F15 open |
+| F13–F15, F17: wording and provenance fixes | F13, F14, F17 **done** 10 Nov (model-method §6.13, §6.19a; decision audit); F15 **done** 10 Nov (`train.provenance` in every new health report, fit, Gate 2 and evaluation record; feature manifest and learned gate tables pinned in `config/analysis.json` and checked at load). Outputs made before 10 Nov carry no code hash |
 | 0.5-ms time step (already declared) | open |
 
 Labels: **[V]** verified by me in code, data or output; **[D]** stated by the project, not independently checked; **[I]** my inference, premises given.
