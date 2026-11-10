@@ -912,7 +912,10 @@ or decision rule changes. Written, implemented and tested on synthetic data befo
 - **Sensitivity to c** (`fit_gate.sensitivity_c`). c⁺ is the largest grid value such that the training-source
   ratio stays inside the human 95% interval of Δ(DH)/Δ(FB), [−0.67, 0.35], for every grid value from 0 to c⁺,
   per network and treatment, from the saved curves. H2 is also evaluated at c⁺, outside the decision rule.
-  `fit_gate.py --summary` prints its distribution.
+  `fit_gate.py --summary` prints its distribution. *Values (10 November 2026, saved curves, both
+  treatments):* OpenCLIP spiking median 0.45 (range 0.30–1.00), OpenCLIP twin 0.78 (0.35–1.00), every DINOv2
+  configuration 1.00 in every network (the ungated network is already inside the interval), for the continuity
+  and the visible-area gate alike; never undefined.
 - **What is informative for H2.** P1, P3, S1 and S3(b) are built in (a is exactly 1, 1 and 0 for the three paper
   displays in every source, and c = 0); the full-body half of P2 was calibrated in §6.10–6.12 against
   facilitation on unseen inner sources; S3(a)'s H2 side is known from the Gate 2 predictions (stub − gap stub
@@ -1012,6 +1015,38 @@ primary does. ADM curves measured and applied for all of them. The fit of c give
 network, gate and treatment in every variation; the −0.10 target lies inside a network's ratio range in 9
 of 2,160 network–gate pairs (`u6000` 7, `lr3e-3` 2). The closed-gate boundary of §6.19 therefore holds
 across every varied setting. The 0.5-ms time step is still to be implemented.
+
+### 6.22 Evaluation driver and its lock (10 November 2026, before any evaluation)
+
+`model/run_evaluation.py` is the one program that runs the held-out evaluation (review finding F10: until
+now the criteria existed as functions with nothing that assembled them, and the held-out guard was an
+argument).
+
+- **`simulate`.** Each campaign network runs on its held-out source: the primary session (full body, upper
+  limb, silhouette), the paired rectangle session and the control session (§2), every model of the network in
+  one batch with common random numbers. For an H2 network these are H2, the visible-area model, H2-learned
+  and H4 at the c fitted under each analysis (§6.19), H2 at c⁺ (§6.19a) and the ungated network, each distinct
+  gate and c simulated once; an H0 or H1 network runs its own model. One record per network holds every
+  trial, the readout ranges and the health verdict.
+- **`score`.** Per encoder and analysis (readouts as simulated, remove, maximum): P1–S2 for every model
+  (`criteria.score`), S3(b) against the matched H0 network, S3(a) against the visible-area model on both
+  control pairs, the necessity of the gate (H2 − ungated, and c⁺ − ungated), over-driven shares per display,
+  then the combined verdicts, whether the gate is necessary for each criterion, and the decision rule. The
+  declared repetitions follow: without reference 17, healthy networks only, untrimmed, rectangle detached hand.
+- **Lock.** `simulate` refuses to show a network its held-out source unless `config/freeze.json` exists and
+  every file it lists (the model code, the human-target code, the spec and its configuration, the continuity
+  table, the human ratios, the feature manifest, the learned gate tables) still has its recorded hash. The
+  `freeze` step writes that record once, on 11 December (spec §8), and it is then committed and pushed. The
+  check sits inside `simulate_network`, so no other caller can bypass it; a rehearsal may name another source
+  but never the held-out one and never the upper limb.
+- **Tests** (`tests/test_run_evaluation.py`, synthetic features, small networks): the lock opens only with an
+  unchanged record; runs and labels follow the fit; an open gate equals the ungated network exactly, so its
+  necessity difference is 0; verdicts, S3, repetitions and reproducibility.
+- **Rehearsal on real networks** (10 November 2026, `jessica`; inner source, full body, silhouette and
+  controls only, displays already simulated there; nothing saved): one network each of H2 OpenCLIP, H1
+  OpenCLIP, H0 DINOv2 summary and the H2 DINOv2 summary twin ran through `simulate_network` in 2–9 s, and the
+  control movement effects of the three spiking networks equal the stored Gate 2 predictions of §6.19 to the
+  printed precision. The real-data path is therefore the one that produced the Gate 2 checks.
 
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
@@ -1247,3 +1282,4 @@ declared in the spec before the evaluation is opened.
 | 9 Nov 2026, before any recurrent fit | Recurrent mode check passed (§6.20): trialwise mode used for recurrent networks | Rule declared 8 Nov; the check decides the mode |
 | 9 Nov 2026, results on training sources (no evaluation) | Recurrent and robustness campaigns finished; health, recurrence measure and fit of c recorded (§6.20, §6.21): c = 0 throughout | Recorded before any evaluation; no setting changed |
 | 10 Nov 2026, training-source results already recorded (no evaluation) | Independent review ([review](independent-review.md)): ungated results recorded (§6.19); necessity test, criteria on readouts as simulated, sensitivity value c⁺, statement of the criteria informative for H2 (§6.19a, spec amendment); treatments of over-driven cells renamed a sensitivity analysis; stacked training described as the same procedure, not identical networks (§6.13); 18 training sources per network stated (§6.2) | The review found the primary criteria built in for H2, the gate probably unnecessary for the main contrast, the evaluation largely previewed on inner sources, and c not identified. No setting changed |
+| 10 Nov 2026, before any evaluation | Evaluation driver `model/run_evaluation.py` with a freeze lock (§6.22); rehearsed on inner sources, reproducing stored Gate 2 predictions | Review finding F10: no program assembled the criteria into the decision, and the held-out guard was an argument |

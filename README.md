@@ -51,7 +51,12 @@ TRDP/
 │   ├── campaign.py              # Trains every fold × initialisation through the health-checked path
 │   ├── learned_context.py       # Learned context pathways: forearm prediction (H2-learned), familiarity (H4)
 │   ├── extend_curves.py         # Readout excitability curve of every campaign network over the extended sweep
-│   └── evaluate.py              # Evaluation simulator: sessions, probes, trimming, cells, hierarchical bootstrap
+│   ├── evaluate.py              # Evaluation simulator: sessions, probes, trimming, cells, hierarchical bootstrap
+│   ├── criteria.py              # Criteria of spec §5.2, treatments of over-driven readouts, verdicts, necessity
+│   ├── fit_gate.py              # Fit of c on training sources; sensitivity value c+
+│   ├── gate2.py                 # Gate 2 checks: control predictions, probe-strength sweep
+│   ├── recurrence.py            # How much a recurrent network uses its recurrent weights
+│   └── run_evaluation.py        # The held-out evaluation: simulate, score, decision; locked until the freeze
 ├── scripts/
 │   ├── setup.sh                 # Creates .venv for review or Linux CUDA generation
 │   ├── models.py                # Downloads / resolves the three pinned models
@@ -75,7 +80,10 @@ TRDP/
 │   ├── test_context.py          # Forearm-continuity estimate
 │   ├── test_network.py          # Network units, probe readout, training, health measures, campaign
 │   ├── test_learned_context.py  # Learned context pathways
-│   └── test_evaluate.py         # Evaluation simulator
+│   ├── test_evaluate.py         # Evaluation simulator
+│   ├── test_criteria.py, test_fit_gate.py, test_gate2.py  # Criteria, fit of c, Gate 2 checks
+│   ├── test_run_evaluation.py   # Evaluation driver and its freeze lock
+│   └── test_spec.py             # The spec equals its recorded hash
 ├── data/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
 │   ├── hand_segmentation.json   # Tracked SAM-HQ provenance, prompts and mask hashes
@@ -330,6 +338,10 @@ Done on 10 November:
   half of P2 and S2 are open tests. No criterion, parameter or decision rule changed. `config/analysis.json`
   now lists all 12 amendments with what existed at each, and a test binds the spec to its recorded hash.
 - Document contradictions fixed (counts, links, stale predictions).
+- **Evaluation driver built and locked** ([model method](docs/model-method.md) §6.22): `model/run_evaluation.py`
+  simulates, scores and applies the decision rule; it cannot show a network its held-out source until
+  `config/freeze.json` is written at the 11 December freeze and unchanged. Rehearsed on inner sources: it
+  reproduces the stored Gate 2 predictions.
 
 Next:
 
