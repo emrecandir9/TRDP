@@ -1044,6 +1044,8 @@ argument).
   control pairs, the necessity of the gate (H2 − ungated, and c⁺ − ungated), over-driven shares per display,
   then the combined verdicts, whether the gate is necessary for each criterion, and the decision rule. The
   declared repetitions follow: without reference 17, healthy networks only, untrimmed, rectangle detached hand.
+  The comparison configurations of the primary encoder (twin, recurrent variant, robustness variations,
+  all-context ablation) are scored the same way, as H2 and as the ungated network, without S3.
 - **Lock.** `simulate` refuses to show a network its held-out source unless `config/freeze.json` exists and
   every file it lists (the model code, the human-target code, the spec and its configuration, the continuity
   table, the human ratios, the feature manifest, the learned gate tables) still has its recorded hash. The

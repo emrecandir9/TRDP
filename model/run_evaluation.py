@@ -269,6 +269,13 @@ def report(directory=OUTPUT, samples=cr.BOOTSTRAP['samples'], variant='snn'):
         out['decision'] = decide(out['main'])
     out.update(without_reference_17=run(exclude=(17,)), healthy_only=run(healthy_only=True), untrimmed=run(trim=False),
                rectangle=run(session='rectangle'))
+    # Comparison configurations of the primary encoder, each scored as H2 and as the ungated network: the
+    # non-spiking twin, the recurrent variant, the robustness variations and the all-context ablation
+    # (docs/model-method.md §6.14, §6.20, §6.21, §6.23). They have no H0 or H1 networks, so no S3.
+    prefix = f'h2_{PRIMARY_ENCODER}_'
+    names = sorted(Path(p).name[len(prefix):] for p in glob.glob(str(Path(directory) / (prefix + '*'))))
+    out['configurations'] = {name: score_encoder(load(prefix + name, directory), [], [], intervals, samples=samples)
+                             for name in names if name != variant}
     return out
 
 

@@ -174,6 +174,31 @@ class EndToEnd(unittest.TestCase):
         by_encoder = {e: scored for e in (rv.PRIMARY_ENCODER,) + rv.ROBUSTNESS_ENCODERS}
         self.assertIn(rv.decide(by_encoder), ('met', 'not met', 'undetermined'))
 
+    def test_report_scores_every_saved_configuration(self):
+        """The report reads the saved records per encoder and adds the comparison configurations of the
+        primary encoder (twin, recurrent, variations, all-context), scored without S3."""
+        import json
+        import criteria as cr
+        import run_evaluation as rv
+        old = cr.human_intervals
+        cr.human_intervals = lambda: INTERVALS
+        try:
+            with tempfile.TemporaryDirectory() as d:
+                for folder, results in (('h2_openclip_snn', self.h2), ('h0_openclip_snn', self.h0), ('h2_openclip_snn_allctx', self.h2[:4])):
+                    (Path(d) / folder).mkdir()
+                    for i, r in enumerate(results):
+                        (Path(d) / folder / f'{i}.json').write_text(json.dumps(r))
+                out = rv.report(Path(d), samples=50)
+        finally:
+            cr.human_intervals = old
+        self.assertEqual(set(out['main']), {'openclip'})
+        self.assertNotIn('decision', out)                              # the robustness encoders are missing
+        self.assertEqual(out['main']['openclip']['instances'], dict(h2=6, h0=6, h1=0))
+        self.assertEqual(set(out['configurations']), {'snn_allctx'})
+        self.assertEqual(out['configurations']['snn_allctx']['instances']['h2'], 4)
+        self.assertNotIn('S3', out['configurations']['snn_allctx']['verdicts']['h2'])
+        self.assertEqual(out['without_reference_17']['openclip']['instances']['h2'], 6)
+
     def test_scoring_is_reproducible(self):
         import json
         import run_evaluation as rv

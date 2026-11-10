@@ -251,6 +251,14 @@ predictions are already known on unseen inner sources, so only the upper-limb di
 evaluation. H2's gate is supplied from masks, not computed from the image. The gate parameter is not
 identified. The readout is not physiological and its over-driven treatments are a sensitivity analysis.
 The spec is a dated pre-specification, not an externally registered preregistration.
+Further limits to carry into the report: the motor limits, the pooled motor populations and the background
+criterion were set in five rounds on 24–25 October against full-body facilitation on unseen inner sources, so
+full-body facilitation is a calibrated property of the model, not a finding (F4); the movement frames are
+edited images accepted by one unblinded reviewer, so a network may respond to traces of the edit, which
+cannot bias a contrast between displays (they share the hand pixels) but limits what "movement" means (F11);
+the 20 networks of a seed share their initial weights, trial draws, noise and 17 of 18 training sources, so
+intervals describe generalisation over these images given nearly the same training set, and initialisations
+are crossed with sources although the bootstrap resamples them as nested (F12; Bengio & Grandvalet, 2004).
 
 
 **Single unblinded review.** All 480 families were accepted by one reviewer (the project owner),
