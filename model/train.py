@@ -27,7 +27,8 @@ import trials  # noqa: E402
 # with excitability only up to about 5.5 Hz (docs/model-method.md §6.10, §6.12). The limits apply
 # to every trial, not to a batch mean, so that no source or variant is driven past that range.
 TRAIN = dict(settle_ms=300, second_ms=350, window=(50, 300), updates=3000, batch=32, lr=1e-3,
-             visual_rate_hz=(2., 40.), motor_rest_hz=1., motor_max_hz=3., rest_trials=8)
+             visual_rate_hz=(2., 40.), motor_rest_hz=1., motor_max_hz=3., rest_trials=8,
+             displays=('full_body',))        # displays of the training trials (spec §6.3: full body only)
 # Gate 2 health criteria (docs/model-method.md §6.5). The background limit is not a constant: it is
 # each network's validated readout range, the pre-probe FDI rate at which its excitability curve peaks
 # (the probe response grows with excitability up to there; §6.12).
@@ -39,7 +40,10 @@ OUTPUT = ROOT / 'output/model'
 VARIATIONS = {'nv128': (dict(n_visual=128), {}), 'nv512': (dict(n_visual=512), {}),
               'lr3e-4': ({}, dict(lr=3e-4)), 'lr3e-3': ({}, dict(lr=3e-3)), 'u6000': ({}, dict(updates=6000)),
               'tm10': (dict(tau_mem=10.), {}), 'tm40': (dict(tau_mem=40.), {}),
-              'ts2': (dict(tau_syn=2.), {}), 'ts10': (dict(tau_syn=10.), {})}
+              'ts2': (dict(tau_syn=2.), {}), 'ts10': (dict(tau_syn=10.), {}),
+              # All-context training, the exploratory ablation of spec §6.3 (docs/model-method.md §6.23):
+              # training trials from the three paper displays instead of the full body only.
+              'allctx': ({}, dict(displays=trials.BODIES))}
 HYPOTHESES = ('h2', 'h0', 'h1')   # h2: display features, gate 1 on full body (shared by H2, ungated, S3(a))
 
 
@@ -510,7 +514,19 @@ def prepare(representation='openclip', held_out=1, inner=2, seed=0, spiking=True
     sources = families_by_source(bank)
     trials.require(held_out != inner and held_out in sources and inner in sources, 'Invalid fold')
     train_families = [f for s, fam in sources.items() if s not in (held_out, inner) for f in fam]
-    static, movement, gain, scaler, mean_salience = hypothesis_inputs(bank, hypothesis, train_families, train_families)
+    displays = tuple(dict(TRAIN, **VARIATIONS[variation][1])['displays']) if variation in VARIATIONS else TRAIN['displays']
+    if displays == ('full_body',):
+        static, movement, gain, scaler, mean_salience = hypothesis_inputs(bank, hypothesis, train_families, train_families)
+    else:
+        # Training trials from several displays (§6.23): every training family in every display, with
+        # standardisation fitted on exactly those images. Display networks only; gate 1 throughout.
+        trials.require(hypothesis == 'h2', 'Training on several displays is defined for the display network (h2)')
+        x = bank.matrix([(f, d, r) for d in displays for f in train_families for r in ('static', 'movement')])
+        sd = x.std(axis=0)
+        scaler = (x.mean(axis=0), np.where(sd > 0, sd, 1.))
+        frames = [frame_inputs(bank, train_families, scaler, d) for d in displays]
+        static, movement = (np.concatenate([f[i] for f in frames]) for i in (0, 1))
+        gain, mean_salience = None, None
     inner_static, inner_movement, inner_gain, _, _ = hypothesis_inputs(bank, hypothesis, None, sources[inner],
                                                                        scaler, mean_salience)
     meta = dict(representation=representation, hypothesis=hypothesis, spiking=spiking,

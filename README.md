@@ -342,6 +342,8 @@ Done on 10 November:
   simulates, scores and applies the decision rule; it cannot show a network its held-out source until
   `config/freeze.json` is written at the 11 December freeze and unchanged. Rehearsed on inner sources: it
   reproduces the stored Gate 2 predictions.
+- **All-context training ablation declared and built** ([model method](docs/model-method.md) §6.23): 60 networks
+  trained on all three displays, to test whether the weak detached-hand response is a training-distribution effect.
 
 Next:
 

@@ -1048,6 +1048,36 @@ argument).
   control movement effects of the three spiking networks equal the stored Gate 2 predictions of §6.19 to the
   printed precision. The real-data path is therefore the one that produced the Gate 2 checks.
 
+### 6.23 All-context training ablation (declared 10 November 2026, before any such network is trained)
+
+Spec §5.2 and §6.3 list training on all contexts as an exploratory ablation without a procedure. The
+ungated results of §6.19 make it the most informative analysis still missing: the full-body-trained network
+responds weakly to the silhouette without any gate, and the obvious explanation is that it has never seen
+one. This ablation tests that explanation. Everything below is written, implemented and tested before any
+all-context network is trained.
+
+- **What changes.** Training trials come from the three paper displays (full body, upper limb, silhouette
+  detached hand) of the same 18 training sources: every training family in every display, drawn with equal
+  probability, and the input standardisation is fitted on exactly those images (`train.VARIATIONS['allctx']`,
+  one changed setting, `displays`). The gate is 1 on every training trial, so this is the display network
+  with experience of all displays. Nothing else changes: objective, regularisers (each motor population near
+  rest and below 3 Hz on movement frames, on every display), 3,000 updates, learning rate, seeds.
+- **Scope.** OpenCLIP, spiking, feedforward, 20 folds × initialisations 0–2 (60 networks,
+  `h2_openclip_snn_allctx`), matched by fold and seed to primary networks, as the robustness variations.
+  Health check as the primary (full-body trials of the inner source), FDI and ADM readout ranges, fit of c by
+  the declared procedure.
+- **Use.** In the frozen evaluation it is scored once, as the ungated network and as H2 with its fitted c,
+  with every criterion, and reported as the ablation. It is not part of the decision rule and never replaces
+  the primary configuration. No setting of any other configuration changes in response to it.
+- **What is read before the evaluation.** The fit's grid value c = 1 gives the ungated ratio Δ(DH)/Δ(FB) on
+  the 19 non-held-out sources, as §6.19 gives it for the primary (0.49). Here 18 of those sources were trained
+  on in the silhouette display, so the ratio is largely in-sample; the inner source's is out of sample.
+- **Reading, declared now.** If the ungated ratio rises towards 1, the weak detached-hand response of the
+  primary network is a training-distribution effect: a network with experience of detached hands
+  facilitates for them, and only then does a gate have work to do in producing the human pattern. If the
+  ratio stays near the primary's, the weak response is not explained by unfamiliarity with the display.
+  Either outcome is reported; neither changes the primary analysis.
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -1283,3 +1313,4 @@ declared in the spec before the evaluation is opened.
 | 9 Nov 2026, results on training sources (no evaluation) | Recurrent and robustness campaigns finished; health, recurrence measure and fit of c recorded (§6.20, §6.21): c = 0 throughout | Recorded before any evaluation; no setting changed |
 | 10 Nov 2026, training-source results already recorded (no evaluation) | Independent review ([review](independent-review.md)): ungated results recorded (§6.19); necessity test, criteria on readouts as simulated, sensitivity value c⁺, statement of the criteria informative for H2 (§6.19a, spec amendment); treatments of over-driven cells renamed a sensitivity analysis; stacked training described as the same procedure, not identical networks (§6.13); 18 training sources per network stated (§6.2) | The review found the primary criteria built in for H2, the gate probably unnecessary for the main contrast, the evaluation largely previewed on inner sources, and c not identified. No setting changed |
 | 10 Nov 2026, before any evaluation | Evaluation driver `model/run_evaluation.py` with a freeze lock (§6.22); rehearsed on inner sources, reproducing stored Gate 2 predictions | Review finding F10: no program assembled the criteria into the decision, and the held-out guard was an argument |
+| 10 Nov 2026, before any all-context network was trained | All-context training ablation declared and built (§6.23): three displays in training, 60 networks, OpenCLIP | Listed as exploratory in the spec without a procedure; the ungated results make it the direct test of a training-distribution explanation |

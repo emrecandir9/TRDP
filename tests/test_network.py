@@ -453,7 +453,7 @@ class Variations(unittest.TestCase):
             self.assertTrue(set(net) <= set(nw.CONFIG) and set(cfg) <= set(tr.TRAIN), name)
             changed = {**net, **cfg}
             key = next(iter(changed))
-            self.assertNotEqual(changed[key], {**nw.CONFIG, **tr.TRAIN}[key], name)
+            self.assertNotEqual(tuple(changed[key]) if key == 'displays' else changed[key], {**nw.CONFIG, **tr.TRAIN}[key], name)
         self.assertEqual(tr.run_name('h2', 'openclip', True, 2, 0, variation='tm10'), 'health_openclip_snn_tm10_fold2_seed0')
 
     def test_campaign_passes_the_variation(self):
@@ -462,6 +462,31 @@ class Variations(unittest.TestCase):
         self.assertEqual(command[command.index('--variation') + 1], 'lr3e-3')
         names = [n for _, _, n, _ in cp.runs('h2', 'openclip', True, [4], [0], Path('.'), variation='nv128')]
         self.assertEqual(names, ['health_openclip_snn_nv128_fold4_seed0'])
+
+    def test_all_context_training_uses_the_three_displays(self):
+        """The all-context ablation trains on every training family in the three paper displays and
+        standardises on exactly those images; the health inputs stay the inner source's full body, and
+        neither the held-out nor the inner source enters."""
+        import bank as bk
+        import pandas as pd
+        import train as tr
+        import trials
+        families = [f'r{s:02d}_v{i}_s9_neutral' for s in (1, 2, 3, 4) for i in range(2)]
+        rows = [(f, c, r) for f in families for c in trials.BODIES for r in ('static', 'movement')]
+        x = np.random.default_rng(3).normal(0, 1, (len(rows), 8))
+        bank = bk.Bank('r', arrays=dict(r=x), index=pd.DataFrame(rows, columns=['family', 'condition', 'frame']), black=np.zeros(8))
+        usual = tr.prepare('r', held_out=1, inner=2, seed=0, bank=bank)
+        ablation = tr.prepare('r', held_out=1, inner=2, seed=0, bank=bank, variation='allctx')
+        self.assertEqual((len(usual['static']), len(ablation['static'])), (4, 12))
+        self.assertEqual(ablation['name'], 'health_r_snn_allctx_fold1_seed0')
+        self.assertEqual(tuple(ablation['cfg']['displays']), trials.BODIES)
+        trained = [f for f in families if int(f[1:3]) in (3, 4)]
+        images = bank.matrix([(f, d, r) for d in trials.BODIES for f in trained for r in ('static', 'movement')])
+        np.testing.assert_allclose(ablation['scaler'][0], images.mean(0))
+        expected = (bank.matrix([(f, 'upper_limb', 'movement') for f in trained]) - images.mean(0)) / images.std(0)
+        np.testing.assert_allclose(ablation['movement'][4:8], expected)
+        inner = (bank.matrix([(f, 'full_body', 'static') for f in families[2:4]]) - images.mean(0)) / images.std(0)
+        np.testing.assert_allclose(ablation['inner'][0], inner)
 
     def test_stack_follows_changed_time_constants(self):
         """A stack of networks with a changed membrane constant trains as each network alone."""
