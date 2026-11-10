@@ -120,6 +120,22 @@ class Verdicts(unittest.TestCase):
         effects = cr.pair_effects(cells, displays)
         self.assertTrue(np.allclose(effects['hand_stub-hand_gap_stub'], 1.) and np.allclose(effects['window_arm-window_hand'], .5))
 
+    def test_necessity_of_the_gate(self):
+        """A gate that removes the detached-hand effect adds exactly that effect to C_FDI; where the
+        ungated network has no detached-hand effect the gate adds nothing."""
+        import criteria as cr
+        rng = np.random.default_rng(8)
+        groups = np.repeat(np.arange(20), 5)
+        ungated = np.zeros((100, 3, 2, 2))
+        ungated[:, :, 1, 0] = np.array([1., .8, .5]) + rng.normal(0, .1, (100, 3))
+        gated = ungated.copy()
+        gated[:, 2, 1, 0] = 0.
+        idx = cr.draws(groups, 300)
+        n = cr.necessity(gated, ungated, idx)
+        self.assertTrue(n['exceeds'] and abs(n['estimate'] - .5) < .05)
+        inert = cr.necessity(ungated, ungated, idx)
+        self.assertTrue(not inert['exceeds'] and inert['estimate'] == 0)
+
     def test_align_matches_instances(self):
         import criteria as cr
         common, a, b = cr.align([(1, 0), (2, 0), (3, 0)], [(3, 0), (1, 0)])

@@ -53,6 +53,21 @@ def choose(curve):
     return min(c for d, c in usable if d <= best + 1e-12)
 
 
+def sensitivity_c(curve, interval):
+    """Upper end of the values of c that the human data cannot tell apart (spec §6.2, amended 10 Nov
+    2026): the largest grid value c such that, for every grid value from 0 to c, the training-source
+    ratio lies inside the human 95% interval of Delta(DH, FDI) / Delta(FB, FDI) (mean delta FB > 0).
+    None if c = 0 itself is outside. The run from 0 must be unbroken, because the ratio need not be
+    monotone in c."""
+    low, high = interval
+    best = None
+    for row in sorted(curve):
+        if not (np.isfinite(row[1]) and row[2] > 0 and low <= row[1] <= high):
+            break
+        best = row[0]
+    return best
+
+
 def curve(per_source):
     """Fit curve from per-source deltas {c: [(delta FB, delta DH, over FB, over DH), ...]}: rows
     (c, ratio of source means, mean delta FB, mean delta DH, sources used, over-driven FB share,
@@ -149,6 +164,13 @@ def summary(configurations):
                             f"[{min(defined, default=float('nan')):.2f}, {max(defined, default=float('nan')):.2f}], undefined {len(cs) - len(defined)}")
             same = sum(r['fits'][gate]['remove']['c'] == r['fits'][gate]['maximum']['c'] for r in results)
             print(f'  {gate}: ' + '; '.join(line) + f'; remove = maximum in {same}/{len(results)}')
+        interval = cr.human_intervals()['DH_FB']
+        for gate in ev.GATES:
+            his = [sensitivity_c(r['fits'][gate][t]['curve'], interval) for r in results for t in cr.TREATMENTS]
+            defined = [c for c in his if c is not None]
+            print(f"  {gate}: sensitivity c (largest c compatible with the human interval, both treatments): median "
+                  f"{np.median(defined) if defined else float('nan'):.2f} [{min(defined, default=float('nan')):.2f}, "
+                  f"{max(defined, default=float('nan')):.2f}], undefined {len(his) - len(defined)}")
         # The ungated network is the gated model at c = 1 (g = 1 on every display), whatever the gate.
         ends = np.array([[r['fits'][ev.GATES[0]]['raw']['curve'][k][1:4] for k in (0, -1)] for r in results], float)
         over = np.mean([r['fits'][ev.GATES[0]]['raw']['curve'][-1][6] for r in results])

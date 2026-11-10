@@ -38,7 +38,7 @@ def human_intervals(path=ROOT / 'output/human_target/ratios.csv'):
     """S1 and S2 intervals: the human 95% intervals of the ratios on the primary scale (spec §4.5)."""
     r = pd.read_csv(path).set_index(['scale', 'ratio'])
     get = lambda name: tuple(r.loc[('participant_z', name), ['ci_low', 'ci_high']].astype(float))
-    return dict(S1=get('ratio_DH_to_connected_FDI'), S2=get('ratio_UL_to_FB_FDI'))
+    return dict(S1=get('ratio_DH_to_connected_FDI'), S2=get('ratio_UL_to_FB_FDI'), DH_FB=get('ratio_DH_to_FB_FDI'))
 
 
 def readout_ranges(report):
@@ -155,6 +155,19 @@ def paired_difference(a, b, index_sets, level=.95):
         est = float(np.nanmean(diff))
     low, high = interval(boot, level)
     return dict(estimate=est, ci=(low, high), instances=int(np.isfinite(diff).sum()), exceeds=bool(low > 0))
+
+
+def c_fdi(cells):
+    """Primary contrast per instance: cells [instances, 3, 2, 2] in the human order, NaN where removed."""
+    cells = np.asarray(cells, float)
+    return (deltas(cells, 0) + deltas(cells, 1)) / 2 - deltas(cells, 2)
+
+
+def necessity(gated_cells, ungated_cells, index_sets, level=.95):
+    """Necessity of the gate for the primary contrast (spec §5.2, amended 10 Nov 2026): the paired
+    difference C_FDI(gated) - C_FDI(ungated) over matched instances (the same networks, sessions and
+    noise; only the gate differs). The gate adds to the contrast if the interval lies above 0."""
+    return paired_difference(c_fdi(gated_cells), c_fdi(ungated_cells), index_sets, level)
 
 
 def pair_effects(control_cells, displays):

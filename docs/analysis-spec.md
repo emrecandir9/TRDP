@@ -3,7 +3,10 @@
 **Status: FROZEN — 22 October 2026, by the project owner, before any model result exists.
 No model, baseline or feature extraction had been run.**
 After freezing, change this document only through the amendment log (§10), with a date and
-reason. Machine-readable values live in [`config/analysis.json`](../config/analysis.json).
+reason. **What "frozen" means here (added 10 November 2026):** the criteria were fixed before any
+held-out contrast was computed, and every later change is dated in §10 (13 amendments so far), several of
+them after training-source results. This is a pre-specification developed on training folds, not an
+externally registered preregistration; §10 states for each amendment which results existed. Machine-readable values live in [`config/analysis.json`](../config/analysis.json).
 
 Reference study: Matamala-Gomez, Frisco et al. (2025), *Virtual body continuity during action
 observation affects motor cortical excitability*, Sci Rep 15:13364,
@@ -28,6 +31,10 @@ hands or bodies. In the human data, wrist continuity and the global amount of vi
 change together (full body, upper limb, detached hand), so the human data cannot show that
 continuity rather than visible context drives the effect; that distinction rests on model
 predictions for the matched controls, which have no human data (amended 24 October 2026).
+H2's context estimate is computed from segmentation masks and the full-body reference image, not from the
+displayed image alone, so "a model that receives only images" describes the network and the comparison
+models, not H2's gate; and a visible-area gate is expected to fit the paper's three displays as well as H2
+(amended 10 November 2026).
 
 ## 2. Correspondence with the paper
 
@@ -38,7 +45,7 @@ predictions for the matched controls, which have no human data (amended 24 Octob
 | Upper limb: 180° image of arm on table, black surround | Rows above the fitted desk edge kept, black below | Desk remains visible |
 | Detached hand: isolated hand, black surround | **Primary:** skin-only silhouette cut at the wrist, on black ([method](detached-hand-silhouette.md)). Sensitivity: the archive's rectangle with desk patch | Outline from SAM-HQ on the final frames; not hand-annotated ground truth |
 | Body blocks counterbalanced across participants | Six block orders cycled across model instances | — |
-| 60 s static familiarisation per block | 60 s of the static image at block start; model state carried | — |
+| 60 s static familiarisation per block | 60 s of the static image at block start; model state carried | Amended 10 Nov 2026: the networks have no state beyond 20 ms, so the evaluation simulates each trial from rest 300 ms before its second frame ([model-method](model-method.md) §6.18, checked equal to the full session); familiarisation, jitter and block order then have no effect on any readout |
 | 30 static + 30 movement trials per block, randomised | Same counts, randomised per block and instance | — |
 | First frame 2,250–3,250 ms (jittered), second frame 750 ms | Same; jitter drawn uniformly in integer ms | Original draws unknown |
 | TMS 250 ms after second-frame onset | Common probe pulse 250 ms after second-frame onset | Probe is a model current, not TMS |
@@ -232,6 +239,35 @@ not equivalence. Passing them shows that the model is not inconsistent with the 
 failing them is informative. No equivalence claim is made without a margin declared in advance.
 The decisive tests are P1–P3 and S3.
 
+**Which criteria are informative for H2 (amended 10 November 2026; replaces the sentence above for H2).**
+H2's context estimate is exactly 1 for the full body and the upper limb and exactly 0 for the detached hand
+in all 20 sources, and its fitted c is 0 ([model-method](model-method.md) §6.19). Its detached-hand effect is
+then 0 by construction, so P1, P3, S1 and S3(b) are met by any network that facilitates on the full body, and
+the full-body half of P2 was calibrated during development (model-method §6.10–6.12). On unseen inner
+sources, full-body facilitation and H2's control predictions are already known (§8), so S3(a) is not a blind
+test either. **For H2 the informative criteria are the upper-limb half of P2 and S2**, the only ones that
+depend on a display never simulated before the evaluation. The decision rule above is unchanged and every
+criterion is still reported; a met decision rule is to be read with this paragraph.
+
+**Necessity of the gate (added 10 November 2026).** The ungated network (§6.2) is scored with every
+criterion, and the paired difference C_FDI(H2) − C_FDI(ungated) over matched instances (same network, session
+and noise) is reported with its hierarchical-bootstrap interval under each treatment
+(`criteria.necessity`). The gate is called necessary for a criterion only if the ungated network does not
+meet it while H2 does, and is said to add to the contrast only if the paired interval lies above 0 under both
+treatments. This applies per encoder. It is not part of the decision rule; it governs the claim about
+necessary components (§1).
+
+**Readouts as simulated (added 10 November 2026).** Every criterion is also computed on the readouts as
+simulated, without either treatment of over-driven cells, and reported beside the two treatments. The
+treatments (§5.1) are a sensitivity analysis for readouts the model cannot measure validly, not worst-case
+bounds: the lower extreme is not imputed. The verdict logic is unchanged.
+
+**Sensitivity to c (added 10 November 2026).** The human ratio does not identify c: its 95% interval is
+[−0.67, 0.35], and a gate cannot reach the declared target −0.10. Per network and treatment, c⁺ is the
+largest grid value such that the training-source ratio stays inside that interval for every grid value from
+0 to c⁺ (`fit_gate.sensitivity_c`, from the saved fit curves; no new fit). H2 is evaluated at its declared c
+and, as a sensitivity analysis outside the decision rule, at c⁺.
+
 **Rationale.** Fixing endpoints, aggregation, primary model and decision rule before any
 result follows preregistration practice (Nosek et al., 2018). Requiring the effect to exceed
 low-level and hand-only versions of the same model follows from §4 and the measured confounds
@@ -305,6 +341,9 @@ No condition label enters any model, and no condition receives its own gain.
 
 ### 7.1 Splits
 
+- Each network trains on 18 source groups: besides the held-out group, one inner group (the next one,
+  cyclically) is left out for the health checks; the fit of c uses the 19 non-held-out groups (stated 10
+  November 2026; as built since 24 October).
 - Outer loop: leave one source group out (20 folds). All 24 variants and 8 images of a
   group stay in the same fold. Tuning uses grouped inner folds within the training groups.
 - Every result is repeated without reference 17.
@@ -343,7 +382,11 @@ Holm correction over the 8, under both treatments; the condition holds if H0–H
 differ with the primary encoder. *Probe responses vary smoothly with strength*: full-body trials, probe
 1.0–1.5 × threshold; the mean FDI readout on static and on movement trials both rise with strength
 (Spearman ≥ 0.9) in every network. The visible-area model is not run on the controls before the
-evaluation, so S3(a) is not previewed.
+evaluation, so S3(a) is not previewed. (Qualified 10 November 2026: an inner source is never trained on
+and every source is the inner source of one fold, so these checks are out-of-sample results. H2's control
+predictions and its full-body facilitation on unseen sources are therefore known before the evaluation, and
+with c = 0 the visible-area model gives both members of a pair nearly the same small gate; only its
+computation, not its likely outcome, is withheld.)
 
 ## 9. Reporting rules
 
@@ -366,7 +409,6 @@ evaluation, so S3(a) is not previewed.
 | 24 Oct 2026 (after the Gate 1 baselines, before any model result) | §5.2 and §6.3: OpenCLIP ViT-bigG-14 named as primary frozen encoder, DINOv2 summary and mean patch token as robustness encoders; the decision rule additionally requires P1 in the same direction with both robustness encoders | The spec required a frozen encoder without naming one; choosing after the baselines could favour the hypothesis, so the least favourable encoder is primary and agreement across encoders is required. Approved by the project owner |
 | 24 Oct 2026 (before any model result) | §1 claim boundary on continuity vs visible context; §2 fixation presented as rest; §5.2 S3 split into (b) hand-only as written and (a) a refitted global visible-area gate compared on the matched control pairs; §6.2 H2's context estimate defined as contiguous forearm continuity at the wrist with a one-parameter gate; §7.2 rectangle prediction corrected | A low-level gate fitted to the same human ratio can match it through visible area, so S3(a) as written would reject H2 by construction and the human data cannot separate the two accounts; the encoded black frame drove the model's motor layer to 45 Hz at rest; two gate parameters cannot be identified from one ratio; the archive rectangle was measured to contain 0.80 palm widths of forearm. Decided by the assistant under the project owner's delegation of 24 October 2026 |
 | 24 Oct 2026 (before any model result) | §2 and §6.4: readout window 0–55 ms after the probe instead of 5–60 ms | The human window captures an MEP that arrives after about 20 ms of corticospinal conduction; the model reads its motor population directly, which answers within 1–5 ms in synchronous volleys, so the 5-ms boundary cut through them and made the probe dose-response non-monotone (health check on training sources). The window keeps the human length; with it the dose-response is monotone (Spearman 1.00) |
-
 | 24 Oct 2026 (before any model result) | §2 background-EMG and ± 2 SD trimming rows; §5.2 and §6.2 ungated network added as a comparison model; §6.3 observation without execution; §6.4 readout validity and the readout range rule | A check on the health-check network (training sources, full-body trials only) found that after training the FDI population fired at 26 Hz before the probe on movement trials (99% of its neurons active), against 5 Hz on static trials, and the probe readout did not differ between them (−0.47 spikes, 95% interval −1.32 to 0.38): the population's probe response peaks near 9 Hz and falls below its resting value at 30–40 Hz, so a population driven hard reads as unexcited. P2 would then have failed in every model for a measurement reason, and an over-driven test display could have imitated the human pattern. The paper's own trimming had not been mirrored, and without an ungated model the necessity of H2's gate could not be shown. Decided by the assistant under the project owner's delegation of 24 October 2026 |
 | 24 Oct 2026 (before any model result; training campaign stopped after 3 networks) | Motor limits of §6.3 applied to every trial instead of the batch mean, movement limit 4 Hz, background criterion 5 Hz instead of 6 Hz ([model-method](model-method.md) §6.2, §6.12) | In the first campaign networks the batch-mean limit let single sources reach 9 Hz before the probe, past the readout's measured peak (5.4–5.5 Hz), where facilitation was no longer detected (fold 2: +0.46 spikes, 95% interval −0.39 to 1.31, inner training source only). The paper excluded background activity trial by trial. The three networks and four partial ones of the stopped campaign are kept in `output/model/campaign_superseded_batch_mean_cap/` and not used |
 | 25 Oct 2026 (before any model result; before the campaign restart) | Motor limits rest 1 Hz and movement 3 Hz per trial; background criterion and readout range rule use each network's measured readout peak instead of a fixed rate ([model-method](model-method.md) §6.12) | With rest 2 Hz and limit 4 Hz, unseen inner sources were driven up to 6.3 Hz, too close to the readout's peak; with rest 1 Hz the calibrated probe is larger and the readout grows up to about 8 Hz, so a fixed limit taken from the earlier networks no longer described the readout's valid range. Training sources and full-body trials only |
@@ -375,6 +417,7 @@ evaluation, so S3(a) is not previewed.
 | 26 Oct 2026 (before any criterion, fit of c or Gate 2 check was computed) | §5.2 implementation of the criteria and verdicts; §6.2 fit of c under each treatment, learned pathways cross-fitted on training sources; §8 operational Gate 2 checks | The criteria and Gate 2's wording needed computable definitions; the fit must use the same readout rule as the evaluation; the learned pathways scored training sources in-sample, which is not comparable with their held-out scores (H4's in-sample full-body m near 0 against 0.7 out of sample; [model-method](model-method.md) §6.19). Declared and committed before running |
 | 8 Nov 2026 (before any recurrent network was trained, and before any fit of c or Gate 2 check had a result) | §5.2 and §6.3: the recurrent variant defined (trainable weights within the visual layer, no self-connections, initialised at 0 so that it starts as the feedforward network of the same seed, trained as declared); trained for H2, OpenCLIP, 20 folds × 10 initialisations; Gate 2 keeps the feedforward network as the primary variant unless it fails Gate 2's conditions ([model-method](model-method.md) §6.20) | §5.2 requires the variant to be selected and logged before the evaluation; the rule prefers the simpler network and depends only on Gate 2's conditions, which preview no criterion |
 | 8 Nov 2026 (before any of them was trained) | §6.3: robustness variations of the primary network declared: visual layer 128 and 512 neurons, learning rate 3 × 10⁻⁴ and 3 × 10⁻³, 6,000 updates, the sensitivity time constants (membrane 10/40 ms, synaptic 2/10 ms), each on 20 folds × 3 initialisations, and the 0.5-ms time step on 20 folds × 1 initialisation; evaluated once with H2 and reported as robustness, not part of the decision rule ([model-method](model-method.md) §6.21) | The settings without a literature value must be shown not to carry the result; declared before the evaluation as §6.3 requires |
+| 10 Nov 2026 (after the training-source fit of c and Gate 2 results; no held-out source and no upper-limb display has been simulated) | Status line: what "frozen" means; §1: H2's gate is supplied, and a visible-area gate fits the paper's displays equally; §2: trialwise evaluation; §5.2: criteria informative for H2, necessity of the gate (H2 − ungated), criteria also on readouts as simulated, sensitivity to c (c⁺); §7.1: 18 training groups per network; §8: Gate 2 checks are out-of-sample previews. No criterion, parameter, target or decision rule is changed | [Independent review](independent-review.md) of 10 November 2026 (findings F1–F3, F5–F9): the primary criteria are built in for H2; on training sources the ungated network already responds less to the detached hand (ratio 0.49 OpenCLIP, 0.04 and 0.00 DINOv2), so necessity must be tested, not assumed; the over-driven treatments are not bounds; c is not identified. Each addition can only make the claims harder to support. Requested by the project owner |
 
 ## 11. References
 
@@ -388,6 +431,9 @@ evaluation, so S3(a) is not previewed.
   observation: a magnetic stimulation study. *Journal of Neurophysiology*, 73, 2608–2611.
 - Heyes, C. (2001). Causes and consequences of imitation. *Trends in Cognitive Sciences*, 5,
   253–261.
+- Gelman, A. & Loken, E. (2013). The garden of forking paths: why multiple comparisons can be a problem,
+  even when there is no "fishing expedition" or "p-hacking" and the research hypothesis was posited ahead
+  of time. Unpublished manuscript, Columbia University.
 - Horowitz, J. L. & Manski, C. F. (2000). Nonparametric analysis of randomized experiments with
   missing covariate and outcome data. *Journal of the American Statistical Association*, 95, 77–84.
 - Kraskov, A., Dancause, N., Quallo, M. M., Shepherd, S. & Lemon, R. N. (2009). Corticospinal

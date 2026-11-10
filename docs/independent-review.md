@@ -10,13 +10,13 @@ Updated as each item is handled; the commit that handled it is given. Open items
 | --- | --- |
 | F2: record ungated results, withdraw "clean target" | **done** 10 Nov (model-method §6.19 table, §7 note, baselines note, README; `fit_gate.py --summary` prints the ungated ratio) |
 | F16: document contradictions (answer 37) | **done** 10 Nov, except the items inside the spec and `config/analysis.json` (handled with the amendment below) |
-| F1, F2, F7, F8: declared reporting amendments (informative criteria, necessity test, raw readouts, c sensitivity) | open |
-| F2, F7, F8: code for the necessity test, raw reporting and c sensitivity | open |
-| F9: amendment list and spec hash in `config/analysis.json`; "frozen" wording; external timestamp | open |
-| F3–F6, F11, F12: limitations written into the documents | open |
+| F1, F2, F7, F8: declared reporting amendments (informative criteria, necessity test, raw readouts, c sensitivity) | **done** 10 Nov (spec §5.2 and §10; model-method §6.19a) |
+| F2, F7, F8: code for the necessity test, raw reporting and c sensitivity | **done** 10 Nov (`criteria.necessity`, `fit_gate.sensitivity_c`, tests); the evaluation driver must call them and `treated_cells(treatment=None)` |
+| F9: amendment list and spec hash in `config/analysis.json`; "frozen" wording; external timestamp | amendment list, hash test (`tests/test_spec.py`) and wording **done** 10 Nov; external timestamp at the 11 Dec freeze **open** (commits are pushed to GitHub the same day from now on) |
+| F3–F6, F11, F12: limitations written into the documents | F3, F5, F6 **done** 10 Nov (spec §1, §5.2, §8; validation "Remaining limits"); F4, F11, F12 to be carried into the report |
 | All-context training ablation: specify, then train | open |
 | F10: evaluation driver, tested and hashed | open |
-| F13–F15, F17: wording and provenance fixes | F14 **done** 10 Nov (model-method §6.13, README); F13, F15, F17 open |
+| F13–F15, F17: wording and provenance fixes | F13, F14, F17 **done** 10 Nov (model-method §6.13, §6.19a; decision audit); F15 open |
 | 0.5-ms time step (already declared) | open |
 
 Labels: **[V]** verified by me in code, data or output; **[D]** stated by the project, not independently checked; **[I]** my inference, premises given.

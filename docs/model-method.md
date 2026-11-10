@@ -894,6 +894,34 @@ memory were rerun; no result is missing.
   (§6.16–6.17). The feedforward spiking network therefore stays the primary variant (§6.20); the
   recurrent network is scored as the ablation.
 
+### 6.19a Additions after the independent review (declared 10 November 2026, before any evaluation)
+
+Spec amendment of 10 November 2026; [independent review](independent-review.md). No setting, target, criterion
+or decision rule changes. Written, implemented and tested on synthetic data before use.
+
+- **Necessity of the gate** (`criteria.necessity`). The ungated network is scored with every criterion; the
+  paired difference C_FDI(H2) − C_FDI(ungated) over matched instances is reported with its interval under each
+  treatment and on the readouts as simulated. The gate is called necessary for a criterion only if the
+  ungated network does not meet it while H2 does. Given the ungated ratios above, the expected outcome is:
+  not necessary for P1; necessary for S1 with OpenCLIP only; inert with DINOv2.
+- **Readouts as simulated.** Every criterion is also computed with no treatment of over-driven cells
+  (`criteria.treated_cells(..., treatment=None)`). The remove and maximum treatments of §6.17 are a
+  sensitivity analysis, not worst-case bounds in the sense of Horowitz & Manski (2000): "remove" is a
+  complete-case analysis and "maximum" imputes one high value, so the lower extreme is never imputed, and for
+  an over-driven full-body movement cell both are neutral or favourable to P2 relative to the measured value.
+- **Sensitivity to c** (`fit_gate.sensitivity_c`). c⁺ is the largest grid value such that the training-source
+  ratio stays inside the human 95% interval of Δ(DH)/Δ(FB), [−0.67, 0.35], for every grid value from 0 to c⁺,
+  per network and treatment, from the saved curves. H2 is also evaluated at c⁺, outside the decision rule.
+  `fit_gate.py --summary` prints its distribution.
+- **What is informative for H2.** P1, P3, S1 and S3(b) are built in (a is exactly 1, 1 and 0 for the three paper
+  displays in every source, and c = 0); the full-body half of P2 was calibrated in §6.10–6.12 against
+  facilitation on unseen inner sources; S3(a)'s H2 side is known from the Gate 2 predictions (stub − gap stub
+  and arm − hand window positive in 20 of 20 inner sources with OpenCLIP). The upper-limb half of P2 and S2
+  are the tests that remain open. §7's table is to be read with this.
+- **Gate 2's "distinct predictions"** holds largely by construction (H0 sees the same hand-only image in every
+  display; H2 closes the gap stub and the hand window). It confirms that the three code paths differ, not that
+  the hypotheses are separable on data.
+
 ### 6.20 Recurrent variant (declared 8 November 2026, before any recurrent network is trained)
 
 Spec §6.3 plans a recurrent variant of the network, and Gate 2 selects the primary variant (spec §5.2,
@@ -1218,3 +1246,4 @@ declared in the spec before the evaluation is opened.
 | 9 Nov 2026, results on training sources (no evaluation) | Fit of c and Gate 2 checks recorded (§6.19): c = 0 in almost every network because a closed gate gives Δ(DH)/Δ(FB) ≈ 0, never −0.10; H0, H1 and H2 predictions distinct; 2,397 of 2,400 probe responses smooth (all primary-encoder networks); Gate 2 met, feedforward stays primary | Recorded before any evaluation; no setting changed |
 | 9 Nov 2026, before any recurrent fit | Recurrent mode check passed (§6.20): trialwise mode used for recurrent networks | Rule declared 8 Nov; the check decides the mode |
 | 9 Nov 2026, results on training sources (no evaluation) | Recurrent and robustness campaigns finished; health, recurrence measure and fit of c recorded (§6.20, §6.21): c = 0 throughout | Recorded before any evaluation; no setting changed |
+| 10 Nov 2026, training-source results already recorded (no evaluation) | Independent review ([review](independent-review.md)): ungated results recorded (§6.19); necessity test, criteria on readouts as simulated, sensitivity value c⁺, statement of the criteria informative for H2 (§6.19a, spec amendment); treatments of over-driven cells renamed a sensitivity analysis; stacked training described as the same procedure, not identical networks (§6.13); 18 training sources per network stated (§6.2) | The review found the primary criteria built in for H2, the gate probably unnecessary for the main contrast, the evaluation largely previewed on inner sources, and c not identified. No setting changed |

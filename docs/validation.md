@@ -224,7 +224,31 @@ Training sources only ([model method](model-method.md) §6.19).
 | Recurrent mode check | Fold 1, seed 0: noise off 100/100 identical; noise on no cell differs (smallest adjusted p 0.67); trialwise mode used |
 | Recurrent and robustness networks | 740/740 trained, ADM curves applied, c fitted (two fits on `vladimir` ran out of memory beside another user's job and were rerun on `jessica`); c = 0 in every network; recurrent input median 29% of feedforward |
 
+## Independent review — 10 November 2026
+
+[Review](independent-review.md) of the whole project at commit `4fd2d50`; training-source outputs read on
+CREMI; no held-out source or upper-limb display simulated.
+
+| Check | Result |
+| --- | --- |
+| Tests | 154 pass on the Mac (one GPU-only test skipped) and 154 on `jessica` with none skipped; 158 after this day's additions |
+| Human target | Re-run: 18 of 18 published statistics reproduced; tables byte-identical to the stored ones |
+| Integrity scripts | `dataset.py check`, `silhouette.py check` and `verify-archive`, `controls.py check` pass |
+| Criteria code | Hand-built cases: bootstrap at source level (two implementations identical), treatments, ratios, verdicts as declared. A model with full-body facilitation only meets P1, P3 and S1 |
+| Campaign and fit numbers | Health counts and fitted c match the documents; ungated ratios newly recorded (model-method §6.19) |
+| Code on CREMI | `model/*.py` hash-identical to the repository |
+| Stacked training | Fold 4, seed 0, alone vs in a stack: different weights, same health measures |
+| Verdict | Sound with major revisions; findings and progress in the review |
+
 ## Remaining limits
+
+**From the independent review (10 November 2026).** For H2, P1, P3, S1 and S3(b) are built in and the
+full-body half of P2 was calibrated; full-body facilitation, the detached-hand ratio and H2's control
+predictions are already known on unseen inner sources, so only the upper-limb display is new in the
+evaluation. H2's gate is supplied from masks, not computed from the image. The gate parameter is not
+identified. The readout is not physiological and its over-driven treatments are a sensitivity analysis.
+The spec is a dated pre-specification, not an externally registered preregistration.
+
 
 **Single unblinded review.** All 480 families were accepted by one reviewer (the project owner),
 who knew the hypothesis and which frame was edited. An independent two-rater check was prepared

@@ -150,34 +150,89 @@
       {
         "date": "2026-10-22",
         "section": "7.2 controls",
+        "commit": "85c5757",
         "sha256_after": "62182356f066f64e8a30f09cea85200df29cd40dee9ace29e505b0e6e5191100",
-        "before_any_result": true
+        "results_existing": "human reanalysis; low-level statistics of the controls"
       },
       {
         "date": "2026-10-24",
         "section": "5.2, 6.3 encoder and decision rule",
+        "commit": "a1c59b8",
         "sha256_after": "ecb3e43445092c9dfcf88eeb5976203f3124c17af75933af74e419517252fdc3",
-        "before_any_result": true
+        "results_existing": "Gate 1 baselines and Addendum A"
       },
       {
         "date": "2026-10-24",
         "section": "1, 2, 5.2 S3, 6.2 H2, 7.2 rectangle",
+        "commit": "3cfe210",
         "sha256_after": "abbce8dfc95c2f5128fa076392b592698f27ed51e015f3d605bac9fb68f5197b",
-        "before_any_result": true
+        "results_existing": "Gate 1; first health check (one network); continuity values of every display"
       },
       {
         "date": "2026-10-24",
         "section": "2, 6.4 readout window",
+        "commit": "1005ce6",
         "sha256_after": "ef0ee836c83654175a3d0576241ccaffc021c77e2d1bfb104478816a8d8c39b8",
-        "before_any_result": true
+        "results_existing": "second health check (training sources)"
+      },
+      {
+        "date": "2026-10-24",
+        "section": "2, 5.2, 6.2 ungated, 6.3 observation without execution, 6.4 readout validity",
+        "commit": "d0fcb0f",
+        "sha256_after": "d22f6ecc1c4eb916af6ddc3f298bdbdb9f4b9ec48a88f06341395a0b3c1f17ed",
+        "results_existing": "health checks v3-v5 on fold 1 (inner source, full body); static activity of every display on sources 3-20"
+      },
+      {
+        "date": "2026-10-25",
+        "section": "6.3 motor limits per trial (two log rows: 4 Hz, then 1 and 3 Hz); background criterion",
+        "commit": "e2e84a3",
+        "sha256_after": "c082e450bf273fa7bcd6678a5ad862d0586fcf59d362e990005339bae0e60353",
+        "results_existing": "stopped campaign (folds 1-3) and health checks v6-v7 on unseen inner sources of folds 1-4"
+      },
+      {
+        "date": "2026-10-25",
+        "section": "5.2, 6.2 H2-learned and H4; twin; spinal readout not adopted",
+        "commit": "8c57621",
+        "sha256_after": "b145fff7e92a90780dfb64ffd16e5587fffcc26d3ed19ed06e3e698519aa09d1",
+        "results_existing": "gate tables of both learned pathways (same commit); spinal readout on four networks"
       },
       {
         "date": "2026-10-26",
-        "section": "5.1 instances and over-driven displays; 5.2 implementation; 6.2 fit of c; 6.4 readout validity; 8 Gate 2 checks",
+        "section": "5.1 instances and over-driven displays; 6.4 readout validity",
+        "commit": "bc3cafd",
+        "sha256_after": "2aa7c0ff6a18f8a955294dd86c4907b6c2347f30fbc2a677db11aa017df9dac2",
+        "results_existing": "health reports of all 2,400 networks (inner training sources)"
+      },
+      {
+        "date": "2026-10-26",
+        "section": "5.2 implementation; 6.2 fit of c; 8 Gate 2 checks",
+        "commit": "3c280cd",
         "sha256_after": "45b4efcfb0d8a1bcf944a19c5c067fa06cc1514b81c6737e23c84d32a6c512ca",
-        "before_any_result": true
+        "results_existing": "as above; in-sample learned-pathway values"
+      },
+      {
+        "date": "2026-11-08",
+        "section": "5.2, 6.3 recurrent variant and selection rule",
+        "commit": "57f59d6",
+        "sha256_after": "c261b2af33c1c9bdafe40cc22394e4c0d845ace9cd1731e7946df103187fe877",
+        "results_existing": "as above; fit of c and Gate 2 checks running"
+      },
+      {
+        "date": "2026-11-08",
+        "section": "6.3 robustness variations",
+        "commit": "21de913",
+        "sha256_after": "e38b0f58bc5abfed5087b99223a1e72900434c5d588dada93f4b3cd50205e9ba",
+        "results_existing": "as above"
+      },
+      {
+        "date": "2026-11-10",
+        "section": "status, 1, 2, 5.2 (informative criteria, necessity, readouts as simulated, sensitivity to c), 7.1, 8",
+        "commit": "this commit",
+        "sha256_after": "70c3654cb4dfde902bfdf33f4f437f2f987f775d3ed76862ba08493f09a06574",
+        "results_existing": "training-source fit of c, Gate 2 checks (out-of-sample on inner sources), recurrent and robustness campaigns; independent review"
       }
-    ]
+    ],
+    "note": "No held-out contrast and no upper-limb display existed at any amendment. results_existing lists what did exist (replaces the earlier before_any_result flag). The last sha256_after must equal the current docs/analysis-spec.md (tests/test_spec.py)."
   },
   "controls": {
     "definition": "docs/controls.md",
@@ -220,13 +275,20 @@
       "h0",
       "h1",
       "ungated (H2 network, g = 1)",
-      "non-spiking twin"
+      "non-spiking twin",
+      "h2_learned (forearm prediction)",
+      "h4 (own-body familiarity)",
+      "recurrent variant"
     ],
     "motor_regime": "observation without execution, per trial: each motor population near 1 Hz on static frames and at rest, below 3 Hz on movement frames (training)",
     "readout_validity": "every trained network enters except one failing a network-level health criterion; a cell (display x trial type x population) is over-driven when that population's mean pre-probe rate exceeds its own readout range (rate at its excitability-curve peak, measured inside the 0-0.6 sweep); every criterion is computed with over-driven readouts removed and set to the readout maximum, met only if met both ways, not met only if not met both ways, otherwise undetermined",
     "readout_trimming": "+/- 2 SD within instance x display x trial type x population, then z-normalisation (paper); untrimmed sensitivity",
     "h2_gate_fit": "grid c in {0, 0.05, ..., 1}, closest source-mean DH/FB ratio to -0.10 on the 19 training sources, ties to smaller c, values with source-mean delta FB <= 0 excluded; fitted raw and under each treatment, the evaluation uses the c of the same treatment; learned pathways cross-fitted on training sources",
-    "amended": "2026-10-24: readout validity, motor regime, trimming, ungated comparison (docs/analysis-spec.md section 10); 2026-10-26: failing-network rule, readout ranges, criteria implementation, fit under each treatment, Gate 2 checks",
-    "gate2_checks": "inner training source only; distinct control predictions: 8 quantities (6 control FDI movement effects, 2 matched-pair differences), paired hierarchical bootstrap, two-sided p < .05 after Holm over the 8, under both treatments, for H0-H1, H0-H2, H1-H2 with the primary encoder; smooth probe responses: full-body trials, probe 1.0-1.5 x threshold, mean FDI readout static and movement Spearman >= 0.9 in every network"
+    "amended": "2026-10-24: readout validity, motor regime, trimming, ungated comparison (docs/analysis-spec.md section 10); 2026-10-26: failing-network rule, readout ranges, criteria implementation, fit under each treatment, Gate 2 checks; 2026-11-10: necessity of the gate, readouts as simulated, sensitivity to c, informative criteria for H2 (independent review)",
+    "gate2_checks": "inner training source only; distinct control predictions: 8 quantities (6 control FDI movement effects, 2 matched-pair differences), paired hierarchical bootstrap, two-sided p < .05 after Holm over the 8, under both treatments, for H0-H1, H0-H2, H1-H2 with the primary encoder; smooth probe responses: full-body trials, probe 1.0-1.5 x threshold, mean FDI readout static and movement Spearman >= 0.9 in every network",
+    "necessity_of_gate": "paired difference C_FDI(H2) - C_FDI(ungated) over matched instances, hierarchical bootstrap, both treatments; the ungated network scored with every criterion (model/criteria.py necessity)",
+    "readouts_as_simulated": "every criterion also reported without either treatment of over-driven cells",
+    "h2_gate_sensitivity": "c+ = largest grid c whose training-source DH/FB ratio stays inside the human 95% interval for every grid value from 0 (model/fit_gate.py sensitivity_c); H2 also evaluated at c+, outside the decision rule",
+    "training_sources_per_network": 18
   }
 }

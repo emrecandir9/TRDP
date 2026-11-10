@@ -25,6 +25,15 @@ class Choice(unittest.TestCase):
         self.assertIsNone(fg.choose([(0., np.nan, 1.), (.5, -.1, 0.)]))
         self.assertEqual(fg.choose([(0., .2, 1.), (.5, -.09, 1.)]), .5)
 
+    def test_sensitivity_c_is_the_unbroken_run_from_zero(self):
+        import fit_gate as fg
+        interval = (-.67, .35)
+        rising = [(0., 0., 1., 0.), (.05, .2, 1., .2), (.1, .34, 1., .3), (.15, .5, 1., .5), (.2, .3, 1., .3)]
+        self.assertEqual(fg.sensitivity_c(rising, interval), .1)          # 0.2 is inside again, but after a break
+        self.assertEqual(fg.sensitivity_c([(0., .1, 1., .1), (.05, .1, 1., .1)], interval), .05)
+        self.assertIsNone(fg.sensitivity_c([(0., .9, 1., .9)], interval))
+        self.assertIsNone(fg.sensitivity_c([(0., .1, -1., .1)], interval))  # no full-body effect: undefined
+
     def test_curve_uses_sources_with_both_deltas(self):
         import fit_gate as fg
         rows = fg.curve({0.: [(1., -.1, False, False), (np.nan, .3, True, False), (2., -.2, False, True)]})

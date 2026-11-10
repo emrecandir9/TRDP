@@ -42,7 +42,7 @@ authors, venue, year) and, where the claim depends on a finding, against the abs
 
 | Decision | Basis | Class |
 | --- | --- | --- |
-| Frozen task-trained encoders as models of the visual input | Goal-driven networks as sensory models (Yamins & DiCarlo, 2016) | L |
+| Frozen task-trained encoders as models of the visual input | Goal-driven networks as sensory models (Yamins & DiCarlo, 2016); the reference supports the approach for ventral-stream object responses, not these encoders for action observation | L (principle) / C (choice) |
 | OpenCLIP ViT-bigG/14 and DINOv2 ViT-L/14 | Cherti et al. (2023); Oquab et al. (2024) | L |
 | Low-level, pixel and hand-only baselines before any model | Rules out stimulus confounds first | M |
 
@@ -54,7 +54,7 @@ authors, venue, year) and, where the claim depends on a finding, against the abs
 | τ_mem 20 ms, τ_syn 5 ms, Δt 1 ms; sensitivity 10/40 and 2/10 ms, 0.5 ms | Conventional values; sensitivity declared in the spec | L/C |
 | Non-spiking twin emits the noisy LIF neuron's mean-field rate (tabulated by simulation) | Firing of noisy LIF neurons with synaptic filtering (Fourcaud & Brunel, 2002) | L |
 | 256 visual, 2 × 64 motor neurons; learning rate 10⁻³; 3,000 updates | No literature value | C (robustness variations, model-method §8) |
-| Visuomotor mapping learned from the observer's own connected (full-body) view only | Associative accounts of mirror responses (Heyes, 2001; Cook et al., 2014); training reshapes FDI/ADM MEP specificity (Catmur et al., 2007); computational mirror models learn such mappings (Oztop et al., 2013) | L |
+| Visuomotor mapping learned from the observer's own connected (full-body) view only | Associative accounts of mirror responses (Heyes, 2001; Cook et al., 2014); training reshapes FDI/ADM MEP specificity (Catmur et al., 2007); computational mirror models learn such mappings (Oztop et al., 2013). The literature supports learned visuomotor associations; restricting training to the full-body view is the project's choice, and it puts the detached hand outside the training distribution (model-method §6.19) | L (principle) / C (choice) |
 | Auxiliary task: detect the index movement | The participants' counting task | P |
 | Observation without execution: motor populations near rest, limits per trial (rest 1 Hz, movement 3 Hz) | Corticospinal mirror neurons are modulated during observation without muscle activity, some suppressed (Kraskov et al., 2009; Vigneswaran et al., 2013); the numeric limits are calibrations | L (principle) / C (values) |
 
@@ -88,13 +88,14 @@ authors, venue, year) and, where the claim depends on a finding, against the abs
 | --- | --- | --- |
 | Thresholds: task AUC ≥ 0.9, ≤ 10% silent and ≤ 5% fast visual neurons, Spearman ≥ 0.9, rest 0.5–20 Hz | No literature values; declared before training | C |
 | No network is excluded for a source-dependent health failure; network-level criteria (all passed by 2,400/2,400) still exclude | Excluding is never conservative: either neutral or favourable to the hypothesis (model-method §6.16; decision of 26 Oct 2026) | M |
-| Over-driven held-out displays counted only if the result holds both with them removed and with them set to the readout's maximum | Worst-case (partial-identification) bounds for missing outcomes (Horowitz & Manski, 2000); the maximum mirrors the MEP plateau (Devanne et al., 1997) | L |
+| Over-driven held-out displays counted only if the result holds both with them removed and with them set to the readout's maximum | A two-way sensitivity analysis, inspired by worst-case bounds for missing outcomes (Horowitz & Manski, 2000) but not such a bound: the lower extreme is not imputed (corrected 10 Nov 2026 after the independent review); criteria are also reported on the readouts as simulated | C |
 | Readout range valid only if the excitability curve peaks inside the tested range (sweep doubled 26 Oct 2026) | Measurement validation: the twin had not peaked in the old sweep; every premise of the rule tested on all 2,400 networks (model-method §6.17) | M |
 
 | Each population flagged against its own readout range (ADM curve measured like the FDI one) | Applies the rule's premise to the population it concerns instead of assuming the ADM curve matches the FDI one | M |
 | c fitted under each treatment; the evaluation uses the c of the same treatment | The same validity rule throughout, from fit to verdict | M |
 | Learned pathways scored on training sources by cross-fitting (pathway fitted without the source) | Out-of-sample scoring, as for the held-out source; in-sample scores were not comparable (model-method §6.19) | M (fault fixed) |
-| Gate 2 "different control predictions": any of 8 paired quantities, Holm-corrected, both treatments | Holm (1979); hierarchical bootstrap (Saravanan et al., 2020); the choice of quantities is the project's | C |
+| Gate 2 "different control predictions": any of 8 paired quantities, Holm-corrected, both treatments | Holm (1979); hierarchical bootstrap (Saravanan et al., 2020); the choice of quantities is the project's. Met largely by construction (model-method §6.19a) | C |
+| Necessity of the gate: H2 − ungated paired difference; sensitivity value c⁺; criteria on readouts as simulated (added 10 Nov 2026) | Ablation and sensitivity analysis; declared after the independent review, before the evaluation | M |
 | Gate 2 "smooth probe responses": Spearman ≥ 0.9 over 1.0–1.5 × threshold in every network | Reuses the declared dose-response threshold | C |
 
 Because no network is excluded on the arbitrary health thresholds of the first row any more, their
@@ -108,18 +109,19 @@ arbitrariness no longer decides which data enter the analysis.
 
 ## Summary
 
-48 decisions, counted by their first class:
+49 decisions, counted by their first class (10 November 2026: one added, three reclassed after the
+[independent review](independent-review.md)):
 
 | Class | Decisions |
 | --- | --- |
 | P, mirrors the paper | 8 |
-| L, grounded in literature | 13 |
-| M, methodological standard | 13 |
-| C, project choice | 8 |
+| L, grounded in literature | 12 |
+| M, methodological standard | 14 |
+| C, project choice | 9 |
 | W, weakness or limit | 6 |
 
-Three of the L decisions have a grounded principle but project-chosen values (time constants, the motor
-limits during observation, the readout window). Every project choice (C) was declared before the results it could affect, and none can be grounded
+Five of the L decisions have a grounded principle but project-chosen values (time constants, the motor
+limits during observation, the readout window, the encoders as visual input, full-body-only training). Every project choice (C) was declared before the results it could affect, and none can be grounded
 in a published value because none exists for this model. Their influence is tested by the declared
 robustness variations (network size, learning rate, training length, time constants and step) and,
 for the health thresholds, removed by the rule that no network is excluded on them.

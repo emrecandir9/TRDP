@@ -268,7 +268,7 @@ Done on 25–26 October:
   premise was tested on all 2,400 networks.
 - **Evaluation simulator** built ([model method](docs/model-method.md) §6.18): its fast trialwise mode
   equals the full session on trained networks.
-- **Decision audit** ([decision audit](docs/decision-audit.md)): all 48 decisions classed by what grounds
+- **Decision audit** ([decision audit](docs/decision-audit.md)): all 48 decisions (49 since 10 November) classed by what grounds
   them, 29 references verified; the model's over-driven readout falls, unlike a human MEP, and is
   reported as a limitation.
 
@@ -323,6 +323,13 @@ Done on 10 November:
   detached hand than to the full body (ratio Δ(DH)/Δ(FB) 0.49 with OpenCLIP, 0.04 and 0.00 with DINOv2). The
   gate is therefore probably not necessary for the main contrast, and the "clean target" reading of Gate 1 is
   qualified ([baselines](docs/baselines.md)). The H2 − ungated comparison is the test of necessity.
+
+- **Reporting amendments declared and built** (spec amendment of 10 November; [model method](docs/model-method.md)
+  §6.19a): necessity of the gate (H2 − ungated, paired), every criterion also on the readouts as simulated, a
+  sensitivity value c⁺ for the unidentified gate parameter, and the statement that for H2 only the upper-limb
+  half of P2 and S2 are open tests. No criterion, parameter or decision rule changed. `config/analysis.json`
+  now lists all 12 amendments with what existed at each, and a test binds the spec to its recorded hash.
+- Document contradictions fixed (counts, links, stale predictions).
 
 Next:
 
