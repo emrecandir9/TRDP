@@ -284,6 +284,7 @@ Run once, after the freeze, with the frozen code (block D of the final-phase pla
 | Completeness | One record per declared network in every configuration; all 3,220 written at commit `3e689fd` (clean working copy) with model-code and configuration hashes equal to `config/freeze.json` and freeze date 2026-11-11; no record outside the declared configurations; no record re-simulated |
 | Scoring | `run_evaluation.py score` once on `joe`, 31 min 45 s, exit 0. `output/model/evaluation/result.json` SHA-256 `d7430f650beaa277d1089dae91fda353cffa7273b4467e9323bf878e45aecbe4` (2,120,220 bytes); the copy on the Mac has the same hash |
 | Decision rule | `decision`: **met** |
+| Result recorded | [model-method](model-method.md) §6.26; copy of `result.json` (same hash) and the figures and tables of `analysis/report_figures.py` in `docs/evaluation/`. Text values checked against `result.json` field by field |
 
 ## Remaining limits
 

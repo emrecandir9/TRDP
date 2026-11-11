@@ -1,0 +1,37 @@
+model,criterion,verdict,status
+H2 (attachment gate),P1,met,built in
+H2 (attachment gate),P2,met,"FB calibrated, UL open"
+H2 (attachment gate),P3,met,built in
+H2 (attachment gate),S1,met,built in
+H2 (attachment gate),S2,met,open
+H2 (attachment gate),S3,met,previewed / built in
+Ungated network,P1,met,previewed
+Ungated network,P2,met,"FB calibrated, UL open"
+Ungated network,P3,met,previewed
+Ungated network,S1,not met,previewed
+Ungated network,S2,met,open
+Visible-area gate,P1,met,previewed
+Visible-area gate,P2,met,"FB previewed, UL open"
+Visible-area gate,P3,met,previewed
+Visible-area gate,S1,met,previewed
+Visible-area gate,S2,met,open
+H2-learned,P1,met,previewed
+H2-learned,P2,met,"FB previewed, UL open"
+H2-learned,P3,met,previewed
+H2-learned,S1,met,previewed
+H2-learned,S2,met,open
+H4 (familiarity),P1,met,previewed
+H4 (familiarity),P2,met,"FB previewed, UL open"
+H4 (familiarity),P3,met,previewed
+H4 (familiarity),S1,met,previewed
+H4 (familiarity),S2,not met,open
+H0 (hand only),P1,not met,built in
+H0 (hand only),P2,met,"FB previewed, UL built in"
+H0 (hand only),P3,not met,built in
+H0 (hand only),S1,not met,built in
+H0 (hand only),S2,met,built in
+H1 (salience),P1,met,open
+H1 (salience),P2,met,"FB previewed, UL open"
+H1 (salience),P3,met,open
+H1 (salience),S1,met,open
+H1 (salience),S2,met,open

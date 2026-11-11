@@ -1194,6 +1194,98 @@ to take about twice as long: roughly 6 GPU-process hours, one afternoon on one l
 No setting is changed in response. The records stay on CREMI (`output/model/rehearsal/`, 690 MB) and are
 deleted if storage is needed (plan §5); the scored `rehearsal.json` is kept on the Mac and CREMI.
 
+### 6.26 Held-out evaluation: result (11 November 2026)
+
+Run once with the frozen code (spec §8, §10; tag `freeze-2026-11-11`): `scripts/cremi_evaluate.sh` on six lab
+PCs, 3,220 records, 0 failures, all written at commit `3e689fd` with the frozen hashes; scored once
+(`run_evaluation.py score`, 32 min on `joe`). `output/model/evaluation/result.json`, SHA-256 `d7430f65…aecbe4`
+([validation](validation.md)); a copy, with the figures and tables of `analysis/report_figures.py`, is in
+[`docs/evaluation/`](evaluation/). Values are estimates [95% hierarchical-bootstrap interval], z units, 200
+instances (20 held-out sources × 10 initialisations), OpenCLIP spiking network, readouts as simulated unless
+stated. Human intervals (participant z): Δ(DH)/Δ(FB) −0.10 [−0.67, 0.35]; Δ(UL)/Δ(FB) 0.77 [0.34, 1.78].
+
+**Decision rule (spec §5.2): met.** H2 meets P1, P2, P3, S1, S2 and S3 with OpenCLIP, and P1 with both DINOv2
+encoders; the verdicts are the same under the three analyses (as simulated, over-driven removed, maximum).
+Of these, P1, P3, S1 and S3(b) were built in, the full-body half of P2 calibrated and S3(a) previewed
+([criteria-status](criteria-status.json)); the evaluation's informative content is the upper-limb half of P2
+and S2, and the comparison models.
+
+**(a) Upper-limb transfer, the one blind prediction: met.** In the words fixed before the evaluation (report
+skeleton, A5): "On held-out sources the network's FDI readout facilitated for the upper limb (Δ(UL) = 1.54
+[1.34, 1.73]) at a ratio to the full body of 0.96, inside the human interval [0.34, 1.78]: the full-body
+mapping transfers to the upper-limb image. Because the upper limb shares most of its pixels with the full
+body, this is the expected direction, and its size is the informative part." Δ(FB) = 1.61 [1.32, 1.86];
+ratio 0.91 (over-driven removed) and 0.95 (maximum); no upper-limb instance is over-driven (full body 8.5%).
+The ungated network transfers the same way (Δ(UL) 1.32 [1.15, 1.48], ratio 0.96): H2's gate is open on the
+upper limb (a = 1), so the transfer is a property of the trained network, not of the gate.
+
+**(b) Necessity of the gate under the two training diets.** The fixed sentence that applies is "The gate adds
+to C_FDI under both training diets (1.09 [0.95, 1.24]; 1.95 [1.72, 2.16])." The criteria show how differently
+it does so. Trained on full bodies, the ungated network already meets P1, P2, P3 and S2 (C_FDI 0.46 [0.25,
+0.67], Δ(UL)/Δ(FB) 0.96) and fails only S1: its detached-hand ratio, 0.66, is above the human interval. The gate
+is necessary for S1 alone. Trained on all displays, the ungated network facilitates more for the detached hand
+than for the full body (ratio 1.18), fails P1, P3 and S1, and needs the gate for all three. On training sources
+the two ratios were 0.53 and 1.14; the ordering holds on held-out sources.
+
+**(c) Continuity gate against visible-area gate.** "On the paper's three displays the visible-area gate meets
+the same criteria as H2 (P1, P2, P3, S1, S2). On the matched controls, where area is equal and only connection
+differs, H2 exceeds it by 1.41 [1.23, 1.60] (stub − gap stub) and 0.35 [0.27, 0.42] (arm − hand window). This
+separation was effectively known before the evaluation (H2's control predictions were positive in 20 of 20
+unseen training sources, and at c = 0 the visible-area gate gives both pair members nearly the same gate); it
+shows that the two accounts make different predictions, which only human data on the controls could decide."
+The visible-area gate's upper-limb ratio is lower (0.67) but inside the human interval.
+
+**Other models on the paper's displays (OpenCLIP).**
+
+| Model | Human data used | C_FDI | Δ(UL)/Δ(FB) | Δ(DH)/Δ(FB) | Criteria not met |
+| --- | --- | --- | --- | --- | --- |
+| H2, attachment gate | c fitted to S1 | 1.56 [1.34, 1.75] | 0.96 | 0.01 | none |
+| Ungated network | none | 0.46 [0.25, 0.67] | 0.96 | 0.66 | S1 |
+| Visible-area gate | c fitted | 1.36 [1.18, 1.53] | 0.67 | 0.04 | none |
+| H2-learned (forearm prediction) | c fitted | 1.17 [0.86, 1.48] | 0.98 | 0.02 | none |
+| H4, own-body familiarity | c fitted | 0.82 [0.59, 1.03] | 0.20 | 0.03 | S2 |
+| H2 at c⁺ (upper end of the fit) | c⁺ | 0.82 [0.64, 1.00] | 0.96 | 0.44 | S1 |
+| H0, hand only | none | 0.01 [−0.04, 0.06] | 1.00 | 1.00 | P1, P3, S1 |
+| H1, salience | none | 0.98 [0.62, 1.26] | 0.96 | 0.28 | none |
+
+H1, which uses no human data, also meets every criterion with OpenCLIP and with DINOv2 summary (with DINOv2
+mean patch it fails S2, ratio 0.27). On the paper's displays, then, the criteria do not single out
+attachment: the visible-area gate, the learned attachment estimate and low-level salience pass as well. The
+tests that separate H2 from these are S3(b) (H2 − H0: 1.55 [1.33, 1.75]) and S3(a) on the controls, both
+built in or previewed. H4 fails only through its weak upper-limb transfer.
+
+**(d) Robustness.** "With both robustness encoders P1 holds (DINOv2 summary: all met; DINOv2 mean patch: P1,
+P2, P3, S1 met, S2 undetermined, S3(a) not met); the result is encoder-independent for P1. 13 of 13 comparison
+configurations agree with the primary verdicts on P2 and S2; the exceptions are none. Removing reference 17,
+restricting to healthy networks and omitting trimming do not change the verdicts; using the rectangle detached
+hand does not change H2's OpenCLIP verdicts but removes the gate's contribution and changes the DINOv2
+verdicts (below)." Details:
+- *Encoders.* DINOv2 summary: H2 C_FDI 1.01 [0.71, 1.31], Δ(UL)/Δ(FB) 1.10; necessity 0.26 [0.17, 0.35]; the
+  ungated network meets every criterion too, as on training sources; 24.5% of upper-limb instances over-driven,
+  verdicts unchanged under both treatments. DINOv2 mean patch: C_FDI 0.57 [0.41, 0.73]; S2 ratio 0.62 as
+  simulated but 0.34 with over-driven readouts removed (the edge of the human interval), hence undetermined;
+  S3(a) not met (stub − gap stub 0.01 [−0.03, 0.05]); necessity 0.05 [0.01, 0.08].
+- *Comparison configurations* (H2, OpenCLIP): twin, recurrent, all-context, 0.5 ms and the nine robustness
+  variations all meet P1, P2, P3, S1 and S2; Δ(UL)/Δ(FB) 0.85–1.15. The ungated network fails S1 in all of
+  them except lr 3e-4 (ratio 0.33, inside the interval), and P1 and P3 as well under all-context training.
+- *Repetitions* (OpenCLIP H2): without reference 17, Δ(UL) 1.54 [1.33, 1.75], ratio 0.97; healthy networks
+  only, 1.53 [1.30, 1.74], 0.97; untrimmed, 1.45 [1.26, 1.62], 0.96; all verdicts unchanged. Rectangle
+  detached hand: H2 meets every criterion it is scored on, but H2 and the ungated network give the same
+  C_FDI (1.00 [0.82, 1.17]; necessity 0.00 [−0.02, 0.02]) and a detached-hand ratio of 0.24: with the
+  rectangle, the network's weak response to the detached hand, not the gate, carries the contrast. With both
+  DINOv2 encoders the rectangle session fails P1 and S1.
+
+**Reading.** The pre-specified decision rule is met, and the one blind prediction, upper-limb transfer at a
+human-like ratio, holds with every encoder and configuration except DINOv2 mean patch, where it is
+undetermined. The result says less about attachment than the verdicts suggest: the upper-limb transfer does
+not involve the gate; the gate is necessary only for the detached-hand ratio under full-body training; and
+models without an attachment mechanism (salience H1, visible area) meet the same criteria on the paper's
+displays. The model reproduces the human pattern; the paper's displays cannot say whether it does so because
+of attachment. The matched controls make that distinction, and they have no human data.
+
+No setting is changed in response; nothing is re-run. Analyses beyond those declared go into
+`result_exploratory.json` and are labelled exploratory (final-phase plan, block D).
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -1437,3 +1529,4 @@ declared in the spec before the evaluation is opened.
 | 11 Nov 2026, before any evaluation | Ablation table declared (§6.24): which configurations and `result.json` fields each ablation compares; final frame vs sequence stated as null by construction | Final-phase plan B1; no training, statistic or criterion added |
 | 11 Nov 2026, code fault found by the rehearsal (training sources) | `network.unregister`: each network's snnTorch neurons are removed from snnTorch's class-level registry (`SpikingNeuron.instances`), which kept every network a process had built in GPU memory (about 10 MB per network). In the rehearsal 411 of 3,220 networks ran out of GPU memory, all late in the run; with the fix a process's memory no longer grows | Memory only: the registry is never read by this project, so no computed value changes (the failed runs are simply rerun). The 14 fits of c that ran out of GPU memory on 8 November were probably the same fault. Test `test_network.Memory` |
 | 11 Nov 2026, freeze (no held-out source or upper-limb display simulated) | `config/freeze.json` written on CREMI by `run_evaluation.py freeze`: hashes of 23 files (model code, human-target code, spec and configuration, continuity table, human ratios, feature manifest, learned-gate tables); tag `freeze-2026-11-11`. Dates in `run_evaluation.py` and §6, §6.22 updated to the moved freeze | Spec §8 Gate 2 record and §10 freeze row. From here on, a change to any listed file stops the evaluation (fault rule of the final-phase plan) |
+| 11 Nov 2026, held-out evaluation | Run once on six lab PCs and scored once (§6.26); decision rule met. `scripts/cremi_evaluate.sh` added (outside the frozen files) | Spec §8; no frozen file changed, nothing re-run |

@@ -409,12 +409,22 @@ Done on 11 November:
   evaluation looks up exists; integrity scripts and 192 tests pass on the Mac and on `joe`'s GPU;
   `config/freeze.json` (23 files) written on CREMI, committed and tagged `freeze-2026-11-11`. Two other people
   reviewed the stimuli and agreed with every decision (D2; informal, not the rater protocol).
+- **Held-out evaluation run once, 11 November 2026** ([model method](docs/model-method.md) §6.26, files in
+  [docs/evaluation](docs/evaluation/)): 3,220 networks on six lab PCs, all by the frozen code, 0 failures;
+  scored once. **Decision rule met.** The one blind prediction holds: on held-out sources the network
+  facilitates for the upper limb, Δ(UL) = 1.54 [1.34, 1.73], at 0.96 of the full body (human 0.77 [0.34,
+  1.78]), under every analysis and in all 13 comparison configurations; undetermined only with DINOv2 mean
+  patch. What it does not show: the transfer does not involve the gate (the ungated network transfers the
+  same way); with full-body training the gate is needed only for the detached-hand ratio (ungated 0.66, above
+  the human interval); and the visible-area gate, the learned attachment estimate and low-level salience (H1,
+  no human data) meet the same criteria on the paper's displays. Only the matched controls separate the
+  accounts, and they have no human data.
 
 Next:
 
-1. The single held-out evaluation (final-phase plan, block D): `run_evaluation.py simulate --claim` on several
-   lab PCs, then `score`. Every analysis is repeated without reference 17 (456 families).
-2. Write the result into the documents as the A5 stubs prescribe, then the reports (block E).
+1. Figures and tables from the real result are written (`analysis/report_figures.py`, `docs/evaluation/`);
+   any further analysis goes into `result_exploratory.json`, labelled exploratory.
+2. The two reports (final-phase plan, block E), in last semester's format.
 
 Image acceptance does not establish physiological or scientific replication.
 

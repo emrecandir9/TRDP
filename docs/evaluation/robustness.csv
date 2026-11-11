@@ -1,0 +1,29 @@
+scored,H2 P1,H2 P2,H2 P3,H2 S1,H2 S2,H2 S3,ungated P1,gate adds to C_FDI,H2 C_FDI (removed),H2 instances
+"main, openclip",met,met,met,met,met,met,met,met,+1.66,200
+"main, dinov2_cls",met,met,met,met,met,met,met,met,+1.34,200
+"main, dinov2_patchmean",met,met,met,met,undetermined,not met,met,met,+0.66,200
+"without reference 17, openclip",met,met,met,met,met,met,met,met,+1.66,190
+"without reference 17, dinov2_cls",met,met,met,met,met,met,met,met,+1.37,190
+"without reference 17, dinov2_patchmean",met,met,met,met,undetermined,not met,met,met,+0.66,190
+"healthy only, openclip",met,met,met,met,met,met,met,met,+1.65,181
+"healthy only, dinov2_cls",met,met,met,met,met,met,met,met,+1.08,143
+"healthy only, dinov2_patchmean",met,met,met,met,met,not met,met,undetermined,+0.73,120
+"untrimmed, openclip",met,met,met,met,met,met,met,met,+1.56,200
+"untrimmed, dinov2_cls",met,met,met,met,met,met,met,met,+1.26,200
+"untrimmed, dinov2_patchmean",met,met,met,met,met,not met,met,met,+0.64,200
+"rectangle, openclip",met,met,met,met,met,,met,not met,+1.09,200
+"rectangle, dinov2_cls",not met,met,undetermined,not met,met,,not met,met,+0.21,200
+"rectangle, dinov2_patchmean",not met,met,undetermined,not met,met,,not met,met,+0.05,200
+configuration rate,met,met,met,met,met,,met,met,+2.32,200
+configuration snn_allctx,met,met,met,met,met,,not met,met,+1.71,60
+configuration snn_dt0.5,met,met,met,met,met,,met,met,+1.70,20
+configuration snn_lr3e-3,met,met,met,met,met,,met,met,+1.49,60
+configuration snn_lr3e-4,met,met,met,met,met,,met,met,+1.93,60
+configuration snn_nv128,met,met,met,met,met,,met,met,+1.63,60
+configuration snn_nv512,met,met,met,met,met,,met,met,+1.73,60
+configuration snn_rec,met,met,met,met,met,,met,met,+1.65,200
+configuration snn_tm10,met,met,met,met,met,,met,met,+1.76,60
+configuration snn_tm40,met,met,met,met,met,,undetermined,met,+1.74,60
+configuration snn_ts10,met,met,met,met,met,,met,met,+1.81,60
+configuration snn_ts2,met,met,met,met,met,,met,met,+1.65,60
+configuration snn_u6000,met,met,met,met,met,,met,met,+1.57,60

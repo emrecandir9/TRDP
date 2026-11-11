@@ -47,7 +47,11 @@ on inner-source controls, against a statement in spec §8; recorded by amendment
 done: C1 (dates in docstrings), C2 (integrity scripts and 192 tests on the Mac and on `joe`'s GPU; human target
 identical, Linux within 10⁻¹³), C3 (CREMI at the pushed commit, clean), C4 (spec row "Frozen for evaluation"), C5
 (`config/freeze.json`, 23 files, tag `freeze-2026-11-11`), C7 (lock opens unchanged, refuses a changed file). C6
-not done (D3 default). Next: block D on the extra lab PCs.
+not done (D3 default).
+**Block D done 11 November:** simulated on six lab PCs (16:49–17:01 CET, 3,220 records, 0 failures, all by
+the frozen code), scored once (32 min); hash of `result.json` recorded and pushed within the hour; result
+written into model-method §6.26, README, validation and the review's progress table; A1 figures and tables
+made from the real result (`docs/evaluation/`). Decision rule met. Next: block E (reports).
 
 | # | Task | Output | Done when |
 | --- | --- | --- | --- |
