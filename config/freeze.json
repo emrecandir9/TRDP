@@ -1,0 +1,29 @@
+{
+  "date": "2026-11-11",
+  "files": {
+    "analysis/human_target.py": "3cc3425443706e5ae27a8c6ddeffb6d45200c240c62b2ecbc99106c69bbda0ec",
+    "config/analysis.json": "45940de2746d0a9ce292add08a55b53702ef2a6ee3d729ca7704fdfbf39e5b3a",
+    "data/context_continuity.json": "da96f7c87536d6119b56f7bb7070097d2467d8e8f85985732f56f9834eb97152",
+    "docs/analysis-spec.md": "01f6332314c85c5d117a23fe9ee40a8e56a71275144f18461f9a119cd3bc6167",
+    "model/bank.py": "e7671c3c735b7534f71b4af8d25c7bd60aec0b6715565dd4a8e4017a7a5f9ce1",
+    "model/campaign.py": "87b292c766a8415d4556a159684046d8fe1ff9a40b7a9ac8dd5e44f4e1ab8848",
+    "model/context.py": "66cb3fc83375b597cea4877f446ae64ab096db844b4f0fddd1a2de37eebf2c79",
+    "model/criteria.py": "167eaa25d99939c0c54b79995e49a9cadd090ac1d84fc503ffde32bddfd22690",
+    "model/evaluate.py": "42b112673fe412e9e71c7b00dd3fbfb298c8d4a53b0e3349e3d52fde65c69f63",
+    "model/extend_curves.py": "9991337adf8c94d2296552bfd7e6c98cebf4dc66336e7ee4bef5b934af1d0e8b",
+    "model/fit_gate.py": "b98d17c1bc3b821f79a26ab5d3bfec69d6de7587f37926c6647573b1caeff1dc",
+    "model/gate2.py": "4a5b8c611e3287d0b735c27ab24b022ad03301b80dcf683c3ec16a5cfba7a9ee",
+    "model/learned_context.py": "17a8bb9ac54b94dc860ec133f78170a1aa3bea35e194acf5575e129ee98c734a",
+    "model/network.py": "a479ad6a45ed338dfa65acd6d9cacbc8d83992d22e630b3e1cc97fd56b466322",
+    "model/recurrence.py": "16c4d722dffa42867118b7c1ef1748a088f78c708df32cb41e0abd69d8ff2936",
+    "model/run_evaluation.py": "a64aa6d59b4a680f283b99cc9e21704b168ffd1428930552fd3415831f008f88",
+    "model/stack.py": "e877beda07d37ad58fc631b2101aaf0d0a9ab126f0ef043188008efb8e85cb7a",
+    "model/train.py": "ac1b1f8472353703946affa4097c5ad60ec73ac44d1f343dd97d009eb2e3626f",
+    "model/trials.py": "269b35fafcc05044e6cd98afd0405f74af58a029d36b9495de21248d29cc026e",
+    "output/features/manifest.json": "5853dd256eb643b6028e9ecadbe3ba027bff761ccd209db524eac51f182b58e5",
+    "output/human_target/ratios.csv": "389312df0dc962cda0d83d88a67b54edc5e8f091b2cfb9ae34123dfaf7586355",
+    "output/learned_context/gates.csv": "e32310e321b8eb5c46dd25110270153241c3d768b509968176f27d26540e3492",
+    "output/learned_context/gates_crossfit.csv": "8bcea87a211a07dc695b1ecc5d3f3abe01a505d18c45735e6a5a3db1d03189ea"
+  },
+  "note": "The held-out evaluation runs only while every file listed here has this hash."
+}

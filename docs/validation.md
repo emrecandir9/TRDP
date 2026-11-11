@@ -260,6 +260,20 @@ Training-source data only; no held-out source or upper-limb display simulated.
 | S3(a) withholding | The rehearsal ran the visible-area gate on the inner-source controls, contrary to spec §8 ("not run on the controls before the evaluation"); recorded by spec amendment of 11 November 2026 (hash in `config/analysis.json`, `test_spec` passes) |
 | Tests | 192 pass at the end of the day (audit and memory tests added; one GPU-only test skipped) |
 
+## Gate 2 record and freeze — 11 November 2026
+
+Training-source data only; no held-out source or upper-limb display simulated before the freeze.
+
+| Check | Result |
+| --- | --- |
+| Gate 2 record | Spec §8: primary variant feedforward spiking; 10 initialisations for the primary configurations, 3 for all-context and the variations, 1 for 0.5 ms; 24 configurations, 3,220 networks. Freeze and evaluation moved forward by the project owner (§8, §10) |
+| Inputs | Every encoder vector the evaluation looks up (3 encoders × 20 sources × families × all displays × 2 frames, 9,600 per encoder) and every gate value (4 gates × 3 encoders × 20 folds, 4,800 each) exists and is finite; lookups only, nothing simulated |
+| Integrity scripts | `dataset.py check`, `silhouette.py check`, `verify-archive`, `controls.py check` pass on the Mac and on `joe` |
+| Human target | Rerun on the Mac: every CSV byte-identical (only `summary.json`'s config hash moves with the config). On `joe` (Linux): `ratios.csv`, `cells.csv`, `participant_cells.csv` byte-identical; four CSVs differ by at most 9.2 × 10⁻¹⁴ (floating point), text identical; stored copies restored |
+| Tests | 192 pass on the Mac (one GPU-only skip) and 192 on `joe`'s GPU (no skip) |
+| CREMI copy | At the pushed commit `ddeca21`, `git status` clean; the five frozen inputs (`ratios.csv`, feature manifest, two learned-gate tables, continuity table) have the same SHA-256 on CREMI and the Mac |
+| Freeze | `python model/run_evaluation.py freeze` on CREMI: `config/freeze.json`, 23 files, dated 2026-11-11; the lock opens on the Mac with the same record; a copy with one changed line in `model/network.py` is refused; a second `freeze` is refused. Committed, pushed and tagged `freeze-2026-11-11` |
+
 ## Remaining limits
 
 **From the independent review (10 November 2026).** For H2, P1, P3, S1 and S3(b) are built in and the

@@ -42,7 +42,12 @@ with that date; confirm it with the supervisor (decision D1).
 A5 skeleton drafted (`report/paper.md`). A6 done (`report/references.md`). Block B started early: B1 declared
 (model-method §6.24), B2 done (`scripts/audit_outputs.py`: every count equals the declared number). B3 done: the rehearsal's one
 fault (GPU memory growth, 411 runs) fixed and rerun, 0 failures. The rehearsal also ran the visible-area gate
-on inner-source controls, against a statement in spec §8; recorded by amendment. Tests: 192 pass. Tests: 189 pass.
+on inner-source controls, against a statement in spec §8; recorded by amendment. Tests: 192 pass.
+**11 November, later:** dates moved by the owner (header). B5 done (Gate 2 record, spec §8). D2 decided. Block C
+done: C1 (dates in docstrings), C2 (integrity scripts and 192 tests on the Mac and on `joe`'s GPU; human target
+identical, Linux within 10⁻¹³), C3 (CREMI at the pushed commit, clean), C4 (spec row "Frozen for evaluation"), C5
+(`config/freeze.json`, 23 files, tag `freeze-2026-11-11`), C7 (lock opens unchanged, refuses a changed file). C6
+not done (D3 default). Next: block D on the extra lab PCs.
 
 | # | Task | Output | Done when |
 | --- | --- | --- | --- |

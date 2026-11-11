@@ -351,7 +351,7 @@ Done on 10 November:
 - Document contradictions fixed (counts, links, stale predictions).
 - **Evaluation driver built and locked** ([model method](docs/model-method.md) §6.22): `model/run_evaluation.py`
   simulates, scores and applies the decision rule; it cannot show a network its held-out source until
-  `config/freeze.json` is written at the 11 December freeze and unchanged. Rehearsed on inner sources: it
+  `config/freeze.json` is written at the freeze (11 November 2026) and unchanged. Rehearsed on inner sources: it
   reproduces the stored Gate 2 predictions.
 - **All-context training ablation declared and built** ([model method](docs/model-method.md) §6.23): 60 networks
   trained on all three displays, to test whether the weak detached-hand response is a training-distribution effect.
@@ -402,15 +402,18 @@ Done on 11 November:
   evaluation should take roughly 6 GPU-process hours. The rehearsal also ran the visible-area gate on the
   inner-source controls, which the spec had said would not happen before the evaluation; a spec amendment
   records it (S3(a) is previewed in computation as well as in outcome). 192 tests pass.
+- **Gate 2 recorded and the evaluation frozen, 11 November 2026** (spec §8, §10; [validation](docs/validation.md)):
+  primary variant feedforward spiking, 10 initialisations per primary configuration, 24 configurations and
+  3,220 networks. The project owner moved the freeze and the evaluation forward from December. Every input the
+  evaluation looks up exists; integrity scripts and 192 tests pass on the Mac and on `joe`'s GPU;
+  `config/freeze.json` (23 files) written on CREMI, committed and tagged `freeze-2026-11-11`. Two other people
+  reviewed the stimuli and agreed with every decision (D2; informal, not the rater protocol).
 
 Next:
 
-1. Follow the [final phase plan](docs/final-phase-plan.md) (11 November to the hand-in): report figures and
-   skeletons and a full rehearsal on inner sources by 20 November; no setting changes.
-2. Discuss the closed-gate boundary of the fit of c (a gate cannot make the detached hand fall below
-   baseline) before the configurations are frozen; no setting is changed in response to it.
-3. Gate 2 on 4 December, configurations frozen 11 December, single held-out evaluation 14–18 December. Every
-   analysis is repeated without reference 17 (456 families). A fresh CUDA canary is deferred.
+1. The single held-out evaluation (final-phase plan, block D): `run_evaluation.py simulate --claim` on several
+   lab PCs, then `score`. Every analysis is repeated without reference 17 (456 families).
+2. Write the result into the documents as the A5 stubs prescribe, then the reports (block E).
 
 Image acceptance does not establish physiological or scientific replication.
 
