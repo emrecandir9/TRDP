@@ -112,7 +112,7 @@ below are initial constants (spec §6.3). They may be changed only on the basis 
 criteria (§6.5) and the auxiliary task, evaluated on **training sources** (grouped inner folds,
 spec §7.1), and every change goes to the change log.
 
-**Development rule.** Until the held-out evaluation is opened (spec §8, 14–18 December), no
+**Development rule.** Until the held-out evaluation is opened (spec §8; directly after the 11 November 2026 freeze), no
 context contrast, ratio or MEP-analogue summary is computed on a held-out source. Development
 diagnostics use training sources only, and H2's gate fit (§6.6) uses training sources only.
 
@@ -1063,7 +1063,7 @@ argument).
 - **Lock.** `simulate` refuses to show a network its held-out source unless `config/freeze.json` exists and
   every file it lists (the model code, the human-target code, the spec and its configuration, the continuity
   table, the human ratios, the feature manifest, the learned gate tables) still has its recorded hash. The
-  `freeze` step writes that record once, on 11 December (spec §8), and it is then committed and pushed. The
+  `freeze` step writes that record once, at the freeze (11 November 2026, spec §8), and it is then committed and pushed. The
   check sits inside `simulate_network`, so no other caller can bypass it; a rehearsal may name another source
   but never the held-out one and never the upper limb.
 - **Tests** (`tests/test_run_evaluation.py`, synthetic features, small networks): the lock opens only with an

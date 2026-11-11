@@ -4,7 +4,8 @@ Written 11 November 2026. It replaces the schedule rows W5–W8 of the [next-pha
 which were completed early or overtaken by the [independent review](independent-review.md).
 
 **Fixed dates** (spec §8): Gate 2 on 4 December, freeze on 11 December, single held-out evaluation 14–18
-December. **Assumed date:** final reports handed in on Friday 29 January 2027. The plan's last block moves
+December. **Moved 11 November 2026 by the project owner** (spec §8 Gate 2 record): Gate 2 record and freeze on
+11 November, the evaluation directly after it on extra lab PCs; blocks B–D below keep their tasks, not their dates. **Assumed date:** final reports handed in on Friday 29 January 2027. The plan's last block moves
 with that date; confirm it with the supervisor (decision D1).
 
 ## 1. Where the project stands today
@@ -22,7 +23,7 @@ with that date; confirm it with the supervisor (decision D1).
 
 1. No model setting, criterion, target or decision rule changes. A code or measurement fault is fixed, logged
    in the model-method change log, and re-checked on training sources only.
-2. No upper-limb readout and no held-out source before 14 December. Rehearsals use inner sources and the
+2. No upper-limb readout and no held-out source before the freeze. Rehearsals use inner sources and the
    displays already simulated there (full body, silhouette, controls).
 3. The spec changes only through §10, and `config/analysis.json` records each change with its hash
    (`tests/test_spec.py` fails otherwise).
@@ -71,7 +72,7 @@ on inner-source controls, against a statement in spec §8; recorded by amendment
 | C2 | Full test suite on the Mac and on a lab-PC GPU (the GPU-only test included); `dataset.py check`, `silhouette.py check`, `verify-archive`, `controls.py check`; `human_target.py` output byte-identical to the stored one | Thursday 10 December |
 | C3 | CREMI working copy at the same commit as GitHub, `git status` clean | Thursday 10 December |
 | C4 | Final spec amendment row "Frozen for evaluation", with the number of amendments and the statement of what is built in | Friday 11 December, morning |
-| C5 | `python model/run_evaluation.py freeze` on CREMI; copy `config/freeze.json` to the Mac; commit, push, and tag `freeze-2026-12-11`; refresh `docs/push-times.json` so the push time of the freeze commit is on record | Friday 11 December |
+| C5 | `python model/run_evaluation.py freeze` on CREMI; copy `config/freeze.json` to the Mac; commit, push, and tag `freeze-2026-11-11` (date moved); refresh `docs/push-times.json` so the push time of the freeze commit is on record | Friday 11 December |
 | C6 | Optional external snapshot: a Zenodo or OSF deposit of the tagged repository (decision D3) | Friday 11 December |
 | C7 | Check that the lock holds: `run_evaluation.py simulate` starts only with the unchanged freeze record; changing one listed file makes it refuse | Friday 11 December |
 
@@ -112,7 +113,7 @@ on inner-source controls, against a statement in spec §8; recorded by amendment
 | # | Decision | Needed by | Default if none |
 | --- | --- | --- | --- |
 | D1 | Hand-in date and required format of the final report | 27 November | 29 January 2027; both documents as PDF |
-| D2 | Run the two-rater check of the stimuli | 16 November | Not run; stays a stated limitation |
+| D2 | Run the two-rater check of the stimuli | 16 November | **Decided 11 November:** the owner reports that two other people reviewed the stimuli and agreed with every decision; informal, not the prepared protocol |
 | D3 | Deposit the frozen repository on Zenodo or OSF | 9 December | GitHub tag and push record only |
 | D4 | Which lab PCs are started for 14 December | 11 December | `jessica` and one more |
 | D5 | Whether the authors of the reference paper are told about the reanalysis discrepancies before the report is shared | 15 January | Not contacted; discrepancies reported neutrally |

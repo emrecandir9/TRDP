@@ -237,6 +237,20 @@
         "commit": "this commit",
         "sha256_after": "358b100cd5902f3cda8ef3d2fe2ecea5d7fc1dbaf3a476bef9863dda25c98ea3",
         "results_existing": "training-source rehearsal of the evaluation on every network's inner source (full body, silhouette, controls), including the visible-area model on the controls; completeness audit"
+      },
+      {
+        "date": "2026-11-11",
+        "section": "8 (Gate 2 record; freeze and evaluation dates moved forward)",
+        "commit": "this commit",
+        "sha256_after": "c63024f755565e3620ea76acceb325d968cc2fccef38ceed9c13aee8d102dbd6",
+        "results_existing": "training-source results, rehearsal of the evaluation on inner sources, completeness audit; no held-out source or upper-limb display simulated"
+      },
+      {
+        "date": "2026-11-11",
+        "section": "status line, 10 (frozen for evaluation)",
+        "commit": "this commit",
+        "sha256_after": "01f6332314c85c5d117a23fe9ee40a8e56a71275144f18461f9a119cd3bc6167",
+        "results_existing": "training-source results, rehearsal of the evaluation on inner sources, completeness audit; no held-out source or upper-limb display simulated"
       }
     ],
     "note": "No held-out contrast and no upper-limb display existed at any amendment. results_existing lists what did exist (replaces the earlier before_any_result flag). The last sha256_after must equal the current docs/analysis-spec.md (tests/test_spec.py)."
@@ -302,6 +316,8 @@
       "output/features/manifest.json": "5853dd256eb643b6028e9ecadbe3ba027bff761ccd209db524eac51f182b58e5",
       "output/learned_context/gates.csv": "e32310e321b8eb5c46dd25110270153241c3d768b509968176f27d26540e3492",
       "output/learned_context/gates_crossfit.csv": "8bcea87a211a07dc695b1ecc5d3f3abe01a505d18c45735e6a5a3db1d03189ea"
-    }
+    },
+    "primary_variant": "feedforward spiking network (Gate 2 record, 11 November 2026)",
+    "initialisations": "10 per primary configuration (seeds 0-9); 3 for all-context and robustness variations; 1 for the 0.5-ms subset"
   }
 }

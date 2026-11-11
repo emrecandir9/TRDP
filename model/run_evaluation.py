@@ -10,7 +10,7 @@ The lock. `simulate` is the only code that shows a network its held-out source. 
 config/freeze.json exists and the files it lists still have their recorded hashes; `freeze` writes that
 record once, on the freeze date (spec §8). Until then nothing here can open the evaluation.
 
-    python model/run_evaluation.py freeze                      # 11 December: record configurations and code
+    python model/run_evaluation.py freeze                      # at the freeze (spec §8): record the code and inputs
     python model/run_evaluation.py simulate --shard 0 --shards 3 --claim
     python model/run_evaluation.py score
 """

@@ -4,6 +4,8 @@
 [`tests/test_raters.py`](../tests/test_raters.py). Outputs: `output/raters/` (local). Addresses
 issue 5 of the [next-phase plan](next-phase-plan.md) §3.
 
+**Decision D2 (11 November 2026).** The project owner reports that two other people reviewed the stimuli and gave the same accept/reject decisions as the owner. This check was not run under the protocol below (no fixed sample, rating forms or session records are in the repository), so it is reported as the owner's statement, not as the rater validation; the prepared protocol stays unused.
+
 **Status: not run.** On 24 October 2026 the project owner decided to skip the rater validation,
 because recruiting naive raters was not feasible. The package below is complete and can still be
 used unchanged if raters become available. Prepared on 24 October 2026, **before any rating exists**. The sample, the

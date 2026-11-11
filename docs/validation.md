@@ -282,7 +282,9 @@ are crossed with sources although the bootstrap resamples them as nested (F12; B
 who knew the hypothesis and which frame was edited. An independent two-rater check was prepared
 ([protocol](rater-protocol.md)) but not run, by the owner's decision of 24 October 2026; in
 particular, no independent check shows that movement frames carry no more visible flaws than
-static frames.
+static frames. On 11 November 2026 the owner reported that two other people reviewed the stimuli and
+agreed with every acceptance decision; this informal check has no records in the repository and did not
+follow the protocol (it does not compare movement and static frames), so the limitation is reduced, not removed.
 
 No fresh CUDA inference or actual model download was run during this cleanup. No new
 human review of every downloaded image is implied. The accepted reference-17 clothing

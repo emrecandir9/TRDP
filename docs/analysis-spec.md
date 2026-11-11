@@ -4,9 +4,11 @@
 No model, baseline or feature extraction had been run.**
 After freezing, change this document only through the amendment log (§10), with a date and
 reason. **What "frozen" means here (added 10 November 2026):** the criteria were fixed before any
-held-out contrast was computed, and every later change is dated in §10 (13 amendments so far), several of
+held-out contrast was computed, and every later change is dated in §10 (16 amendments so far), several of
 them after training-source results. This is a pre-specification developed on training folds, not an
-externally registered preregistration; §10 states for each amendment which results existed. Machine-readable values live in [`config/analysis.json`](../config/analysis.json).
+externally registered preregistration; §10 states for each amendment which results existed. **Frozen for evaluation: 11 November 2026** (§10, last row), after
+16 amendments: `config/freeze.json` records the hash of this document, its configuration, the model and
+human-target code and the inputs, and the held-out evaluation runs only while every hash is unchanged. Machine-readable values live in [`config/analysis.json`](../config/analysis.json).
 
 Reference study: Matamala-Gomez, Frisco et al. (2025), *Virtual body continuity during action
 observation affects motor cortical excitability*, Sci Rep 15:13364,
@@ -370,9 +372,9 @@ equal the full-body image, hidden pixels are black, and matched pairs have equal
 | --- | --- | --- | --- |
 | Spec freeze | 30 Oct | Open items of §3 resolved; this document and `config/analysis.json` committed | Freeze delayed; no modelling starts |
 | Gate 1, baselines | 13 Nov | Baseline table complete for all contexts and controls | If a low-level or hand-only baseline meets P1, the continuity explanation is in doubt; S3 becomes decisive |
-| Gate 2, model health | 4 Dec | Stable, non-saturated activity; probe threshold found; H0–H2 make different control predictions; primary network variant and number of initialisations logged | Drop recurrence/spiking detail; report the attempt as a negative result |
-| Freeze | 11 Dec | Configurations, seeds and code hashes recorded | — |
-| Evaluation | 14–18 Dec | Held-out evaluation opened once | — |
+| Gate 2, model health | 4 Dec; recorded 11 Nov 2026 | Stable, non-saturated activity; probe threshold found; H0–H2 make different control predictions; primary network variant and number of initialisations logged | Drop recurrence/spiking detail; report the attempt as a negative result |
+| Freeze | 11 Dec; moved to 11 Nov 2026 | Configurations, seeds and code hashes recorded | — |
+| Evaluation | 14–18 Dec; moved to directly after the freeze | Held-out evaluation opened once | — |
 
 **Gate 2 checks (amended 26 October 2026, before they were run).** On each network's inner training
 source only. *Different control predictions*: per network, each control's Δ(FDI) and the two
@@ -392,6 +394,30 @@ controls of every network's inner source, as the final-phase plan's task A3 spec
 paragraph. With OpenCLIP, H2 exceeds it by +1.42 [1.24, 1.61] (stub − gap stub) and +0.33 [0.25, 0.40]
 (arm − hand window). S3(a) is therefore previewed in computation as well as in outcome; nothing is changed
 in response, and S3(a) stays a non-blind criterion, as §5.2 already states for H2.)
+
+**Gate 2 record (11 November 2026, before any held-out source or upper-limb display has been simulated).**
+Gate 2's conditions were met on 9 November 2026 on training sources ([model-method](model-method.md) §6.19):
+activity stable and not saturated, a resting threshold found in every network, distinct H0, H1 and H2 control
+predictions with every encoder, and probe responses rising smoothly with strength in every primary-encoder
+network. As §5.1 and §5.2 require before the evaluation:
+
+- **Primary variant:** the feedforward spiking network (§6.3; model-method §6.20). The recurrent network is
+  scored as an ablation.
+- **Initialisations:** 10 per configuration (seeds 0–9) for H0, H1 and H2 spiking and the H2 twin with each
+  encoder, and for the recurrent variant; the all-context ablation and the robustness variations have 3 (seeds
+  0–2) and the 0.5-ms subset 1 (seed 0), as declared (model-method §6.21, §6.23).
+- **Configurations scored:** `h0`, `h1`, `h2` spiking (`snn`) and `h2` twin (`rate`) with OpenCLIP, DINOv2
+  summary and DINOv2 mean patch (12 configurations, 2,400 networks); `h2_openclip_snn_rec` (200);
+  `h2_openclip_snn_{lr3e-3, lr3e-4, nv128, nv512, tm10, tm40, ts10, ts2, u6000}` (60 each);
+  `h2_openclip_snn_allctx` (60); `h2_openclip_snn_dt0.5` (20): 3,220 networks, every one with its health
+  report, readout ranges and (for H2) fit of c (`scripts/audit_outputs.py`, model-method §6.25). Networks enter
+  under §5.1's rule; the decision rule uses the primary configurations only.
+- **Dates (moved 11 November 2026 by the project owner).** The freeze and the evaluation are moved forward from
+  11 and 14–18 December to 11 November and directly after it. Every task the final-phase plan placed before the
+  freeze is done (completeness audit, rehearsal on every network, report code); the December dates were a
+  schedule, not a methodological requirement. The cost is less time to find faults before the freeze; a fault
+  found after it is handled as the plan states (fix, log, rewrite the freeze record, rerun from the start), and
+  never after a held-out value has been seen.
 
 ## 9. Reporting rules
 
@@ -424,6 +450,8 @@ in response, and S3(a) stays a non-blind criterion, as §5.2 already states for 
 | 8 Nov 2026 (before any of them was trained) | §6.3: robustness variations of the primary network declared: visual layer 128 and 512 neurons, learning rate 3 × 10⁻⁴ and 3 × 10⁻³, 6,000 updates, the sensitivity time constants (membrane 10/40 ms, synaptic 2/10 ms), each on 20 folds × 3 initialisations, and the 0.5-ms time step on 20 folds × 1 initialisation; evaluated once with H2 and reported as robustness, not part of the decision rule ([model-method](model-method.md) §6.21) | The settings without a literature value must be shown not to carry the result; declared before the evaluation as §6.3 requires |
 | 10 Nov 2026 (after the training-source fit of c and Gate 2 results; no held-out source and no upper-limb display has been simulated) | Status line: what "frozen" means; §1: H2's gate is supplied, and a visible-area gate fits the paper's displays equally; §2: trialwise evaluation; §5.2: criteria informative for H2, necessity of the gate (H2 − ungated), criteria also on readouts as simulated, sensitivity to c (c⁺); §7.1: 18 training groups per network; §8: Gate 2 checks are out-of-sample previews. No criterion, parameter, target or decision rule is changed | [Independent review](independent-review.md) of 10 November 2026 (findings F1–F3, F5–F9): the primary criteria are built in for H2; on training sources the ungated network already responds less to the detached hand (ratio 0.49 OpenCLIP, 0.04 and 0.00 DINOv2), so necessity must be tested, not assumed; the over-driven treatments are not bounds; c is not identified. Each addition can only make the claims harder to support. Requested by the project owner |
 | 11 Nov 2026 (training-source rehearsal of the evaluation; no held-out source and no upper-limb display simulated) | §8: recorded that the visible-area model has now been run on the controls of every inner source, so S3(a) is previewed in computation as well as in outcome | The statement that it would not be run before the evaluation became false when the rehearsal (final-phase plan A3) ran it; corrected rather than left standing. No criterion, parameter, target or decision rule changes |
+| 11 Nov 2026 (training-source results, rehearsal and completeness audit only; no held-out source or upper-limb display simulated) | §8: Gate 2 record (primary variant feedforward spiking; 10 initialisations for the primary configurations, 3 or 1 for the declared ablations; the 24 configurations and 3,220 networks scored); freeze and evaluation moved forward to 11 November and directly after it | Required by §5.1–5.2 before the evaluation; the dates moved by the project owner's decision once every pre-freeze task was done. No criterion, parameter, target or decision rule changes |
+| 11 Nov 2026 (freeze; no held-out source or upper-limb display simulated) | **Frozen for evaluation.** Status line records the freeze. Nothing in the criteria, models, targets, configurations or decision rule changes. What the evaluation can still test, as recorded in [criteria-status](criteria-status.json): for H2, P1, P3, S1 and S3(b) are built in, the full-body half of P2 is calibrated and S3(a) is previewed; only the upper-limb half of P2 and S2 are open. For H0 the primary criteria are built in (no facilitation); for H1 they are open. The comparison models (ungated, visible area, learned attachment, H4, c⁺) were previewed on inner sources only for the full body, the detached hand and the controls | The freeze of §8 (moved to this date in the previous row). `python model/run_evaluation.py freeze` writes `config/freeze.json` with this document's hash; it is committed, pushed and tagged `freeze-2026-11-11`. Any later change follows the fault rule of §8 and the final-phase plan |
 
 ## 11. References
 
