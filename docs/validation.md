@@ -272,7 +272,7 @@ Training-source data only; no held-out source or upper-limb display simulated be
 | Human target | Rerun on the Mac: every CSV byte-identical (only `summary.json`'s config hash moves with the config). On `joe` (Linux): `ratios.csv`, `cells.csv`, `participant_cells.csv` byte-identical; four CSVs differ by at most 9.2 × 10⁻¹⁴ (floating point), text identical; stored copies restored |
 | Tests | 192 pass on the Mac (one GPU-only skip) and 192 on `joe`'s GPU (no skip) |
 | CREMI copy | At the pushed commit `ddeca21`, `git status` clean; the five frozen inputs (`ratios.csv`, feature manifest, two learned-gate tables, continuity table) have the same SHA-256 on CREMI and the Mac |
-| Freeze | `python model/run_evaluation.py freeze` on CREMI: `config/freeze.json`, 23 files, dated 2026-11-11; the lock opens on the Mac with the same record; a copy with one changed line in `model/network.py` is refused; a second `freeze` is refused. Committed, pushed and tagged `freeze-2026-11-11` |
+| Freeze | `python model/run_evaluation.py freeze` on CREMI: `config/freeze.json`, 23 files, dated 2026-11-11; the lock opens on the Mac with the same record; a copy with one changed line in `model/network.py` is refused; a second `freeze` is refused. Committed, pushed and tagged `freeze-2026-11-11` Since the freeze, the test that needs a closed evaluation (`test_run_evaluation`, refusal without a record) skips by design; the suite reports 2 skips on the Mac |
 
 ## Held-out evaluation — 11 November 2026
 
