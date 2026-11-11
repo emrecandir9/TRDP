@@ -36,10 +36,12 @@ with that date; confirm it with the supervisor (decision D1).
 ### Block A — Wednesday 11 to Friday 20 November: prepare everything that does not need results
 
 **Progress.** 11 November: A2 done (`docs/criteria-status.json`, `tests/test_criteria_status.py`); A1 done
-(`analysis/report_figures.py`, `tests/test_report_figures.py`); A3 running on `joe` (`scripts/rehearse.py`,
-`scripts/cremi_rehearse.sh`); A4 skeleton drafted (`report/project-report.md`);
+(`analysis/report_figures.py`, `tests/test_report_figures.py`); A3 done on `joe` (`scripts/rehearse.py`,
+`scripts/cremi_rehearse.sh`; 3,220 records, model-method §6.25); A4 skeleton drafted (`report/project-report.md`);
 A5 skeleton drafted (`report/paper.md`). A6 done (`report/references.md`). Block B started early: B1 declared
-(model-method §6.24), B2 done (`scripts/audit_outputs.py`: every count equals the declared number). Tests: 189 pass.
+(model-method §6.24), B2 done (`scripts/audit_outputs.py`: every count equals the declared number). B3 done: the rehearsal's one
+fault (GPU memory growth, 411 runs) fixed and rerun, 0 failures. The rehearsal also ran the visible-area gate
+on inner-source controls, against a statement in spec §8; recorded by amendment. Tests: 192 pass. Tests: 189 pass.
 
 | # | Task | Output | Done when |
 | --- | --- | --- | --- |

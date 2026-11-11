@@ -265,8 +265,11 @@ fails a network-level criterion is excluded; a failure on the inner source (task
 does not exclude it, because such failures follow the fold, where the inner source and the training set
 cannot be separated, and excluding them is never conservative (spec §5.1, model-method §6.17).
 
-*[Rehearsal of the evaluation on inner sources (plan A3): timing, memory, failures; to be added when the
-run on `joe` finishes.]*
+**Rehearsal (11 November 2026; model-method §6.25).** Every network ran through the evaluation's code on its
+inner source with the full body, the silhouette and the controls. It exposed one fault: the spiking-network
+library kept every network in GPU memory, and 411 runs ran out of memory; after the fix (no value changed)
+all 3,220 ran, at about 4 s and 0.27 MB per network. It also ran the visible-area gate on the inner-source
+controls, which the spec had said would wait for the evaluation; this is recorded as an amendment.
 
 ## 8. Criteria and decision rule
 

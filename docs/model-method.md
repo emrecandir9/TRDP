@@ -812,7 +812,8 @@ the source means do. H2-learned and H4 use the cross-fitted tables above.
   under both treatments. Gate 2's condition is met if H0–H1, H0–H2 and H1–H2 are all distinct with the
   primary encoder; the robustness encoders are reported. The S3(a) visible-area model is not run on the
   controls before the evaluation, and no paper display other than the full body is simulated, so no
-  criterion is previewed.
+  criterion is previewed. (Superseded 11 November 2026: the rehearsal of §6.25 ran the visible-area model on
+  the inner-source controls.)
 - *Probe-strength sweep.* Every network, full-body trials of its inner source, probe at 1.0, 1.1, …,
   1.5 × its resting threshold in one batch with common random numbers. A network varies smoothly with
   strength if the mean FDI readout on static and on movement trials both rise with strength (Spearman ≥
@@ -1161,6 +1162,38 @@ if made, is labelled exploratory. `A` stands for each analysis (`raw`, `remove`,
 The tables of the reports are produced by `analysis/report_figures.robustness_table` (verdicts, gate
 necessity and C_FDI per scored set) and `effects_table` (contrasts and ratios per model and analysis).
 
+### 6.25 Rehearsal of the evaluation on training sources (11 November 2026)
+
+Final-phase plan A3; `scripts/rehearse.py`, run on `joe` (three workers, one RTX 4000 Ada). Every one of the
+3,220 networks ran through the evaluation's own code (`run_evaluation.simulate_network`) on its inner source,
+with the full body and the silhouette (primary session) and the six controls; no upper limb, no rectangle and
+no held-out source, which the code refuses. Sessions here have two displays instead of three, so block orders
+and z-scoring differ from the evaluation's: the values preview the pipeline, not the evaluation.
+
+**Cost.** First pass: 2,809 networks ran and 411 ran out of GPU memory, all late in the run. Each process's
+memory grew by about 10 MB per network because snnTorch's neuron registry kept every network alive; fixed
+(`network.unregister`, change log), the 411 were rerun with none failing, and memory stayed flat (1.4–2.6 GB
+per process). Three networks re-simulated with the fixed code gave records identical to the stored ones.
+In all: 3,220 records, 0 failures; 3.1 GPU-process hours (median 4.0 s per network with three processes
+sharing the GPU, 95th percentile 4.5 s, longest 12.8 s for the 0.5-ms networks); 0.27 MB per record, 690 MB
+in all. The evaluation adds the upper limb to the primary session and a rectangle session, so it is expected
+to take about twice as long: roughly 6 GPU-process hours, one afternoon on one lab PC or less on two.
+
+**What it shows (OpenCLIP spiking unless stated; over-driven removed).**
+- *Gate on the detached hand.* The paired difference of (Δ(FB) − Δ(DH)) between H2 and the ungated network is
+  +1.31 [1.16, 1.48]; Δ(DH) is −0.01 for H2 and 0.93 for the ungated network (Δ(FB) 1.81), as in the fit of c
+  (§6.19). Positive in every H2 configuration: all-context +2.17, twin +1.58, recurrent +1.36, robustness
+  variations +1.16 to +1.42; DINOv2 +0.23 to +0.96.
+- *Control pairs.* H2 − visible-area gate: stub − gap stub +1.42 [1.24, 1.61], arm − hand window +0.33
+  [0.25, 0.40]; the visible-area gate's own pair effects are about 0 (−0.04, 0.00). This is S3(a)'s comparison
+  on inner sources; the spec had said the visible-area model would not be run on the controls before the
+  evaluation, and an amendment (spec §8, §10, 11 November 2026) records that it now has been.
+- *Over-driven shares.* Full body 0.09 (H2 OpenCLIP), 0.20–0.24 (H2 DINOv2), 0.00–0.12 (H0, H1); silhouette
+  0.00 in every H2 configuration.
+
+No setting is changed in response. The records stay on CREMI (`output/model/rehearsal/`, 690 MB) and are
+deleted if storage is needed (plan §5); the scored `rehearsal.json` is kept on the Mac and CREMI.
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -1402,3 +1435,4 @@ declared in the spec before the evaluation is opened.
 | 10 Nov 2026, results on training sources (no evaluation) | All-context ablation trained, checked and fitted (§6.23): ungated ratio 1.14 against 0.53, so the primary network's weak detached-hand response is a training-distribution effect; 0.5-ms subset trained, checked and fitted (§6.21): c = 0, health as the primary, readout ranges shift with the step | Recorded before any evaluation; no setting changed |
 | 11 Nov 2026 (reporting only, no evaluation) | `run_evaluation.score_analysis` also writes each model's 12 mean cells with their hierarchical-bootstrap intervals (`cell_summary`), for the report's human-vs-model figure; `analysis/report_figures.py` reads them | Final-phase plan A1. Descriptive: no criterion, verdict or decision reads them; the existing evaluation tests pass unchanged |
 | 11 Nov 2026, before any evaluation | Ablation table declared (§6.24): which configurations and `result.json` fields each ablation compares; final frame vs sequence stated as null by construction | Final-phase plan B1; no training, statistic or criterion added |
+| 11 Nov 2026, code fault found by the rehearsal (training sources) | `network.unregister`: each network's snnTorch neurons are removed from snnTorch's class-level registry (`SpikingNeuron.instances`), which kept every network a process had built in GPU memory (about 10 MB per network). In the rehearsal 411 of 3,220 networks ran out of GPU memory, all late in the run; with the fix a process's memory no longer grows | Memory only: the registry is never read by this project, so no computed value changes (the failed runs are simply rerun). The 14 fits of c that ran out of GPU memory on 8 November were probably the same fault. Test `test_network.Memory` |

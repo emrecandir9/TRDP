@@ -395,6 +395,13 @@ Done on 11 November:
 - **Ablation table declared** ([model method](docs/model-method.md) §6.24, B1): for each ablation the two
   configurations and the `result.json` fields compared; final frame vs sequence null by construction. No
   training, statistic or criterion added.
+- **Rehearsal of the evaluation finished** ([model method](docs/model-method.md) §6.25, A3; `joe`): all 3,220 networks
+  ran through the evaluation's code on their inner source (full body, silhouette, controls). It found a fault:
+  snnTorch's neuron registry kept every network in GPU memory, so 411 runs ran out of memory; fixed
+  (`network.unregister`, records unchanged), rerun, 0 failures (B3). About 4 s and 0.27 MB per network; the
+  evaluation should take roughly 6 GPU-process hours. The rehearsal also ran the visible-area gate on the
+  inner-source controls, which the spec had said would not happen before the evaluation; a spec amendment
+  records it (S3(a) is previewed in computation as well as in outcome). 192 tests pass.
 
 Next:
 

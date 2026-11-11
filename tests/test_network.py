@@ -678,5 +678,23 @@ class Claims(unittest.TestCase):
             finally:
                 tr.CLAIMS = old
 
+
+@unittest.skipIf(torch is None, 'torch and snntorch not installed')
+class Memory(unittest.TestCase):
+    def test_a_deleted_network_is_freed(self):
+        """snnTorch's neuron registry must not keep networks alive (rehearsal memory growth, 11 Nov 2026)."""
+        import gc
+        import weakref
+        from snntorch._neurons.neurons import SpikingNeuron
+        import network as nw
+        before = len(SpikingNeuron.instances)
+        net = nw.Network(8, dict(nw.CONFIG, motor_pool=True))
+        ref = weakref.ref(net.visual)
+        self.assertEqual(len(SpikingNeuron.instances), before)
+        del net
+        gc.collect()
+        self.assertIsNone(ref())
+
+
 if __name__ == '__main__':
     unittest.main()

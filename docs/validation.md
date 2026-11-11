@@ -256,7 +256,9 @@ Training-source data only; no held-out source or upper-limb display simulated.
 | Criterion status (A2) | `docs/criteria-status.json` covers every model the evaluation scores and every criterion; a test checks that for H2 only P2-UL and S2 are open, as spec §5.2 (10 November) states |
 | References (A6) | The 11 references of review answer 40 looked up in Crossref: title, authors, journal, volume, issue, pages and DOI match in all 11 |
 | Completeness audit (B2) | `scripts/audit_outputs.py` on CREMI: networks 3,220/3,220; readout ranges inside the sweep 3,220; fits of c 2,020/2,020 (4 gates × 3 analyses, 0 undefined); sweeps 2,400/2,400; Gate 2 predictions 1,800/1,800; healthy 2,767 (campaign 2,016, recurrent 180, variations 52–60 per 60, all-context 57, 0.5 ms 18), as recorded. A first run reported no readout ranges because the script read the FDI peak flag from the wrong field; fixed and rerun |
-| Rehearsal (A3) | Started on `joe`, three workers: first network 9.2 s, 1.3 GB GPU memory, 0.27 MB record (H2 OpenCLIP); H0 networks 2.1 s each. Results to follow |
+| Rehearsal (A3, B3) | All 3,220 networks on their inner source through `run_evaluation.simulate_network` (full body, silhouette, controls). First pass: 411 CUDA out-of-memory failures, caused by snnTorch's neuron registry (about 10 MB kept per network); fixed in `network.py`, test added (fails on the old code), three stored records re-simulated identically; rerun with 0 failures and flat memory. 3.1 GPU-process hours, median 4.0 s, 0.27 MB per record |
+| S3(a) withholding | The rehearsal ran the visible-area gate on the inner-source controls, contrary to spec §8 ("not run on the controls before the evaluation"); recorded by spec amendment of 11 November 2026 (hash in `config/analysis.json`, `test_spec` passes) |
+| Tests | 192 pass at the end of the day (audit and memory tests added; one GPU-only test skipped) |
 
 ## Remaining limits
 

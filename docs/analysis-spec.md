@@ -386,7 +386,12 @@ evaluation, so S3(a) is not previewed. (Qualified 10 November 2026: an inner sou
 and every source is the inner source of one fold, so these checks are out-of-sample results. H2's control
 predictions and its full-body facilitation on unseen sources are therefore known before the evaluation, and
 with c = 0 the visible-area model gives both members of a pair nearly the same small gate; only its
-computation, not its likely outcome, is withheld.)
+computation, not its likely outcome, is withheld.) (Recorded 11 November 2026: the computation is no longer withheld. The rehearsal of the
+evaluation on training sources ([model-method](model-method.md) §6.25) ran the visible-area model on the
+controls of every network's inner source, as the final-phase plan's task A3 specified, overlooking this
+paragraph. With OpenCLIP, H2 exceeds it by +1.42 [1.24, 1.61] (stub − gap stub) and +0.33 [0.25, 0.40]
+(arm − hand window). S3(a) is therefore previewed in computation as well as in outcome; nothing is changed
+in response, and S3(a) stays a non-blind criterion, as §5.2 already states for H2.)
 
 ## 9. Reporting rules
 
@@ -418,6 +423,7 @@ computation, not its likely outcome, is withheld.)
 | 8 Nov 2026 (before any recurrent network was trained, and before any fit of c or Gate 2 check had a result) | §5.2 and §6.3: the recurrent variant defined (trainable weights within the visual layer, no self-connections, initialised at 0 so that it starts as the feedforward network of the same seed, trained as declared); trained for H2, OpenCLIP, 20 folds × 10 initialisations; Gate 2 keeps the feedforward network as the primary variant unless it fails Gate 2's conditions ([model-method](model-method.md) §6.20) | §5.2 requires the variant to be selected and logged before the evaluation; the rule prefers the simpler network and depends only on Gate 2's conditions, which preview no criterion |
 | 8 Nov 2026 (before any of them was trained) | §6.3: robustness variations of the primary network declared: visual layer 128 and 512 neurons, learning rate 3 × 10⁻⁴ and 3 × 10⁻³, 6,000 updates, the sensitivity time constants (membrane 10/40 ms, synaptic 2/10 ms), each on 20 folds × 3 initialisations, and the 0.5-ms time step on 20 folds × 1 initialisation; evaluated once with H2 and reported as robustness, not part of the decision rule ([model-method](model-method.md) §6.21) | The settings without a literature value must be shown not to carry the result; declared before the evaluation as §6.3 requires |
 | 10 Nov 2026 (after the training-source fit of c and Gate 2 results; no held-out source and no upper-limb display has been simulated) | Status line: what "frozen" means; §1: H2's gate is supplied, and a visible-area gate fits the paper's displays equally; §2: trialwise evaluation; §5.2: criteria informative for H2, necessity of the gate (H2 − ungated), criteria also on readouts as simulated, sensitivity to c (c⁺); §7.1: 18 training groups per network; §8: Gate 2 checks are out-of-sample previews. No criterion, parameter, target or decision rule is changed | [Independent review](independent-review.md) of 10 November 2026 (findings F1–F3, F5–F9): the primary criteria are built in for H2; on training sources the ungated network already responds less to the detached hand (ratio 0.49 OpenCLIP, 0.04 and 0.00 DINOv2), so necessity must be tested, not assumed; the over-driven treatments are not bounds; c is not identified. Each addition can only make the claims harder to support. Requested by the project owner |
+| 11 Nov 2026 (training-source rehearsal of the evaluation; no held-out source and no upper-limb display simulated) | §8: recorded that the visible-area model has now been run on the controls of every inner source, so S3(a) is previewed in computation as well as in outcome | The statement that it would not be run before the evaluation became false when the rehearsal (final-phase plan A3) ran it; corrected rather than left standing. No criterion, parameter, target or decision rule changes |
 
 ## 11. References
 

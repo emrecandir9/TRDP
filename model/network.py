@@ -102,6 +102,17 @@ def noise_sd(alpha, beta, membrane_sd):
     return membrane_sd / math.sqrt(factor)
 
 
+def unregister(*neurons):
+    """Remove neurons from snnTorch's class-level registry (`SpikingNeuron.instances`), which keeps every
+    neuron ever built alive for its reset utilities. This project passes neuron state explicitly and never
+    uses the registry; left in it, every network a process builds stays in memory with its GPU tensors
+    (about 10 MB per network; 411 rehearsal runs ran out of GPU memory, 11 November 2026). No effect on
+    any computation."""
+    from snntorch._neurons.neurons import SpikingNeuron
+    ids = {id(n) for n in neurons}
+    SpikingNeuron.instances[:] = [n for n in SpikingNeuron.instances if id(n) not in ids]
+
+
 class Network(nn.Module):
     """Feedforward visual -> motor network. spiking=False gives the rate twin of §6.1."""
 
@@ -136,6 +147,7 @@ class Network(nn.Module):
         # as they were); it is moved to the input's device when used.
         self.__dict__['spinal_neurons'] = snn.Synaptic(alpha=self.alpha, beta=self.beta, threshold=c['threshold'],
                                                        spike_grad=grad, reset_mechanism='subtract')
+        unregister(self.visual, self.motor, self.spinal_neurons)
         # 'cortical': the motor output is the cortical pools (training, primary readout); 'spinal': the
         # motor output is the motoneuron pools they drive (second readout, §6.15).
         self.readout_stage = 'cortical'

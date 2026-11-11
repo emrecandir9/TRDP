@@ -230,6 +230,13 @@
         "commit": "this commit",
         "sha256_after": "70c3654cb4dfde902bfdf33f4f437f2f987f775d3ed76862ba08493f09a06574",
         "results_existing": "training-source fit of c, Gate 2 checks (out-of-sample on inner sources), recurrent and robustness campaigns; independent review"
+      },
+      {
+        "date": "2026-11-11",
+        "section": "8 (S3(a) visible-area model run on inner-source controls by the rehearsal)",
+        "commit": "this commit",
+        "sha256_after": "358b100cd5902f3cda8ef3d2fe2ecea5d7fc1dbaf3a476bef9863dda25c98ea3",
+        "results_existing": "training-source rehearsal of the evaluation on every network's inner source (full body, silhouette, controls), including the visible-area model on the controls; completeness audit"
       }
     ],
     "note": "No held-out contrast and no upper-limb display existed at any amendment. results_existing lists what did exist (replaces the earlier before_any_result flag). The last sha256_after must equal the current docs/analysis-spec.md (tests/test_spec.py)."
