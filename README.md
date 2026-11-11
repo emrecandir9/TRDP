@@ -70,6 +70,7 @@ TRDP/
 │   ├── controls.py              # Control stimuli of analysis spec §7.2 (masks, checks, rendering)
 │   ├── rehearse.py              # Rehearsal of the evaluation on inner (training) sources
 │   ├── audit_outputs.py         # Completeness audit of all training-source outputs before the freeze
+│   ├── cremi_evaluate.sh        # Claim-based workers for the held-out evaluation on several lab PCs
 │   └── validate_dataset.py      # Checks the downloaded, historically accepted archive
 ├── tests/
 │   ├── test_dataset.py          # CPU regression checks, including failure cases
