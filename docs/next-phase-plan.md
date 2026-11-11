@@ -1,5 +1,7 @@
 # Next phase plan — 22 October to 18 December 2026
 
+**From 11 November 2026 the schedule is continued in the [final phase plan](final-phase-plan.md).**
+
 The stimulus set is finished. This plan moves effort from images to the target,
 controls and model, and ends with frozen results by **18 December**. January stays
 free for writing the report.

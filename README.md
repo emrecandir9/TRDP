@@ -120,6 +120,7 @@ TRDP/
 │   ├── independent-review.md    # Independent review of 10 Nov 2026 and progress on its findings
 │   ├── decision-audit.md        # What each decision rests on
 │   ├── model-method.md          # Model methods, health checks, fit of c, Gate 2
+│   ├── final-phase-plan.md      # Plan from 11 November 2026 to the hand-in
 │   ├── next-phase-plan.md       # Priorities and schedule to 18 December 2026
 │   ├── analysis-spec.md         # Endpoints, splits, models and success criteria
 │   ├── baselines.md             # Gate 1 baselines: method fixed before results, then results
@@ -365,8 +366,8 @@ Done on 11 November:
 
 Next:
 
-1. Write the report skeleton from the adopted outline, with the two training diets side by side; no setting
-   changes.
+1. Follow the [final phase plan](docs/final-phase-plan.md) (11 November to the hand-in): report figures and
+   skeletons and a full rehearsal on inner sources by 20 November; no setting changes.
 2. Discuss the closed-gate boundary of the fit of c (a gate cannot make the detached hand fall below
    baseline) before the configurations are frozen; no setting is changed in response to it.
 3. Gate 2 on 4 December, configurations frozen 11 December, single held-out evaluation 14–18 December. Every
