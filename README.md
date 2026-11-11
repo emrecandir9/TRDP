@@ -40,6 +40,7 @@ TRDP/
 │   ├── features.py              # Gate 1 inputs: rendering, low-level statistics, DINOv2/OpenCLIP (GPU)
 │   ├── baselines.py             # Gate 1 baselines: movement signal, decoding, latent-space analyses
 │   ├── baseline_figures.py      # Figures of docs/baselines.md
+│   ├── exploratory_controls.py  # EXPLORATORY: every model on the matched controls, after the evaluation
 │   ├── report_figures.py        # Report figures and tables from the evaluation's result.json
 │   └── handview.py              # Baselines Addendum A: hand-centred views
 ├── model/
@@ -422,8 +423,10 @@ Done on 11 November:
 
 Next:
 
-1. Figures and tables from the real result are written (`analysis/report_figures.py`, `docs/evaluation/`);
-   any further analysis goes into `result_exploratory.json`, labelled exploratory.
+1. Figures and tables from the real result are written (`analysis/report_figures.py`, `docs/evaluation/`).
+   Exploratory, after the evaluation ([model method](docs/model-method.md) §6.27): on the matched controls only
+   H2 predicts a difference on both pairs (arm window − hand window +0.35; every other model about 0), so a
+   human experiment on these images would separate attachment from visible area, familiarity and salience.
 2. The two reports (final-phase plan, block E), in last semester's format.
 
 Image acceptance does not establish physiological or scientific replication.

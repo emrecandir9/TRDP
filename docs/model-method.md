@@ -1286,6 +1286,47 @@ of attachment. The matched controls make that distinction, and they have no huma
 No setting is changed in response; nothing is re-run. Analyses beyond those declared go into
 `result_exploratory.json` and are labelled exploratory (final-phase plan, block D).
 
+### 6.27 EXPLORATORY: every model on the matched controls (11 November 2026, after the evaluation)
+
+**Not declared before the freeze.** The evaluation scored the control pairs only for H2, the ungated network
+and the visible-area gate (S3(a)). `analysis/exploratory_controls.py` reads the same stored evaluation records
+(no simulation) and summarises the controls for every model, with the evaluation's bootstrap; it reproduces
+the declared values for those three models exactly (per-display effects and H2 − visible-area differences, all
+encoders and analyses). Output `result_exploratory.json`, figure and table in [`docs/evaluation/`](evaluation/).
+No criterion, verdict or decision is computed. Within each pair the visible area is matched and only the
+connection to the arm differs; no human data exist for these images.
+
+Pair differences of the FDI movement effect, OpenCLIP, held-out sources, as simulated:
+
+| Model | Stub − gap stub | Arm window − hand window |
+| --- | --- | --- |
+| H2, attachment gate | +1.36 [1.18, 1.55] | +0.35 [0.26, 0.44] |
+| H1, salience | +0.78 [0.54, 1.02] | −0.01 [−0.02, 0.01] |
+| Ungated network | +0.55 [0.44, 0.65] | −0.03 [−0.08, 0.02] |
+| H2 at c⁺ | +0.74 [0.59, 0.88] | +0.01 [−0.06, 0.09] |
+| Visible-area gate | −0.05 [−0.13, 0.02] | +0.00 [−0.08, 0.09] |
+| H2-learned | −0.05 [−0.14, 0.04] | +0.04 [−0.05, 0.13] |
+| H4, familiarity | −0.05 [−0.14, 0.03] | +0.04 [−0.05, 0.13] |
+| H0, hand only | −0.01 [−0.08, 0.05] | −0.02 [−0.08, 0.04] |
+
+- **Only H2 predicts a difference on both pairs.** The arm-window pair is the cleanest test: H2 predicts +0.35
+  and every other model about 0. On the stub pair, salience (H1) and the network without a gate also predict
+  a smaller positive difference (the gap itself changes the image), so that pair separates H2 from them by size
+  only.
+- **The visible-area gate, H2-learned and H4 predict no difference because their gates are nearly closed on all
+  four pair images** (mean gate values with OpenCLIP: visible area 0.03–0.06; learned forearm 0.00–0.01;
+  familiarity 0.00–0.02; the learned and familiarity gates have c = 0 in 199 of 200 networks). They predict little facilitation for any of these images.
+  H2-learned and H4 give identical values because both gates close the hand pathway the same way.
+- **Training diet.** Trained on all displays, H2 predicts larger differences (+2.01, +0.69) and the network
+  without a gate +0.70 and −0.13.
+- **Encoders.** With DINOv2 summary, H2's difference appears on the window pair (+0.68) but not the stub pair
+  (+0.03); with DINOv2 mean patch, on neither (S3(a) not met there in the evaluation).
+
+**Reading.** A human experiment on these images would separate the accounts: attachment predicts facilitation
+for the arm window over the hand window and for the stub over the gap stub; visible area, learned attachment
+and familiarity predict neither; salience predicts only the stub difference. Exploratory, so a proposal for
+future work, not a result of the pre-specified test.
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -1530,3 +1571,4 @@ declared in the spec before the evaluation is opened.
 | 11 Nov 2026, code fault found by the rehearsal (training sources) | `network.unregister`: each network's snnTorch neurons are removed from snnTorch's class-level registry (`SpikingNeuron.instances`), which kept every network a process had built in GPU memory (about 10 MB per network). In the rehearsal 411 of 3,220 networks ran out of GPU memory, all late in the run; with the fix a process's memory no longer grows | Memory only: the registry is never read by this project, so no computed value changes (the failed runs are simply rerun). The 14 fits of c that ran out of GPU memory on 8 November were probably the same fault. Test `test_network.Memory` |
 | 11 Nov 2026, freeze (no held-out source or upper-limb display simulated) | `config/freeze.json` written on CREMI by `run_evaluation.py freeze`: hashes of 23 files (model code, human-target code, spec and configuration, continuity table, human ratios, feature manifest, learned-gate tables); tag `freeze-2026-11-11`. Dates in `run_evaluation.py` and §6, §6.22 updated to the moved freeze | Spec §8 Gate 2 record and §10 freeze row. From here on, a change to any listed file stops the evaluation (fault rule of the final-phase plan) |
 | 11 Nov 2026, held-out evaluation | Run once on six lab PCs and scored once (§6.26); decision rule met. `scripts/cremi_evaluate.sh` added (outside the frozen files) | Spec §8; no frozen file changed, nothing re-run |
+| 11 Nov 2026, after the evaluation (exploratory) | `analysis/exploratory_controls.py`: every model on the matched controls from the stored records (§6.27) | Final-phase plan block D: undeclared analyses go into `result_exploratory.json`, labelled exploratory; reproduces the declared S3(a) values exactly |

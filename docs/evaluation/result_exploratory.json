@@ -1,0 +1,3980 @@
+{
+ "exploratory": true,
+ "note": "EXPLORATORY: not declared before the freeze. Summaries of the stored evaluation records on the control displays for every model; no criterion, verdict or decision. Same bootstrap as the evaluation.",
+ "freeze_date": "2026-11-11",
+ "encoders": {
+  "openclip": {
+   "raw": {
+    "instances": 200,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 1.3769066084827875,
+       "hand_gap_stub": 0.016869741397543353,
+       "window_hand": -0.029939646838178034,
+       "window_arm": 0.31933637519074365,
+       "scrambled": 0.21121497252318427,
+       "occluded_wrist": -0.02907718118131427
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 1.360036867085244,
+        "ci": [
+         1.1810554348140072,
+         1.5460460590333263
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.3492760220289217,
+        "ci": [
+         0.2646879405854186,
+         0.4418354561637805
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 1.0938258525498044,
+       "hand_gap_stub": 0.5450839172644515,
+       "window_hand": 0.27836402890513695,
+       "window_arm": 0.2522129411016509,
+       "scrambled": 0.8010424332914848,
+       "occluded_wrist": 0.5660753353241023
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.5487419352853529,
+        "ci": [
+         0.44432966365917215,
+         0.6539978241086226
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.02615108780348602,
+        "ci": [
+         -0.07535406392414289,
+         0.022988683279760096
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.8112949317998915,
+        "ci": [
+         -0.9578754418193228,
+         -0.6869252104373361
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.3754271098324077,
+        "ci": [
+         -0.458818737472284,
+         -0.2968757754221391
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.026535769332429647,
+       "hand_gap_stub": 0.07990576669575816,
+       "window_hand": 0.03436506711790639,
+       "window_arm": 0.0379662889888654,
+       "scrambled": 0.8550639631598139,
+       "occluded_wrist": 0.6163638400674102
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.05336999736332852,
+        "ci": [
+         -0.12899147936668362,
+         0.02157520666115476
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.0036012218709590062,
+        "ci": [
+         -0.08239982786564047,
+         0.0885085958713212
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.4134068644485729,
+        "ci": [
+         -1.6047362277833952,
+         -1.2277675997288826
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.34567480015796265,
+        "ci": [
+         -0.42270972164494436,
+         -0.27128962190189104
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": -0.032494600985502484,
+       "hand_gap_stub": 0.01866466726759143,
+       "window_hand": -0.036768013567703546,
+       "window_arm": 0.00578638734309902,
+       "scrambled": -0.0005284526894927289,
+       "occluded_wrist": -0.03715704180899876
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.05115926825309392,
+        "ci": [
+         -0.13994102901377148,
+         0.03609344449667696
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.042554400910802564,
+        "ci": [
+         -0.04795718773377021,
+         0.13187213472968826
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.4111961353383384,
+        "ci": [
+         -1.6084019296335619,
+         -1.2185681475652765
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.3067216211181191,
+        "ci": [
+         -0.38953468869691626,
+         -0.22801294403252106
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": -0.03258447407322211,
+       "hand_gap_stub": 0.018753324199563035,
+       "window_hand": -0.030280873261156502,
+       "window_arm": 0.006942411416900802,
+       "scrambled": -5.205536113768172e-06,
+       "occluded_wrist": 0.10170125001191135
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.051337798272785146,
+        "ci": [
+         -0.13894911540036428,
+         0.034899895512051395
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.0372232846780573,
+        "ci": [
+         -0.054043518614913105,
+         0.12797916609382445
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.4113746653580295,
+        "ci": [
+         -1.6085324829502627,
+         -1.2192191786509035
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.3120527373508644,
+        "ci": [
+         -0.394995330530324,
+         -0.23323722661767324
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 1.281764264039762,
+       "hand_gap_stub": 0.5429671746769893,
+       "window_hand": 0.28486456839890917,
+       "window_arm": 0.29686252515757733,
+       "scrambled": 0.6710741035421983,
+       "occluded_wrist": 0.40747161379876956
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.7387970893627726,
+        "ci": [
+         0.5931587221644551,
+         0.8847133498687558
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.011997956758668153,
+        "ci": [
+         -0.06000859346831225,
+         0.09330494699224795
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.6212397777224719,
+        "ci": [
+         -0.706198758365916,
+         -0.5407472334633436
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.3372780652702535,
+        "ci": [
+         -0.3958117049695988,
+         -0.28011917772127815
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h0": {
+      "deltas": {
+       "hand_stub": 1.7304743244972318,
+       "hand_gap_stub": 1.7446164197678042,
+       "window_hand": 1.7452141018362264,
+       "window_arm": 1.7226386315058164,
+       "scrambled": 1.7324712360096544,
+       "occluded_wrist": 1.7296433761913057
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.01414209527057226,
+        "ci": [
+         -0.07771210284480876,
+         0.05134621670476053
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.022575470330409922,
+        "ci": [
+         -0.08281246967900742,
+         0.037113415453330544
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h1": {
+      "deltas": {
+       "hand_stub": 0.7714816637592117,
+       "hand_gap_stub": -0.00407842829674582,
+       "window_hand": -0.04205073297442542,
+       "window_arm": -0.04963384430450464,
+       "scrambled": 1.0545991616928798,
+       "occluded_wrist": 0.12828429755237383
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.7755600920559574,
+        "ci": [
+         0.541325687153317,
+         1.0219503822731653
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.007583111330079221,
+        "ci": [
+         -0.023756401536558374,
+         0.00914679804503379
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     }
+    }
+   },
+   "remove": {
+    "instances": 200,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 1.3769066084827875,
+       "hand_gap_stub": 0.016869741397543353,
+       "window_hand": -0.029939646838178034,
+       "window_arm": 0.31933637519074365,
+       "scrambled": 0.21121497252318427,
+       "occluded_wrist": -0.02907718118131427
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 1.360036867085244,
+        "ci": [
+         1.1810554348140072,
+         1.5460460590333263
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.3492760220289217,
+        "ci": [
+         0.2646879405854186,
+         0.4418354561637805
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 1.0948878134627342,
+       "hand_gap_stub": 0.545545918875872,
+       "window_hand": 0.27848514154197884,
+       "window_arm": 0.2525109487085748,
+       "scrambled": 0.8065836636281785,
+       "occluded_wrist": 0.5664429970086954
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.5493418945868622,
+        "ci": [
+         0.44494367770042736,
+         0.6544138305084379
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.025974192833404006,
+        "ci": [
+         -0.07536066594101307,
+         0.02327761151781347
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.8106949724983822,
+        "ci": [
+         -0.9568945419333584,
+         -0.6860199795085142
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.3752502148623257,
+        "ci": [
+         -0.45864933335979025,
+         -0.29679842533864964
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.026535769332429647,
+       "hand_gap_stub": 0.07990576669575816,
+       "window_hand": 0.03436506711790639,
+       "window_arm": 0.0379662889888654,
+       "scrambled": 0.8550639631598139,
+       "occluded_wrist": 0.6163638400674102
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.05336999736332852,
+        "ci": [
+         -0.12899147936668362,
+         0.02157520666115476
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.0036012218709590062,
+        "ci": [
+         -0.08239982786564047,
+         0.0885085958713212
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.4134068644485729,
+        "ci": [
+         -1.6047362277833952,
+         -1.2277675997288826
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.34567480015796265,
+        "ci": [
+         -0.42270972164494436,
+         -0.27128962190189104
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": -0.032494600985502484,
+       "hand_gap_stub": 0.01866466726759143,
+       "window_hand": -0.036768013567703546,
+       "window_arm": 0.00578638734309902,
+       "scrambled": -0.0005284526894927289,
+       "occluded_wrist": -0.03715704180899876
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.05115926825309392,
+        "ci": [
+         -0.13994102901377148,
+         0.03609344449667696
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.042554400910802564,
+        "ci": [
+         -0.04795718773377021,
+         0.13187213472968826
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.4111961353383384,
+        "ci": [
+         -1.6084019296335619,
+         -1.2185681475652765
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.3067216211181191,
+        "ci": [
+         -0.38953468869691626,
+         -0.22801294403252106
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": -0.03258447407322211,
+       "hand_gap_stub": 0.018753324199563035,
+       "window_hand": -0.030280873261156502,
+       "window_arm": 0.006942411416900802,
+       "scrambled": -5.205536113768172e-06,
+       "occluded_wrist": 0.10170125001191135
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.051337798272785146,
+        "ci": [
+         -0.13894911540036428,
+         0.034899895512051395
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.0372232846780573,
+        "ci": [
+         -0.054043518614913105,
+         0.12797916609382445
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.4113746653580295,
+        "ci": [
+         -1.6085324829502627,
+         -1.2192191786509035
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.3120527373508644,
+        "ci": [
+         -0.394995330530324,
+         -0.23323722661767324
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 1.2805928597399603,
+       "hand_gap_stub": 0.5456481186410288,
+       "window_hand": 0.2857542589516575,
+       "window_arm": 0.2964029607600887,
+       "scrambled": 0.6742560351996633,
+       "occluded_wrist": 0.40901411513712027
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.7349447410989314,
+        "ci": [
+         0.5898592339933963,
+         0.8807366849312831
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.010648701808431162,
+        "ci": [
+         -0.061585039929948314,
+         0.09265556206753436
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.625092125986313,
+        "ci": [
+         -0.7098341039080756,
+         -0.5449168987700035
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.33862732022049047,
+        "ci": [
+         -0.3974114143073135,
+         -0.2801189547003572
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h0": {
+      "deltas": {
+       "hand_stub": 1.7304743244972318,
+       "hand_gap_stub": 1.7446164197678042,
+       "window_hand": 1.7452141018362264,
+       "window_arm": 1.7226386315058164,
+       "scrambled": 1.7324712360096544,
+       "occluded_wrist": 1.7296433761913057
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.01414209527057226,
+        "ci": [
+         -0.07771210284480876,
+         0.05134621670476053
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.022575470330409922,
+        "ci": [
+         -0.08281246967900742,
+         0.037113415453330544
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h1": {
+      "deltas": {
+       "hand_stub": 0.7716661140746852,
+       "hand_gap_stub": -0.003705952602960907,
+       "window_hand": -0.04224420895549805,
+       "window_arm": -0.049930296185913985,
+       "scrambled": 1.0567905368190227,
+       "occluded_wrist": 0.1290950193711344
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.7790851869439235,
+        "ci": [
+         0.5425494696872529,
+         1.0311140973442845
+        ],
+        "instances": 199,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.007686087230415936,
+        "ci": [
+         -0.023862896120655754,
+         0.00904163130163574
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     }
+    }
+   },
+   "maximum": {
+    "instances": 200,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 1.3769066084827875,
+       "hand_gap_stub": 0.016869741397543353,
+       "window_hand": -0.029939646838178034,
+       "window_arm": 0.31933637519074365,
+       "scrambled": 0.21121497252318427,
+       "occluded_wrist": -0.02907718118131427
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 1.360036867085244,
+        "ci": [
+         1.1810554348140072,
+         1.5460460590333263
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.3492760220289217,
+        "ci": [
+         0.2646879405854186,
+         0.4418354561637805
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 1.093977225657659,
+       "hand_gap_stub": 0.5451396029810176,
+       "window_hand": 0.2783788780087599,
+       "window_arm": 0.2522419753736932,
+       "scrambled": 0.8005496148231045,
+       "occluded_wrist": 0.5661244731738613
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.5488376226766413,
+        "ci": [
+         0.4443968159765625,
+         0.6540685856944808
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.02613690263506665,
+        "ci": [
+         -0.07535728435245624,
+         0.023006443505703293
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.8111992444086031,
+        "ci": [
+         -0.9576778839632176,
+         -0.6867442997414259
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.3754129246639883,
+        "ci": [
+         -0.45881830429604153,
+         -0.2968749471756038
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.026535769332429647,
+       "hand_gap_stub": 0.07990576669575816,
+       "window_hand": 0.03436506711790639,
+       "window_arm": 0.0379662889888654,
+       "scrambled": 0.8550639631598139,
+       "occluded_wrist": 0.6163638400674102
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.05336999736332852,
+        "ci": [
+         -0.12899147936668362,
+         0.02157520666115476
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.0036012218709590062,
+        "ci": [
+         -0.08239982786564047,
+         0.0885085958713212
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.4134068644485729,
+        "ci": [
+         -1.6047362277833952,
+         -1.2277675997288826
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.34567480015796265,
+        "ci": [
+         -0.42270972164494436,
+         -0.27128962190189104
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": -0.032494600985502484,
+       "hand_gap_stub": 0.01866466726759143,
+       "window_hand": -0.036768013567703546,
+       "window_arm": 0.00578638734309902,
+       "scrambled": -0.0005284526894927289,
+       "occluded_wrist": -0.03715704180899876
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.05115926825309392,
+        "ci": [
+         -0.13994102901377148,
+         0.03609344449667696
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.042554400910802564,
+        "ci": [
+         -0.04795718773377021,
+         0.13187213472968826
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.4111961353383384,
+        "ci": [
+         -1.6084019296335619,
+         -1.2185681475652765
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.3067216211181191,
+        "ci": [
+         -0.38953468869691626,
+         -0.22801294403252106
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": -0.03258447407322211,
+       "hand_gap_stub": 0.018753324199563035,
+       "window_hand": -0.030280873261156502,
+       "window_arm": 0.006942411416900802,
+       "scrambled": -5.205536113768172e-06,
+       "occluded_wrist": 0.10170125001191135
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.051337798272785146,
+        "ci": [
+         -0.13894911540036428,
+         0.034899895512051395
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.0372232846780573,
+        "ci": [
+         -0.054043518614913105,
+         0.12797916609382445
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.4113746653580295,
+        "ci": [
+         -1.6085324829502627,
+         -1.2192191786509035
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.3120527373508644,
+        "ci": [
+         -0.394995330530324,
+         -0.23323722661767324
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 1.2816356571203682,
+       "hand_gap_stub": 0.5430185968648731,
+       "window_hand": 0.2848680140802221,
+       "window_arm": 0.2967356031052448,
+       "scrambled": 0.670697194813765,
+       "occluded_wrist": 0.40771315264403496
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.7386170602554949,
+        "ci": [
+         0.5928994591259125,
+         0.8845378214891603
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.011867589025022732,
+        "ci": [
+         -0.06004531189422228,
+         0.09319402608906896
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.6214198068297495,
+        "ci": [
+         -0.7062751521014948,
+         -0.5409850007743522
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.337408433003899,
+        "ci": [
+         -0.39603673842841014,
+         -0.28011917772127815
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h0": {
+      "deltas": {
+       "hand_stub": 1.7304743244972318,
+       "hand_gap_stub": 1.7446164197678042,
+       "window_hand": 1.7452141018362264,
+       "window_arm": 1.7226386315058164,
+       "scrambled": 1.7324712360096544,
+       "occluded_wrist": 1.7296433761913057
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.01414209527057226,
+        "ci": [
+         -0.07771210284480876,
+         0.05134621670476053
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.022575470330409922,
+        "ci": [
+         -0.08281246967900742,
+         0.037113415453330544
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h1": {
+      "deltas": {
+       "hand_stub": 0.7723465159240928,
+       "hand_gap_stub": -0.004143199064382807,
+       "window_hand": -0.04202460074779529,
+       "window_arm": -0.04959683661567246,
+       "scrambled": 1.0544403194397771,
+       "occluded_wrist": 0.12816453019004168
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.7764897149884756,
+        "ci": [
+         0.5416066007759186,
+         1.0233220362222983
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.007572235867877167,
+        "ci": [
+         -0.023743035144141878,
+         0.009161619747934256
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     }
+    }
+   }
+  },
+  "dinov2_cls": {
+   "raw": {
+    "instances": 200,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 0.0666752175975802,
+       "hand_gap_stub": 0.03430861689102596,
+       "window_hand": 0.02899448606893328,
+       "window_arm": 0.7081613189397383,
+       "scrambled": 0.2747182247915503,
+       "occluded_wrist": 0.1344150121226881
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.03236660070655424,
+        "ci": [
+         -0.03556995089823298,
+         0.11524840988906274
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.679166832870805,
+        "ci": [
+         0.4650275703830276,
+         0.9121409728877982
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 0.04818231083615156,
+       "hand_gap_stub": 0.12004466431538814,
+       "window_hand": 0.37864471575028097,
+       "window_arm": 0.5379200853118941,
+       "scrambled": 0.3681089400434594,
+       "occluded_wrist": 0.9266177818748903
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.07186235347923658,
+        "ci": [
+         -0.10100299871212227,
+         -0.04402610289565684
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.1592753695616131,
+        "ci": [
+         0.0593951834586992,
+         0.2713288787851582
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.10422895418579081,
+        "ci": [
+         -0.179622862295017,
+         -0.03637375733437087
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.519891463309192,
+        "ci": [
+         -0.6787111645347506,
+         -0.36928679004705045
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.03014810463145399,
+       "hand_gap_stub": 0.07641293499002068,
+       "window_hand": 0.11604640456743423,
+       "window_arm": 0.14739219878360202,
+       "scrambled": 0.6854320973849315,
+       "occluded_wrist": 1.0725148264383342
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.04626483035856668,
+        "ci": [
+         -0.10507448411475963,
+         0.012166996471326316
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.031345794216167795,
+        "ci": [
+         -0.03256390891188171,
+         0.09361225656779096
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.07863143106512091,
+        "ci": [
+         -0.1641089047424093,
+         -0.005467219908585539
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6478210386546374,
+        "ci": [
+         -0.9007759098676096,
+         -0.41879048346168035
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": -0.013056913294018337,
+       "hand_gap_stub": 0.04076888869474473,
+       "window_hand": 0.03283831564709543,
+       "window_arm": 0.0860871602621302,
+       "scrambled": 0.07167487768183238,
+       "occluded_wrist": 0.13634118353372998
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.053825801988763064,
+        "ci": [
+         -0.13062121704019522,
+         0.023236441440041514
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.05324884461503476,
+        "ci": [
+         -0.022946473613589178,
+         0.12705655566351787
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.0861924026953173,
+        "ci": [
+         -0.17792038379942718,
+         -0.006498997401498179
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6259179882557703,
+        "ci": [
+         -0.8821984377407698,
+         -0.39512037917537096
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": -0.017705184420207166,
+       "hand_gap_stub": 0.06025306725126854,
+       "window_hand": 0.07710654190307813,
+       "window_arm": 0.13441158945134712,
+       "scrambled": 0.2186841520930154,
+       "occluded_wrist": 0.8288270643196699
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.07795825167147569,
+        "ci": [
+         -0.15229481127888478,
+         -0.003646929815680205
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.05730504754826902,
+        "ci": [
+         -0.010809115016981364,
+         0.12210933375581408
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.11032485237802994,
+        "ci": [
+         -0.1981507098668427,
+         -0.031289498558437524
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6218617853225361,
+        "ci": [
+         -0.865992380657849,
+         -0.39640721299526327
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 0.04818231083615156,
+       "hand_gap_stub": 0.12004466431538814,
+       "window_hand": 0.37864471575028097,
+       "window_arm": 0.5379200853118941,
+       "scrambled": 0.3681089400434594,
+       "occluded_wrist": 0.9266177818748903
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.07186235347923658,
+        "ci": [
+         -0.10100299871212227,
+         -0.04402610289565684
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.1592753695616131,
+        "ci": [
+         0.0593951834586992,
+         0.2713288787851582
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.10422895418579081,
+        "ci": [
+         -0.179622862295017,
+         -0.03637375733437087
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.519891463309192,
+        "ci": [
+         -0.6787111645347506,
+         -0.36928679004705045
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h0": {
+      "deltas": {
+       "hand_stub": 1.645153927772786,
+       "hand_gap_stub": 1.641932038151363,
+       "window_hand": 1.6386116923242042,
+       "window_arm": 1.6253604684506713,
+       "scrambled": 1.628983760098348,
+       "occluded_wrist": 1.615180166021895
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.003221889621423141,
+        "ci": [
+         -0.05882946147808401,
+         0.06900142893302516
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.01325122387353319,
+        "ci": [
+         -0.08242702644430952,
+         0.053835842657787236
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h1": {
+      "deltas": {
+       "hand_stub": -0.0023893903426743367,
+       "hand_gap_stub": -0.007701653286867707,
+       "window_hand": 0.074901042472848,
+       "window_arm": 0.17785015027404158,
+       "scrambled": 0.8770667101000207,
+       "occluded_wrist": 0.9155102935958368
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.00531226294419337,
+        "ci": [
+         0.0012482217192234899,
+         0.01018036234137636
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.10294910780119357,
+        "ci": [
+         0.02434418148136279,
+         0.19455439356069779
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      }
+     }
+    }
+   },
+   "remove": {
+    "instances": 200,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 0.06678387673648052,
+       "hand_gap_stub": 0.03488263910224718,
+       "window_hand": 0.030207369662469893,
+       "window_arm": 0.7100180038254901,
+       "scrambled": 0.2857760235413169,
+       "occluded_wrist": 0.14110523005248693
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.03190123763423333,
+        "ci": [
+         -0.036219518830405625,
+         0.11494831242782395
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.6798106341630201,
+        "ci": [
+         0.4651327851323624,
+         0.9128930649576718
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 0.05029052973050894,
+       "hand_gap_stub": 0.12439283360019314,
+       "window_hand": 0.39264096709669927,
+       "window_arm": 0.5588494114957347,
+       "scrambled": 0.5737665536288179,
+       "occluded_wrist": 1.1393333312800829
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.07410230386968421,
+        "ci": [
+         -0.10443514663505137,
+         -0.045477949391308975
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.1662084443990355,
+        "ci": [
+         0.06126745494312068,
+         0.28319837278417276
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.10600354150391751,
+        "ci": [
+         -0.18094649012399747,
+         -0.03796616403876052
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.5136021897639845,
+        "ci": [
+         -0.6717457403812882,
+         -0.36419895277221975
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.030645294469406812,
+       "hand_gap_stub": 0.07760296512311979,
+       "window_hand": 0.11817878679867029,
+       "window_arm": 0.15082731654196407,
+       "scrambled": 0.7293435393381037,
+       "occluded_wrist": 1.175574273140404
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.04695767065371298,
+        "ci": [
+         -0.10586536196172938,
+         0.011767652832554784
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.032648529743293804,
+        "ci": [
+         -0.0313917662033862,
+         0.095385251390526
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.07885890828794631,
+        "ci": [
+         -0.16417752996345508,
+         -0.005584890275049168
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6471621044197263,
+        "ci": [
+         -0.8999054564039437,
+         -0.4174972233307
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": -0.013964454567313524,
+       "hand_gap_stub": 0.04118752334961154,
+       "window_hand": 0.03770469316827116,
+       "window_arm": 0.09222308820292141,
+       "scrambled": 0.08290977545743936,
+       "occluded_wrist": 0.15062724902054922
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.05515197791692506,
+        "ci": [
+         -0.13150857527114976,
+         0.021907327783948893
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.05451839503465027,
+        "ci": [
+         -0.021441081243591766,
+         0.12885109291592464
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.08705321555115839,
+        "ci": [
+         -0.17890706813294463,
+         -0.007108204429705328
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6252922391283698,
+        "ci": [
+         -0.8808592699422615,
+         -0.39418094071926046
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": -0.017942966458527266,
+       "hand_gap_stub": 0.06476741639420311,
+       "window_hand": 0.0795776159590758,
+       "window_arm": 0.14323690478837606,
+       "scrambled": 0.24444474601730215,
+       "occluded_wrist": 0.8760493896569256
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.08271038285273036,
+        "ci": [
+         -0.15366573150595988,
+         -0.011668306726175364
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.06365928882930028,
+        "ci": [
+         -0.0020882087781179315,
+         0.12654677902321582
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.11461162048696372,
+        "ci": [
+         -0.20229866192952894,
+         -0.037218945492326475
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6161513453337197,
+        "ci": [
+         -0.858912870588939,
+         -0.39295838387139254
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 0.05029052973050894,
+       "hand_gap_stub": 0.12439283360019314,
+       "window_hand": 0.39264096709669927,
+       "window_arm": 0.5588494114957347,
+       "scrambled": 0.5737665536288179,
+       "occluded_wrist": 1.1393333312800829
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.07410230386968421,
+        "ci": [
+         -0.10443514663505137,
+         -0.045477949391308975
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.1662084443990355,
+        "ci": [
+         0.06126745494312068,
+         0.28319837278417276
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.10600354150391751,
+        "ci": [
+         -0.18094649012399747,
+         -0.03796616403876052
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.5136021897639845,
+        "ci": [
+         -0.6717457403812882,
+         -0.36419895277221975
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h0": {
+      "deltas": {
+       "hand_stub": 1.6532707447017827,
+       "hand_gap_stub": 1.6581142426759072,
+       "window_hand": 1.6447095348971323,
+       "window_arm": 1.634404539123034,
+       "scrambled": 1.6357821210604993,
+       "occluded_wrist": 1.6227451072142451
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.003220467069195134,
+        "ci": [
+         -0.0595171111654506,
+         0.06977985524454357
+        ],
+        "instances": 198,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.01030499577409834,
+        "ci": [
+         -0.07815901848790524,
+         0.055543186936144
+        ],
+        "instances": 199,
+        "exceeds": false
+       }
+      }
+     },
+     "h1": {
+      "deltas": {
+       "hand_stub": -0.0024393490389841375,
+       "hand_gap_stub": -0.007832846952700484,
+       "window_hand": 0.07599505621880832,
+       "window_arm": 0.17989510234889877,
+       "scrambled": 0.8951372075195041,
+       "occluded_wrist": 0.9837359712151279
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.005393497913716345,
+        "ci": [
+         0.00123999659098951,
+         0.010346129052956746
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.10390004613009048,
+        "ci": [
+         0.02467232462971574,
+         0.1958350394800079
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      }
+     }
+    }
+   },
+   "maximum": {
+    "instances": 200,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 0.06666956273955262,
+       "hand_gap_stub": 0.03428247508657818,
+       "window_hand": 0.028877882251555506,
+       "window_arm": 0.7079146740568557,
+       "scrambled": 0.2817816084955938,
+       "occluded_wrist": 0.13724441811772192
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.03238708765297444,
+        "ci": [
+         -0.0356583669130097,
+         0.11527923724876826
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.6790367918053002,
+        "ci": [
+         0.46502246095369726,
+         0.9121762656477916
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 0.048009512343755424,
+       "hand_gap_stub": 0.11951590704619862,
+       "window_hand": 0.37623710935890337,
+       "window_arm": 0.5341911100037539,
+       "scrambled": 0.43513214956202956,
+       "occluded_wrist": 0.9603286405812753
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.0715063947024432,
+        "ci": [
+         -0.10069789476004659,
+         -0.043575551336437764
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.15795400064485057,
+        "ci": [
+         0.05867733663834638,
+         0.269295573937268
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.10389348235541764,
+        "ci": [
+         -0.17948273083062344,
+         -0.03603471135340361
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.5210827911604496,
+        "ci": [
+         -0.6797841341457177,
+         -0.37032198697187685
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.029997029007529086,
+       "hand_gap_stub": 0.07624179499135669,
+       "window_hand": 0.1156110367078565,
+       "window_arm": 0.1468083187120676,
+       "scrambled": 0.6983983900779682,
+       "occluded_wrist": 1.0968217795936284
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.04624476598382761,
+        "ci": [
+         -0.10500934637435118,
+         0.01217947123278284
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.031197282004211083,
+        "ci": [
+         -0.032597012560239176,
+         0.09344885571384715
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.07863185363680204,
+        "ci": [
+         -0.16409238980665997,
+         -0.005380515329499801
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6478395098010892,
+        "ci": [
+         -0.9009178602356734,
+         -0.41877711352943015
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": -0.013087217284732331,
+       "hand_gap_stub": 0.04071061967539373,
+       "window_hand": 0.03258435469286382,
+       "window_arm": 0.08565426291782824,
+       "scrambled": 0.07971729740907621,
+       "occluded_wrist": 0.14115449121048826
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.05379783696012606,
+        "ci": [
+         -0.13060322874574085,
+         0.02326983730359885
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.053069908224964435,
+        "ci": [
+         -0.023062934923092453,
+         0.12697523017572332
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.08618492461310051,
+        "ci": [
+         -0.17792022775063826,
+         -0.006497477206784695
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6259668835803357,
+        "ci": [
+         -0.8822031586915005,
+         -0.39512037917537096
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": -0.01675071408116264,
+       "hand_gap_stub": 0.05818775991323675,
+       "window_hand": 0.07617385838204742,
+       "window_arm": 0.1334893278007857,
+       "scrambled": 0.23648473174402024,
+       "occluded_wrist": 0.8344575470583387
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.0749384739943994,
+        "ci": [
+         -0.1477978571969101,
+         -0.002173861086420671
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.057315469418738295,
+        "ci": [
+         -0.010859924950132065,
+         0.12168868003748742
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.10732556164737385,
+        "ci": [
+         -0.195310048526891,
+         -0.02994248550322176
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.621721322386562,
+        "ci": [
+         -0.8656210489763431,
+         -0.39593933521423913
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 0.048009512343755424,
+       "hand_gap_stub": 0.11951590704619862,
+       "window_hand": 0.37623710935890337,
+       "window_arm": 0.5341911100037539,
+       "scrambled": 0.43513214956202956,
+       "occluded_wrist": 0.9603286405812753
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.0715063947024432,
+        "ci": [
+         -0.10069789476004659,
+         -0.043575551336437764
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.15795400064485057,
+        "ci": [
+         0.05867733663834638,
+         0.269295573937268
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.10389348235541764,
+        "ci": [
+         -0.17948273083062344,
+         -0.03603471135340361
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.5210827911604496,
+        "ci": [
+         -0.6797841341457177,
+         -0.37032198697187685
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h0": {
+      "deltas": {
+       "hand_stub": 1.6462646889646462,
+       "hand_gap_stub": 1.645719831183813,
+       "window_hand": 1.6379274114010105,
+       "window_arm": 1.6268370393868634,
+       "scrambled": 1.6296658827740984,
+       "occluded_wrist": 1.6150486299303042
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.0005448577808329102,
+        "ci": [
+         -0.061603581409967724,
+         0.06627333416705505
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.011090372014147228,
+        "ci": [
+         -0.0789533733618238,
+         0.05482528527163573
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h1": {
+      "deltas": {
+       "hand_stub": -0.002396480238710047,
+       "hand_gap_stub": -0.007710415717335512,
+       "window_hand": 0.07483129129880071,
+       "window_arm": 0.17757045516222683,
+       "scrambled": 0.8812956980158964,
+       "occluded_wrist": 0.9326454488989322
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.005313935478625465,
+        "ci": [
+         0.0012376079547964018,
+         0.010188852480507838
+        ],
+        "instances": 200,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.10273916386342612,
+        "ci": [
+         0.02423042752042218,
+         0.19412906490682383
+        ],
+        "instances": 200,
+        "exceeds": true
+       }
+      }
+     }
+    }
+   }
+  },
+  "dinov2_patchmean": {
+   "raw": {
+    "instances": 200,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 0.020675999473610346,
+       "hand_gap_stub": 0.02590589648231502,
+       "window_hand": 0.035238114082746574,
+       "window_arm": 0.08709081774803568,
+       "scrambled": 0.21177656985524315,
+       "occluded_wrist": 0.20737199983186863
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.005229897008704678,
+        "ci": [
+         -0.03787527927375674,
+         0.02871363562436819
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.051852703665289115,
+        "ci": [
+         -0.0027901709003096517,
+         0.12152739849019978
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 0.018726392879403343,
+       "hand_gap_stub": 0.028566219683742605,
+       "window_hand": 0.06324501896146628,
+       "window_arm": 0.07700859610330857,
+       "scrambled": 0.2122957192870981,
+       "occluded_wrist": 0.42245945170526567
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.009839826804339265,
+        "ci": [
+         -0.020349928265434282,
+         -0.000521733255984502
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.013763577141842287,
+        "ci": [
+         -0.014191806000202317,
+         0.05271130317160176
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.004609929795634584,
+        "ci": [
+         -0.040159361108635404,
+         0.02890726435028866
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.03808912652344683,
+        "ci": [
+         -0.07791920501361928,
+         -2.311195681085114e-05
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.02653660692859765,
+       "hand_gap_stub": 0.036773515586192976,
+       "window_hand": 0.06563002465391549,
+       "window_arm": 0.062273988217726346,
+       "scrambled": 0.2740266678619765,
+       "occluded_wrist": 0.4656989823706123
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.010236908657595332,
+        "ci": [
+         -0.0444519075356527,
+         0.022993092765262846
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.003356036436189137,
+        "ci": [
+         -0.04742583791088952,
+         0.043577053491277884
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.005007011648890656,
+        "ci": [
+         -0.04548200753121695,
+         0.03369352024397941
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.05520874010147825,
+        "ci": [
+         -0.11232269708559159,
+         -0.0052042805671341915
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": 0.003729715441655865,
+       "hand_gap_stub": 0.028501447130442413,
+       "window_hand": 0.030862380363748533,
+       "window_arm": 0.03506385013538535,
+       "scrambled": 0.13773700689189317,
+       "occluded_wrist": 0.21803400104797613
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.024771731688786557,
+        "ci": [
+         -0.08509832216286399,
+         0.036887949468358064
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.004201469771636818,
+        "ci": [
+         -0.06274635623060792,
+         0.06846871714509356
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.019541834680081874,
+        "ci": [
+         -0.06654786738632884,
+         0.02653923669695083
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.0476512338936523,
+        "ci": [
+         -0.11395906288984448,
+         0.011595139011598343
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": 0.009425140173600455,
+       "hand_gap_stub": 0.04671082146971962,
+       "window_hand": 0.038600744358627335,
+       "window_arm": 0.03659705706502553,
+       "scrambled": 0.14617149844389654,
+       "occluded_wrist": 0.2372584522607802
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.03728568129611916,
+        "ci": [
+         -0.0978893697145722,
+         0.02198553873252131
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.002003687293601807,
+        "ci": [
+         -0.0709969052296305,
+         0.06323856603340702
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.032055784287414485,
+        "ci": [
+         -0.07794198132335263,
+         0.012548635240082068
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.05385639095889092,
+        "ci": [
+         -0.11858343002473812,
+         0.0044614474480128025
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 0.018726392879403343,
+       "hand_gap_stub": 0.028566219683742605,
+       "window_hand": 0.06324501896146628,
+       "window_arm": 0.07700859610330857,
+       "scrambled": 0.2122957192870981,
+       "occluded_wrist": 0.42245945170526567
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.009839826804339265,
+        "ci": [
+         -0.020349928265434282,
+         -0.000521733255984502
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.013763577141842287,
+        "ci": [
+         -0.014191806000202317,
+         0.05271130317160176
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.004609929795634584,
+        "ci": [
+         -0.040159361108635404,
+         0.02890726435028866
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.03808912652344683,
+        "ci": [
+         -0.07791920501361928,
+         -2.311195681085114e-05
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h0": {
+      "deltas": {
+       "hand_stub": 1.603682855905586,
+       "hand_gap_stub": 1.6171748052912402,
+       "window_hand": 1.6035008651308504,
+       "window_arm": 1.600974170100255,
+       "scrambled": 1.6271892967012895,
+       "occluded_wrist": 1.5842423648806803
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.013491949385654416,
+        "ci": [
+         -0.07157744595813048,
+         0.04776168076635697
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.0025266950305952497,
+        "ci": [
+         -0.06331249794279227,
+         0.05550268665317661
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h1": {
+      "deltas": {
+       "hand_stub": -0.0001394398774750455,
+       "hand_gap_stub": -0.0003234321329766604,
+       "window_hand": -0.010212421465310898,
+       "window_arm": -0.01521795683895846,
+       "scrambled": -0.0018657479522238762,
+       "occluded_wrist": 0.15236586385146098
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.0001839922555016149,
+        "ci": [
+         -8.654888946727391e-05,
+         0.0009632357222417142
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.005005535373647562,
+        "ci": [
+         -0.022718699676334626,
+         0.021783615804548257
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     }
+    }
+   },
+   "remove": {
+    "instances": 200,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 0.020675999473610346,
+       "hand_gap_stub": 0.02590589648231502,
+       "window_hand": 0.035238114082746574,
+       "window_arm": 0.08709081774803568,
+       "scrambled": 0.21177656985524315,
+       "occluded_wrist": 0.20737199983186863
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.005229897008704678,
+        "ci": [
+         -0.03787527927375674,
+         0.02871363562436819
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.051852703665289115,
+        "ci": [
+         -0.0027901709003096517,
+         0.12152739849019978
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 0.018726392879403343,
+       "hand_gap_stub": 0.028566219683742605,
+       "window_hand": 0.06324501896146628,
+       "window_arm": 0.07700859610330857,
+       "scrambled": 0.2122957192870981,
+       "occluded_wrist": 0.42245945170526567
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.009839826804339265,
+        "ci": [
+         -0.020349928265434282,
+         -0.000521733255984502
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.013763577141842287,
+        "ci": [
+         -0.014191806000202317,
+         0.05271130317160176
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.004609929795634584,
+        "ci": [
+         -0.040159361108635404,
+         0.02890726435028866
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.03808912652344683,
+        "ci": [
+         -0.07791920501361928,
+         -2.311195681085114e-05
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.025367295790497613,
+       "hand_gap_stub": 0.03403149767685494,
+       "window_hand": 0.06499004818165606,
+       "window_arm": 0.06539733943056263,
+       "scrambled": 0.2718069308023335,
+       "occluded_wrist": 0.46449176817461807
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.008664201886357326,
+        "ci": [
+         -0.04270116315488005,
+         0.024169621525689966
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.00040729124890657385,
+        "ci": [
+         -0.04318288494464369,
+         0.04662950170599101
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.0034343048776526498,
+        "ci": [
+         -0.042451868778617174,
+         0.034467429946991916
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.05144541241638254,
+        "ci": [
+         -0.10874832180970338,
+         -0.002181426197312467
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": 0.0030596975398289846,
+       "hand_gap_stub": 0.027910871933895444,
+       "window_hand": 0.03037355387703649,
+       "window_arm": 0.03558582857915361,
+       "scrambled": 0.13775108808879077,
+       "occluded_wrist": 0.2220892320577504
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.024851174394066467,
+        "ci": [
+         -0.08513269276219804,
+         0.03671225265382784
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.005212274702117115,
+        "ci": [
+         -0.06113382144897287,
+         0.06961618104897495
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.019621277385361794,
+        "ci": [
+         -0.06655158311021614,
+         0.026400965802830238
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.046640428963172005,
+        "ci": [
+         -0.11296278116766645,
+         0.012849300895423504
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": 0.012381561706215578,
+       "hand_gap_stub": 0.04376119630844384,
+       "window_hand": 0.040864018628895146,
+       "window_arm": 0.039139957038706055,
+       "scrambled": 0.14675255151078864,
+       "occluded_wrist": 0.23564501119799594
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.031379634602228264,
+        "ci": [
+         -0.08830340039672882,
+         0.02669681067311901
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.0017240615901890854,
+        "ci": [
+         -0.07043896500671597,
+         0.06352501394225131
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.026149737593523587,
+        "ci": [
+         -0.06955792026855093,
+         0.01758156888263354
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.0535767652554782,
+        "ci": [
+         -0.11816705071158842,
+         0.0048106181840053015
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 0.018726392879403343,
+       "hand_gap_stub": 0.028566219683742605,
+       "window_hand": 0.06324501896146628,
+       "window_arm": 0.07700859610330857,
+       "scrambled": 0.2122957192870981,
+       "occluded_wrist": 0.42245945170526567
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.009839826804339265,
+        "ci": [
+         -0.020349928265434282,
+         -0.000521733255984502
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.013763577141842287,
+        "ci": [
+         -0.014191806000202317,
+         0.05271130317160176
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.004609929795634584,
+        "ci": [
+         -0.040159361108635404,
+         0.02890726435028866
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.03808912652344683,
+        "ci": [
+         -0.07791920501361928,
+         -2.311195681085114e-05
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h0": {
+      "deltas": {
+       "hand_stub": 1.5996886598463274,
+       "hand_gap_stub": 1.6135008557962618,
+       "window_hand": 1.6060016632844978,
+       "window_arm": 1.6011955180007051,
+       "scrambled": 1.6217088779399234,
+       "occluded_wrist": 1.5828978195503651
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.013812195949934384,
+        "ci": [
+         -0.07293150866209651,
+         0.04899380256285619
+        ],
+        "instances": 194,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.004275984740115712,
+        "ci": [
+         -0.06734561964644709,
+         0.05578319758512933
+        ],
+        "instances": 193,
+        "exceeds": false
+       }
+      }
+     },
+     "h1": {
+      "deltas": {
+       "hand_stub": -0.00016840479766008388,
+       "hand_gap_stub": -0.0003434079400008244,
+       "window_hand": -0.010366507060136905,
+       "window_arm": -0.015220506932019408,
+       "scrambled": -0.0018868580293511972,
+       "occluded_wrist": 0.15390089806260324
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.00017500314234074056,
+        "ci": [
+         -0.00010452711578902263,
+         0.0009272792695982185
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.004853999871882504,
+        "ci": [
+         -0.022901463565456918,
+         0.02271600445398353
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     }
+    }
+   },
+   "maximum": {
+    "instances": 200,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 0.02067599947361034,
+       "hand_gap_stub": 0.026671156472069572,
+       "window_hand": 0.034876141219022314,
+       "window_arm": 0.08706583061636125,
+       "scrambled": 0.21318991662705578,
+       "occluded_wrist": 0.20773332086189827
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.005995156998459228,
+        "ci": [
+         -0.03898000730995054,
+         0.02804960267251854
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.05218968939733894,
+        "ci": [
+         -0.0027736250540595377,
+         0.12236523705057434
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 0.018726392879403343,
+       "hand_gap_stub": 0.028566219683742605,
+       "window_hand": 0.06324501896146628,
+       "window_arm": 0.07700859610330857,
+       "scrambled": 0.2122957192870981,
+       "occluded_wrist": 0.42245945170526567
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.009839826804339265,
+        "ci": [
+         -0.020349928265434282,
+         -0.000521733255984502
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.013763577141842287,
+        "ci": [
+         -0.014191806000202317,
+         0.05271130317160176
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.003844669805880032,
+        "ci": [
+         -0.039586621846529356,
+         0.030014212908394813
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.03842611225549664,
+        "ci": [
+         -0.07856388373840398,
+         -0.0003312153107048
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.027262295194333187,
+       "hand_gap_stub": 0.03821074876038304,
+       "window_hand": 0.06729981411524677,
+       "window_arm": 0.06275700052910838,
+       "scrambled": 0.2759674299982709,
+       "occluded_wrist": 0.46664771572977715
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.010948453566049848,
+        "ci": [
+         -0.045310958880713535,
+         0.022284569371802523
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.0045428135861383945,
+        "ci": [
+         -0.047483158703294344,
+         0.040238538012947446
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.004953296567590621,
+        "ci": [
+         -0.04587669463612345,
+         0.034085148923242076
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.056732502983477325,
+        "ci": [
+         -0.11773799804518426,
+         -0.004610368346928548
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": 0.0044472792799525864,
+       "hand_gap_stub": 0.029956795954673487,
+       "window_hand": 0.03170357720983218,
+       "window_arm": 0.03603533983598171,
+       "scrambled": 0.14023232420593762,
+       "occluded_wrist": 0.21972880472027095
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.02550951667472091,
+        "ci": [
+         -0.08593820078652091,
+         0.0363742022350346
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.004331762626149515,
+        "ci": [
+         -0.06269119131607413,
+         0.069314410519572
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.019514359676261674,
+        "ci": [
+         -0.06633825482008508,
+         0.02655730464498901
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.04785792677118942,
+        "ci": [
+         -0.11477405349503231,
+         0.011836359205194802
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": 0.009755883271827238,
+       "hand_gap_stub": 0.04782025018600324,
+       "window_hand": 0.03862774022510463,
+       "window_arm": 0.037617931512137354,
+       "scrambled": 0.15007049595939517,
+       "occluded_wrist": 0.23886442183602621
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.03806436691417601,
+        "ci": [
+         -0.09869095025136568,
+         0.02150559617387037
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.0010098087129672751,
+        "ci": [
+         -0.06920574685931202,
+         0.06338812514313379
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.032069209915716775,
+        "ci": [
+         -0.07792409225389581,
+         0.012520839475129318
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.05319949811030621,
+        "ci": [
+         -0.11891088088973206,
+         0.005913738506597348
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 0.018726392879403343,
+       "hand_gap_stub": 0.028566219683742605,
+       "window_hand": 0.06324501896146628,
+       "window_arm": 0.07700859610330857,
+       "scrambled": 0.2122957192870981,
+       "occluded_wrist": 0.42245945170526567
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.009839826804339265,
+        "ci": [
+         -0.020349928265434282,
+         -0.000521733255984502
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.013763577141842287,
+        "ci": [
+         -0.014191806000202317,
+         0.05271130317160176
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.003844669805880032,
+        "ci": [
+         -0.039586621846529356,
+         0.030014212908394813
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.03842611225549664,
+        "ci": [
+         -0.07856388373840398,
+         -0.0003312153107048
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h0": {
+      "deltas": {
+       "hand_stub": 1.6061664876839261,
+       "hand_gap_stub": 1.61918860925387,
+       "window_hand": 1.6089069291951,
+       "window_arm": 1.60643415051352,
+       "scrambled": 1.6292711823445298,
+       "occluded_wrist": 1.5908070934069687
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.013022121569943838,
+        "ci": [
+         -0.07074005090984486,
+         0.04800564147852797
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.002472778681580168,
+        "ci": [
+         -0.06404427709272166,
+         0.0556103632455148
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     },
+     "h1": {
+      "deltas": {
+       "hand_stub": -0.00013520054009599934,
+       "hand_gap_stub": -0.0003205084520255952,
+       "window_hand": -0.010182877592091973,
+       "window_arm": -0.015212807925322041,
+       "scrambled": -0.001840219904354723,
+       "occluded_wrist": 0.15231628697192107
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.00018530791192959584,
+        "ci": [
+         -8.391757661131316e-05,
+         0.0009684983479536347
+        ],
+        "instances": 200,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.005029930333230068,
+        "ci": [
+         -0.022714063820634216,
+         0.02174165665051706
+        ],
+        "instances": 200,
+        "exceeds": false
+       }
+      }
+     }
+    }
+   }
+  },
+  "openclip_allctx": {
+   "raw": {
+    "instances": 60,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 2.0415547649055403,
+       "hand_gap_stub": 0.029024910403142465,
+       "window_hand": -0.08965051747478842,
+       "window_arm": 0.5967556334022299,
+       "scrambled": 0.25159651050747545,
+       "occluded_wrist": -0.061816055735831696
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 2.012529854502398,
+        "ci": [
+         1.6920742623686644,
+         2.2892421854159535
+        ],
+        "instances": 60,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.6864061508770182,
+        "ci": [
+         0.5200280444167987,
+         0.8666567758237633
+        ],
+        "instances": 60,
+        "exceeds": true
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 1.5927518886658631,
+       "hand_gap_stub": 0.8938884820426936,
+       "window_hand": 0.5981012202919794,
+       "window_arm": 0.46991663284468965,
+       "scrambled": 0.4846073297447982,
+       "occluded_wrist": 0.6531036508991409
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.6988634066231698,
+        "ci": [
+         0.42410254315084406,
+         0.9369585987800272
+        ],
+        "instances": 60,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.12818458744728986,
+        "ci": [
+         -0.25491272636922396,
+         -0.000556541693956462
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.3136664478792284,
+        "ci": [
+         -1.4516629879292242,
+         -1.171851205330955
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.8145907383243082,
+        "ci": [
+         -0.9963563989041345,
+         -0.6509913402393368
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.02793439554247508,
+       "hand_gap_stub": 0.06659016196533156,
+       "window_hand": -0.026033374895069294,
+       "window_arm": 0.037863617072772866,
+       "scrambled": 0.7316697175302391,
+       "occluded_wrist": 0.6480518893598006
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.03865576642285649,
+        "ci": [
+         -0.13776516707470718,
+         0.059537444515660905
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.06389699196784214,
+        "ci": [
+         -0.07059081112087452,
+         0.19811858807808982
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -2.0511856209252546,
+        "ci": [
+         -2.3147731881449043,
+         -1.7364122762273064
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.622509158909176,
+        "ci": [
+         -0.7678999018613769,
+         -0.48277016354518626
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": -0.02273213171394658,
+       "hand_gap_stub": 0.034828353076258374,
+       "window_hand": -0.11400754988434098,
+       "window_arm": -0.014969652060283797,
+       "scrambled": 0.04707620187466229,
+       "occluded_wrist": -0.08132987459103767
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.05756048479020495,
+        "ci": [
+         -0.17841886990730052,
+         0.058456745427166674
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.09903789782405721,
+        "ci": [
+         -0.05097106457397985,
+         0.25192634772884437
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -2.0700903392926033,
+        "ci": [
+         -2.336607538439162,
+         -1.7543603526026412
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.5873682530529611,
+        "ci": [
+         -0.7211217838127078,
+         -0.4568966049821036
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": -0.021691978586782387,
+       "hand_gap_stub": 0.03331211655955994,
+       "window_hand": -0.10069430428635544,
+       "window_arm": -0.024073480568692313,
+       "scrambled": 0.04660129551675243,
+       "occluded_wrist": 0.09513330388086172
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.055004095146342344,
+        "ci": [
+         -0.17448307172684513,
+         0.06009649537503471
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.07662082371766313,
+        "ci": [
+         -0.0747912047294602,
+         0.22980021248627175
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -2.06753394964874,
+        "ci": [
+         -2.33429552333782,
+         -1.7517867430328677
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6097853271593551,
+        "ci": [
+         -0.7588117601239233,
+         -0.46873935883506374
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 1.9644765908093194,
+       "hand_gap_stub": 0.3355083510235203,
+       "window_hand": 0.15486599019255717,
+       "window_arm": 0.5692209730043,
+       "scrambled": 0.522647392715767,
+       "occluded_wrist": 0.23843782598643917
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 1.6289682397857987,
+        "ci": [
+         1.3121622454001773,
+         1.9124703864120614
+        ],
+        "instances": 60,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.4143549828117427,
+        "ci": [
+         0.27276208725621875,
+         0.5716311297949054
+        ],
+        "instances": 60,
+        "exceeds": true
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.3835616147165993,
+        "ci": [
+         -0.4484797247593905,
+         -0.32185295029421646
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.27205116806527546,
+        "ci": [
+         -0.3327934496189753,
+         -0.20973955172164976
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     }
+    }
+   },
+   "remove": {
+    "instances": 60,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 2.0953337293920655,
+       "hand_gap_stub": 0.028762378599856087,
+       "window_hand": -0.08909230278447554,
+       "window_arm": 0.5978246966111499,
+       "scrambled": 0.25187655318232893,
+       "occluded_wrist": -0.06193619604047269
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 2.0620420124420784,
+        "ci": [
+         1.735683222816186,
+         2.329601615704669
+        ],
+        "instances": 57,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.6869169993956252,
+        "ci": [
+         0.5211516845376128,
+         0.866678153774937
+        ],
+        "instances": 60,
+        "exceeds": true
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 1.6601919819322764,
+       "hand_gap_stub": 0.906425878783756,
+       "window_hand": 0.6056364672559204,
+       "window_arm": 0.47609708254907607,
+       "scrambled": 0.5984892110967913,
+       "occluded_wrist": 0.6615114449039858
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.781216314770475,
+        "ci": [
+         0.5326249201157387,
+         0.9956418710181972
+        ],
+        "instances": 57,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.1295393847068444,
+        "ci": [
+         -0.25854287194265424,
+         0.000684843622725928
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.2808256976716037,
+        "ci": [
+         -1.4204247511750798,
+         -1.1371540977715786
+        ],
+        "instances": 57,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.8164563841024696,
+        "ci": [
+         -0.9984573384313377,
+         -0.6523725222798921
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.02793439554247508,
+       "hand_gap_stub": 0.06659016196533156,
+       "window_hand": -0.026033374895069294,
+       "window_arm": 0.037863617072772866,
+       "scrambled": 0.7316697175302391,
+       "occluded_wrist": 0.6480518893598006
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.03865576642285649,
+        "ci": [
+         -0.13776516707470718,
+         0.059537444515660905
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.06389699196784214,
+        "ci": [
+         -0.07059081112087452,
+         0.19811858807808982
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -2.101962507413269,
+        "ci": [
+         -2.3592143045712763,
+         -1.7875641903393251
+        ],
+        "instances": 57,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6230200074277831,
+        "ci": [
+         -0.7679691261150668,
+         -0.4838120867277349
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": -0.02273213171394658,
+       "hand_gap_stub": 0.034828353076258374,
+       "window_hand": -0.11400754988434098,
+       "window_arm": -0.014969652060283797,
+       "scrambled": 0.04707620187466229,
+       "occluded_wrist": -0.08132987459103767
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.05756048479020495,
+        "ci": [
+         -0.17841886990730052,
+         0.058456745427166674
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.09903789782405721,
+        "ci": [
+         -0.05097106457397985,
+         0.25192634772884437
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -2.1277198573992275,
+        "ci": [
+         -2.3834408782147496,
+         -1.8215029677614383
+        ],
+        "instances": 57,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.587879101571568,
+        "ci": [
+         -0.7211217838127078,
+         -0.4575394789135279
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": -0.021691978586782387,
+       "hand_gap_stub": 0.03331211655955994,
+       "window_hand": -0.10069430428635544,
+       "window_arm": -0.024073480568692313,
+       "scrambled": 0.04660129551675243,
+       "occluded_wrist": 0.09513330388086172
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.055004095146342344,
+        "ci": [
+         -0.17448307172684513,
+         0.06009649537503471
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.07662082371766313,
+        "ci": [
+         -0.0747912047294602,
+         0.22980021248627175
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -2.1250289209320035,
+        "ci": [
+         -2.380273696170881,
+         -1.818439702043643
+        ],
+        "instances": 57,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6102961756779622,
+        "ci": [
+         -0.7591195039447686,
+         -0.46901396891770575
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 2.017982960088289,
+       "hand_gap_stub": 0.33798579177289934,
+       "window_hand": 0.15539596840693667,
+       "window_arm": 0.5701147489483704,
+       "scrambled": 0.5239098837708304,
+       "occluded_wrist": 0.2387762218729912
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 1.6951863280047859,
+        "ci": [
+         1.3827201398486761,
+         1.9550927462845298
+        ],
+        "instances": 57,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.41471878054143374,
+        "ci": [
+         0.27285966932164135,
+         0.5719466836003653
+        ],
+        "instances": 60,
+        "exceeds": true
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.36685568443729283,
+        "ci": [
+         -0.42390485608868844,
+         -0.3098559036828717
+        ],
+        "instances": 57,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.2721982188541914,
+        "ci": [
+         -0.332836228309483,
+         -0.21024619025268793
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     }
+    }
+   },
+   "maximum": {
+    "instances": 60,
+    "models": {
+     "h2": {
+      "deltas": {
+       "hand_stub": 2.050289621327385,
+       "hand_gap_stub": 0.02907588603351793,
+       "window_hand": -0.08965825992529818,
+       "window_arm": 0.5967737351236202,
+       "scrambled": 0.25161356321795475,
+       "occluded_wrist": -0.06184792532162069
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 2.021213735293867,
+        "ci": [
+         1.7031311123456423,
+         2.2922934365849024
+        ],
+        "instances": 60,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.6864319950489182,
+        "ci": [
+         0.5200907544015771,
+         0.8666567758237633
+        ],
+        "instances": 60,
+        "exceeds": true
+       }
+      }
+     },
+     "ungated": {
+      "deltas": {
+       "hand_stub": 1.598543467548708,
+       "hand_gap_stub": 0.8925550785950987,
+       "window_hand": 0.5977109784911254,
+       "window_arm": 0.468658917036645,
+       "scrambled": 0.5283145193890618,
+       "occluded_wrist": 0.652393245019757
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 0.705988388953609,
+        "ci": [
+         0.4398862765255666,
+         0.9376866957405728
+        ],
+        "instances": 60,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.12905206145448048,
+        "ci": [
+         -0.25528236713198504,
+         -0.0017979054697487165
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -1.315225346340258,
+        "ci": [
+         -1.4549529600795639,
+         -1.171652412410096
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.8154840565033988,
+        "ci": [
+         -0.9970711419561678,
+         -0.6519606084419534
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "area": {
+      "deltas": {
+       "hand_stub": 0.02793439554247508,
+       "hand_gap_stub": 0.06659016196533156,
+       "window_hand": -0.026033374895069294,
+       "window_arm": 0.037863617072772866,
+       "scrambled": 0.7316697175302391,
+       "occluded_wrist": 0.6480518893598006
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.03865576642285649,
+        "ci": [
+         -0.13776516707470718,
+         0.059537444515660905
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.06389699196784214,
+        "ci": [
+         -0.07059081112087452,
+         0.19811858807808982
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -2.0598695017167237,
+        "ci": [
+         -2.317830874835133,
+         -1.7509600982929745
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.622535003081076,
+        "ci": [
+         -0.7679048398777896,
+         -0.4828370120220557
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_learned": {
+      "deltas": {
+       "hand_stub": -0.02273213171394658,
+       "hand_gap_stub": 0.034828353076258374,
+       "window_hand": -0.11400754988434098,
+       "window_arm": -0.014969652060283797,
+       "scrambled": 0.04707620187466229,
+       "occluded_wrist": -0.08132987459103767
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.05756048479020495,
+        "ci": [
+         -0.17841886990730052,
+         0.058456745427166674
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.09903789782405721,
+        "ci": [
+         -0.05097106457397985,
+         0.25192634772884437
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -2.078774220084072,
+        "ci": [
+         -2.338365892499641,
+         -1.7713663284444088
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.5873940972248609,
+        "ci": [
+         -0.7211217838127078,
+         -0.4568980264453636
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "h4": {
+      "deltas": {
+       "hand_stub": -0.021691978586782387,
+       "hand_gap_stub": 0.03331211655955994,
+       "window_hand": -0.10069430428635544,
+       "window_arm": -0.024073480568692313,
+       "scrambled": 0.04660129551675243,
+       "occluded_wrist": 0.09513330388086172
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.055004095146342344,
+        "ci": [
+         -0.17448307172684513,
+         0.06009649537503471
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.07662082371766313,
+        "ci": [
+         -0.0747912047294602,
+         0.22980021248627175
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -2.0762178304402092,
+        "ci": [
+         -2.3363886808434056,
+         -1.7686463527985943
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.6098111713312552,
+        "ci": [
+         -0.7588477085958844,
+         -0.46877804659149136
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     },
+     "h2_cplus": {
+      "deltas": {
+       "hand_stub": 1.9725021943069863,
+       "hand_gap_stub": 0.33557682602084477,
+       "window_hand": 0.15480831558764124,
+       "window_arm": 0.5692264371904471,
+       "scrambled": 0.5226476156635139,
+       "occluded_wrist": 0.23842215904010303
+      },
+      "pairs": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": 1.6369253682861413,
+        "ci": [
+         1.3251242164320318,
+         1.9138241634907822
+        ],
+        "instances": 60,
+        "exceeds": true
+       },
+       "window_arm-window_hand": {
+        "estimate": 0.4144181216028058,
+        "ci": [
+         0.27284548200167036,
+         0.5716875644683094
+        ],
+        "instances": 60,
+        "exceeds": true
+       }
+      },
+      "minus_h2": {
+       "hand_stub-hand_gap_stub": {
+        "estimate": -0.38428836700772556,
+        "ci": [
+         -0.45018727333680747,
+         -0.32215687858209596
+        ],
+        "instances": 60,
+        "exceeds": false
+       },
+       "window_arm-window_hand": {
+        "estimate": -0.27201387344611233,
+        "ci": [
+         -0.3327934496189753,
+         -0.2096552564489924
+        ],
+        "instances": 60,
+        "exceeds": false
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "declared_result_sha256": "d7430f650beaa277d1089dae91fda353cffa7273b4467e9323bf878e45aecbe4",
+ "check": {
+  "reproduces_declared": true,
+  "problems": []
+ }
+}
