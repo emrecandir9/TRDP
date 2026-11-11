@@ -37,7 +37,8 @@ with that date; confirm it with the supervisor (decision D1).
 
 **Progress.** 11 November: A2 done (`docs/criteria-status.json`, `tests/test_criteria_status.py`); A1 done
 (`analysis/report_figures.py`, `tests/test_report_figures.py`); A3 running on `joe` (`scripts/rehearse.py`,
-`scripts/cremi_rehearse.sh`); A4 skeleton drafted (`report/project-report.md`). Tests: 189 pass.
+`scripts/cremi_rehearse.sh`); A4 skeleton drafted (`report/project-report.md`);
+A5 skeleton drafted (`report/paper.md`). Tests: 189 pass.
 
 | # | Task | Output | Done when |
 | --- | --- | --- | --- |

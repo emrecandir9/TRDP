@@ -88,7 +88,8 @@ TRDP/
 │   ├── test_rehearse.py, test_report_figures.py, test_criteria_status.py  # Rehearsal, report figures, status table
 │   └── test_spec.py             # The spec equals its recorded hash
 ├── report/
-│   └── project-report.md        # Project report (skeleton; results filled after the evaluation)
+│   ├── project-report.md        # Project report (skeleton; results filled after the evaluation)
+│   └── paper.md                 # Paper-style report (skeleton; outcome sentences fixed in advance)
 ├── data/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
 │   ├── hand_segmentation.json   # Tracked SAM-HQ provenance, prompts and mask hashes
@@ -378,7 +379,9 @@ Done on 11 November:
   Rehearsal of the evaluation on every network's inner source started on `joe` (`scripts/rehearse.py`, A3; full
   body, silhouette and controls only). Project report skeleton drafted (`report/project-report.md`, A4): every
   section in place, methods and pre-evaluation results written, evaluation sections as stubs naming the
-  `result.json` fields they will quote. 189 tests pass.
+  `result.json` fields they will quote. Paper-style skeleton (`report/paper.md`, A5): methods and limitations
+  drafted; abstract and results give, for each possible outcome, the sentence the paper will contain and the
+  field it quotes. 189 tests pass.
 
 Next:
 
