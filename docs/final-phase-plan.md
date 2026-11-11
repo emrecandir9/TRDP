@@ -1,6 +1,6 @@
 # Final phase plan: 11 November 2026 to the end of the project
 
-Written 11 November 2026. It replaces the schedule rows W5–W8 of the [next-phase plan](next-phase-plan.md),
+Written 11 November 2026. It replaces the schedule rows W5–W8 of the [next-phase plan](https://github.com/emrecandir9/TRDP/blob/45267af/docs/next-phase-plan.md),
 which were completed early or overtaken by the [independent review](independent-review.md).
 
 **Fixed dates** (spec §8): Gate 2 on 4 December, freeze on 11 December, single held-out evaluation 14–18
@@ -38,7 +38,7 @@ with that date; confirm it with the supervisor (decision D1).
 
 **Progress.** 11 November: A2 done (`docs/criteria-status.json`, `tests/test_criteria_status.py`); A1 done
 (`analysis/report_figures.py`, `tests/test_report_figures.py`); A3 done on `joe` (`scripts/rehearse.py`,
-`scripts/cremi_rehearse.sh`; 3,220 records, model-method §6.25); A4 skeleton drafted (`report/project-report.md`);
+CREMI launch script in git history up to `45267af`; 3,220 records, model-method §6.25); A4 skeleton drafted (`report/project-report.md`);
 A5 skeleton drafted (`report/paper.md`). A6 done (`report/references.md`). Block B started early: B1 declared
 (model-method §6.24), B2 done (`scripts/audit_outputs.py`: every count equals the declared number). B3 done: the rehearsal's one
 fault (GPU memory growth, 411 runs) fixed and rerun, 0 failures. The rehearsal also ran the visible-area gate

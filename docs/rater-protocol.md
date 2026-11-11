@@ -2,7 +2,7 @@
 
 24 October 2026. Code: [`scripts/raters.py`](../scripts/raters.py). Tests:
 [`tests/test_raters.py`](../tests/test_raters.py). Outputs: `output/raters/` (local). Addresses
-issue 5 of the [next-phase plan](next-phase-plan.md) §3.
+issue 5 of the [next-phase plan](https://github.com/emrecandir9/TRDP/blob/45267af/docs/next-phase-plan.md) §3.
 
 **Decision D2 (11 November 2026).** The project owner reports that two other people reviewed the stimuli and gave the same accept/reject decisions as the owner. This check was not run under the protocol below (no fixed sample, rating forms or session records are in the repository), so it is reported as the owner's statement, not as the rater validation; the prepared protocol stays unused.
 

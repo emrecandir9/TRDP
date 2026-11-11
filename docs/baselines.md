@@ -4,7 +4,7 @@ Code: [`analysis/features.py`](../analysis/features.py) (rendering, low-level st
 encoders), [`analysis/baselines.py`](../analysis/baselines.py) (analysis),
 [`analysis/baseline_figures.py`](../analysis/baseline_figures.py) (figures). Implements
 [analysis spec](analysis-spec.md) §6.1 and Gate 1 (§8) and the baseline plan in the
-[next-phase plan](next-phase-plan.md) §4.3.
+[next-phase plan](https://github.com/emrecandir9/TRDP/blob/45267af/docs/next-phase-plan.md) §4.3.
 
 **Status.** Completed 23 October 2026: **Gate 1 passed in the "clean target" branch; every
 baseline shows the reverse of the human pattern** ([results](#results)). The method below was

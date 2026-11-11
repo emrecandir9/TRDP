@@ -400,7 +400,7 @@ networks sharing the GPU (44 minutes each); `output/model/v5/`.
 
 The facilitation is 28–63% of the static response and muscle-specific: ADM changes by 0 to 0.9
 spikes. Its size in model units is not compared with the human effect; only signs, contrasts and
-scale-free ratios are ([next-phase plan](next-phase-plan.md) §4.1). 
+scale-free ratios are ([next-phase plan](https://github.com/emrecandir9/TRDP/blob/45267af/docs/next-phase-plan.md) §4.1). 
 
 | Criterion (§6.5) | H2, DINOv2 mean patch, seed 0 | H0, OpenCLIP, seed 0 | H1, OpenCLIP, seed 0 | Non-spiking twin, OpenCLIP, seed 0 |
 | --- | --- | --- | --- | --- |
