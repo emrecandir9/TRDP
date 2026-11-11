@@ -1,0 +1,313 @@
+{
+ "source": "GitHub REST API, GET /repos/emrecandir9/TRDP/activity (public repository)",
+ "fetched": "2026-11-11",
+ "note": "GitHub's own record of when each head commit reached the remote: an external timestamp for every commit at or before that head. The API keeps this history for a limited time, so it is saved here.",
+ "pushes": [
+  {
+   "pushed_utc": "2026-10-11T15:52:40Z",
+   "activity": "branch_creation",
+   "head_commit": "7824eb06a55c7c9cd678c30da4127280a90a0aba",
+   "head_commit_author_date": "2026-10-11T17:50:39+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-11T16:55:14Z",
+   "activity": "push",
+   "head_commit": "7f512f0982c08197b042e3bf8efee5c7dafed55e",
+   "head_commit_author_date": "2026-10-11T18:54:56+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-11T17:25:35Z",
+   "activity": "push",
+   "head_commit": "e379ce8c57e89b3cb0112ccf74952c228d02f5f5",
+   "head_commit_author_date": "2026-10-11T19:21:49+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-11T17:39:26Z",
+   "activity": "push",
+   "head_commit": "a58d936ff596862870ac1cf943d043e679e3a2ed",
+   "head_commit_author_date": "2026-10-11T19:39:16+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-22T16:29:30Z",
+   "activity": "push",
+   "head_commit": "89df37bdb2537f0f1f8118d9331bb19c1ef5ea5f",
+   "head_commit_author_date": "2026-10-22T18:27:25+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-22T16:49:02Z",
+   "activity": "push",
+   "head_commit": "41890c4ff520f1287a1f00b4ec70b13cc9481f7e",
+   "head_commit_author_date": "2026-10-22T18:48:43+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-22T17:13:09Z",
+   "activity": "push",
+   "head_commit": "3d6201a7aac9a95d3feb242b3b6a49d18261d2af",
+   "head_commit_author_date": "2026-10-22T19:12:36+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-22T17:55:00Z",
+   "activity": "push",
+   "head_commit": "85c5757e3ce7f503d1f226265222efcf9d0c8cc2",
+   "head_commit_author_date": "2026-10-22T19:54:40+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-23T17:53:36Z",
+   "activity": "push",
+   "head_commit": "e0945f0347685d808f83e664aea98ea25c79a862",
+   "head_commit_author_date": "2026-10-23T19:53:34+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-23T19:14:11Z",
+   "activity": "push",
+   "head_commit": "9d65ecc709d34f5ab276c0396922f54781082432",
+   "head_commit_author_date": "2026-10-23T21:14:09+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-23T19:37:47Z",
+   "activity": "push",
+   "head_commit": "e3f087c80d2244d9a3268c43745c7d7f33577407",
+   "head_commit_author_date": "2026-10-23T21:37:45+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-23T20:37:50Z",
+   "activity": "push",
+   "head_commit": "94d8dea6b01063a8e1fc63688cf0f3d7081ec302",
+   "head_commit_author_date": "2026-10-23T22:37:47+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-23T23:45:09Z",
+   "activity": "push",
+   "head_commit": "be4f5b24e96883ff732b3c99d065a48fdc736d0f",
+   "head_commit_author_date": "2026-10-24T01:45:06+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-24T00:49:21Z",
+   "activity": "push",
+   "head_commit": "a62dcd890dba532da54a08224e7cdb2d71570c0d",
+   "head_commit_author_date": "2026-10-24T02:49:19+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-24T01:00:30Z",
+   "activity": "push",
+   "head_commit": "a1c59b8c1f16ff8fdd7bdbfc9d6bed4529ee27fa",
+   "head_commit_author_date": "2026-10-24T03:00:28+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-24T01:08:52Z",
+   "activity": "push",
+   "head_commit": "4c3b0a63665d9a4d243a8fe1d53ef2c3be40069c",
+   "head_commit_author_date": "2026-10-24T03:08:50+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-24T01:28:52Z",
+   "activity": "push",
+   "head_commit": "4c735ccb36375b5a2b380f8120e2407b5a87763c",
+   "head_commit_author_date": "2026-10-24T03:28:50+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-24T01:54:33Z",
+   "activity": "push",
+   "head_commit": "3cfe210c4bdd1579a4d99c092975bb633c85a50a",
+   "head_commit_author_date": "2026-10-24T03:54:31+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-24T14:35:48Z",
+   "activity": "push",
+   "head_commit": "1005ce6ca054e1bd7531f58a3e1f9135a20e3938",
+   "head_commit_author_date": "2026-10-24T16:35:46+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-24T19:10:37Z",
+   "activity": "push",
+   "head_commit": "d0fcb0ff2e29ebde7dc59f7173bc67e825de7614",
+   "head_commit_author_date": "2026-10-24T20:05:13+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-24T19:27:36Z",
+   "activity": "push",
+   "head_commit": "1609d790b9720b9b9b98d3c72ae0313896b8f420",
+   "head_commit_author_date": "2026-10-24T21:27:34+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-24T22:53:48Z",
+   "activity": "push",
+   "head_commit": "e2e84a3785cd52e27f76f57b8111084e4d651e26",
+   "head_commit_author_date": "2026-10-25T00:53:46+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-24T23:54:47Z",
+   "activity": "push",
+   "head_commit": "958eb34b104d0b28ba7f9832272e9c15ecf784ae",
+   "head_commit_author_date": "2026-10-25T01:54:45+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-25T00:08:54Z",
+   "activity": "push",
+   "head_commit": "2ddfd19d291e902e2f6782fae55dea5d436c4d59",
+   "head_commit_author_date": "2026-10-25T02:08:52+02:00"
+  },
+  {
+   "pushed_utc": "2026-10-25T01:08:39Z",
+   "activity": "push",
+   "head_commit": "8c5762167e507067dbc3cffabf9272d0e668c15a",
+   "head_commit_author_date": "2026-10-25T02:08:38+01:00"
+  },
+  {
+   "pushed_utc": "2026-10-25T01:59:03Z",
+   "activity": "push",
+   "head_commit": "86c3a1176959c502ae017bb256f45e4cbd89da41",
+   "head_commit_author_date": "2026-10-25T02:59:01+01:00"
+  },
+  {
+   "pushed_utc": "2026-10-25T14:23:06Z",
+   "activity": "push",
+   "head_commit": "eeb45c83276592891bcb5d4f7cbcc11acc762cf8",
+   "head_commit_author_date": "2026-10-25T15:23:04+01:00"
+  },
+  {
+   "pushed_utc": "2026-10-26T16:42:14Z",
+   "activity": "push",
+   "head_commit": "5982055af53c507b35a227eb9775adc8c8f31e5e",
+   "head_commit_author_date": "2026-10-26T17:38:38+01:00"
+  },
+  {
+   "pushed_utc": "2026-10-26T19:36:43Z",
+   "activity": "push",
+   "head_commit": "bc3cafd88ed659486292ba9c8e0abee440795f74",
+   "head_commit_author_date": "2026-10-26T19:58:28+01:00"
+  },
+  {
+   "pushed_utc": "2026-10-26T20:50:00Z",
+   "activity": "push",
+   "head_commit": "3c280cde72973525ca3bd1c1ce35bcf0d158698e",
+   "head_commit_author_date": "2026-10-26T21:05:56+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-08T20:02:49Z",
+   "activity": "push",
+   "head_commit": "57f59d6e64879b728c5ad3f8f431e93bc22f1673",
+   "head_commit_author_date": "2026-11-08T21:02:47+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-08T20:09:35Z",
+   "activity": "push",
+   "head_commit": "21de913c383d1030e6eb9c0a16d99d941575a10e",
+   "head_commit_author_date": "2026-11-08T21:09:33+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-08T20:13:10Z",
+   "activity": "push",
+   "head_commit": "0032ff3455606cea5abd4f2bfc4f365f70ba00dc",
+   "head_commit_author_date": "2026-11-08T21:13:09+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-08T20:27:25Z",
+   "activity": "push",
+   "head_commit": "9832c119c2e988038a18e1e349ed896ab2296317",
+   "head_commit_author_date": "2026-11-08T21:27:23+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-08T20:37:57Z",
+   "activity": "push",
+   "head_commit": "920092d29e7ab88e8b5d9cbc086de19c640447f8",
+   "head_commit_author_date": "2026-11-08T21:37:55+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-08T22:33:58Z",
+   "activity": "push",
+   "head_commit": "d4b1f9257dcc05419652eb02706e329803b47a17",
+   "head_commit_author_date": "2026-11-08T23:33:56+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-08T23:49:58Z",
+   "activity": "push",
+   "head_commit": "04e1bb070c7cbcfa308d6fb488d6f820f59d80cc",
+   "head_commit_author_date": "2026-11-09T00:49:56+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-08T23:52:39Z",
+   "activity": "push",
+   "head_commit": "8a614efa3a5688e6ef1877bc929335019a729fd7",
+   "head_commit_author_date": "2026-11-09T00:52:37+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-08T23:56:35Z",
+   "activity": "push",
+   "head_commit": "ab7c0e10a5a15a2ef7e0d9a1971da003c402127f",
+   "head_commit_author_date": "2026-11-09T00:56:31+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-09T02:07:12Z",
+   "activity": "push",
+   "head_commit": "4fd2d504aaf49bb4903731a2668c2e25efd2ea3c",
+   "head_commit_author_date": "2026-11-09T03:07:09+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-09T23:56:04Z",
+   "activity": "push",
+   "head_commit": "e0d70fcf4a7d001c4d257c8fcacaa765643a5253",
+   "head_commit_author_date": "2026-11-10T00:56:02+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-09T23:56:37Z",
+   "activity": "push",
+   "head_commit": "bcb79c67f2067ba25a9f7528b25aac4cb7d725a4",
+   "head_commit_author_date": "2026-11-10T00:56:35+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-10T00:00:26Z",
+   "activity": "push",
+   "head_commit": "1bdf266d3fc13bbe53f62b4eb17d0e016ca5f406",
+   "head_commit_author_date": "2026-11-10T01:00:24+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-10T00:09:21Z",
+   "activity": "push",
+   "head_commit": "c7fad74161eb36c90bc6f6032626dda430ea485e",
+   "head_commit_author_date": "2026-11-10T01:09:19+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-10T00:11:03Z",
+   "activity": "push",
+   "head_commit": "1d1599db23c715b43619382374042d6f9cac7a41",
+   "head_commit_author_date": "2026-11-10T01:11:02+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-10T00:11:43Z",
+   "activity": "push",
+   "head_commit": "a94f01fb33d4af521762886f5b34ba4a37db12e5",
+   "head_commit_author_date": "2026-11-10T01:11:41+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-10T18:34:59Z",
+   "activity": "push",
+   "head_commit": "98de7ef4f40585b5a3da338d504919e5b25f462a",
+   "head_commit_author_date": "2026-11-10T19:34:56+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-10T18:42:27Z",
+   "activity": "push",
+   "head_commit": "6edd71e3d255b0761d9807f8ba9c24ec5ede114d",
+   "head_commit_author_date": "2026-11-10T19:42:25+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-10T18:43:48Z",
+   "activity": "push",
+   "head_commit": "6132b1cdf674f79f975e3eaa9f3cb6c431ba7caf",
+   "head_commit_author_date": "2026-11-10T19:43:46+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-10T18:57:02Z",
+   "activity": "push",
+   "head_commit": "33da79bf9b1414cf3d6aaa9d101605c30abd768f",
+   "head_commit_author_date": "2026-11-10T19:57:00+01:00"
+  },
+  {
+   "pushed_utc": "2026-11-10T23:33:10Z",
+   "activity": "push",
+   "head_commit": "e6b990a9408ddc64331250e745e8516798861ac9",
+   "head_commit_author_date": "2026-11-11T00:33:08+01:00"
+  }
+ ]
+}

@@ -354,10 +354,19 @@ Done on 10 November:
 - **0.5-ms subset finished** (§6.21; 21:52–23:18): 20 networks, 18 healthy (matched primary: 19); c = 0 in every
   one; ungated ratio 0.51. The readout ranges shift with the step (FDI 7.95 → 6.37 Hz, ADM 4.79 → 6.47 Hz).
 
+Done on 11 November:
+
+- **External timestamps found** ([push times](docs/push-times.json)): GitHub's record shows every commit pushed
+  within 65 minutes of its commit time, so the dates in the amendment log are externally supported.
+- **Author's answers to the review's questions recorded** ([review](docs/independent-review.md) §8). Claim adopted
+  for the report: the pipeline tests attachment accounts of the human pattern; it does not assert that
+  attachment explains it. Two documents are planned from one set of results: the full project report and a
+  paper-style methods article (outline in the review).
+
 Next:
 
-1. Decide how the report presents the two training diets (full body only, all displays) side by side; no
-   setting changes.
+1. Write the report skeleton from the adopted outline, with the two training diets side by side; no setting
+   changes.
 2. Discuss the closed-gate boundary of the fit of c (a gate cannot make the detached hand fall below
    baseline) before the configurations are frozen; no setting is changed in response to it.
 3. Gate 2 on 4 December, configurations frozen 11 December, single held-out evaluation 14–18 December. Every

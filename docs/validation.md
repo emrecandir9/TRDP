@@ -251,7 +251,7 @@ full-body half of P2 was calibrated; full-body facilitation, the detached-hand r
 predictions are already known on unseen inner sources, so only the upper-limb display is new in the
 evaluation. H2's gate is supplied from masks, not computed from the image. The gate parameter is not
 identified. The readout is not physiological and its over-driven treatments are a sensitivity analysis.
-The spec is a dated pre-specification, not an externally registered preregistration.
+The spec is a dated pre-specification, not an externally registered preregistration; its commit dates are supported by GitHub's push record (every commit pushed within 65 minutes, `docs/push-times.json`, 11 November 2026).
 Further limits to carry into the report: the motor limits, the pooled motor populations and the background
 criterion were set in five rounds on 24–25 October against full-body facilitation on unseen inner sources, so
 full-body facilitation is a calibrated property of the model, not a finding (F4); the movement frames are

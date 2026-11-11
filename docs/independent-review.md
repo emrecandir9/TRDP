@@ -12,11 +12,12 @@ Updated as each item is handled; the commit that handled it is given. Open items
 | F16: document contradictions (answer 37) | **done** 10 Nov, except the items inside the spec and `config/analysis.json` (handled with the amendment below) |
 | F1, F2, F7, F8: declared reporting amendments (informative criteria, necessity test, raw readouts, c sensitivity) | **done** 10 Nov (spec §5.2 and §10; model-method §6.19a) |
 | F2, F7, F8: code for the necessity test, raw reporting and c sensitivity | **done** 10 Nov (`criteria.necessity`, `fit_gate.sensitivity_c`, tests); the evaluation driver must call them and `treated_cells(treatment=None)` |
-| F9: amendment list and spec hash in `config/analysis.json`; "frozen" wording; external timestamp | amendment list, hash test (`tests/test_spec.py`) and wording **done** 10 Nov; external timestamp at the 11 Dec freeze **open** (commits are pushed to GitHub the same day from now on) |
+| F9: amendment list and spec hash in `config/analysis.json`; "frozen" wording; external timestamp | amendment list, hash test (`tests/test_spec.py`) and wording **done** 10 Nov; external timestamps **found** 11 Nov: GitHub's push record covers every commit within 65 minutes ([`push-times.json`](push-times.json)); the freeze record of 11 Dec is still **open** |
 | F3–F6, F11, F12: limitations written into the documents | F3, F5, F6 **done** 10 Nov (spec §1, §5.2, §8; validation "Remaining limits"); F4, F11, F12 **done** 10 Nov (validation "Remaining limits"), to be repeated in the report |
 | All-context training ablation: specify, then train | specified and built 10 Nov (model-method §6.23, `--variation allctx`); trained, checked and fitted **done** 10 Nov: ungated ratio 1.14 [1.03, 1.25] against 0.53 for the matched primary networks, so the weak detached-hand response of the primary is a training-distribution effect (confirms F2's interpretation). Scored on held-out sources in the evaluation |
 | F10: evaluation driver, tested and hashed | built, tested and rehearsed **done** 10 Nov (`model/run_evaluation.py`, model-method §6.22); its hash is recorded by `run_evaluation.py freeze` on 11 Dec (**open**, run on CREMI where the outputs are) |
 | F13–F15, F17: wording and provenance fixes | F13, F14, F17 **done** 10 Nov (model-method §6.13, §6.19a; decision audit); F15 **done** 10 Nov (`train.provenance` in every new health report, fit, Gate 2 and evaluation record; feature manifest and learned gate tables pinned in `config/analysis.json` and checked at load). Outputs made before 10 Nov carry no code hash |
+| Questions for the author (section 8) | answered 11 Nov; answers and consequences at the end of section 8; claim and report outline adopted |
 | 0.5-ms time step (already declared) | implemented and tested **done** 10 Nov (model-method §6.21); its 20 networks, curves and fits **done** 10 Nov (18 healthy, c = 0, ungated ratio 0.51) |
 
 Labels: **[V]** verified by me in code, data or output; **[D]** stated by the project, not independently checked; **[I]** my inference, premises given.
@@ -241,3 +242,29 @@ By Nosek et al. (2018, PNAS), an amendment made before the confirmatory data are
 6. Is the claim you want to defend "attachment explains the human pattern" or "this pipeline can test such accounts"? The evidence supports the second.
 7. Were the 20 reference pairs screened in any way that depended on how the movement looked, and by whom?
 8. What is the supervisor's requirement for the January report: a confirmatory result, or a methods and feasibility report?
+
+### Author's answers (11 November 2026) and what follows from them
+
+| # | Answer | Consequence |
+| --- | --- | --- |
+| 1 | Not known: the scope of the 24 October delegation and whether the S3 amendment and the rectangle reversal were reviewed before the commit are not remembered | They stay classed as decisions "by the assistant under delegation", as the spec's log says. The report states that the owner cannot confirm prior review, and gives the frozen S3(a) outcome beside the amended one (F5) |
+| 2 | Not known to the author; **checked instead** | GitHub's activity record of the public repository shows 51 pushes covering all 59 commits; every head commit reached GitHub within 65 minutes of its commit time (median under a minute). Saved in [`push-times.json`](push-times.json). The commit dates are therefore externally timestamped to within about an hour, which answers most of F9. The order of events *inside* one commit is still not verifiable |
+| 3 | No upper-limb or held-out-source simulation was run outside the committed code | The upper-limb half of P2 and S2 remain untouched tests. Stated in the report as the author's declaration; the code offers no such path (answer 26) |
+| 4 | No record exists of whether the definitions preceded the values in `3cfe210` and `8c57621` | Reported as not verifiable. For H2's a the question matters little (the values are 0 or 1 for the paper's displays); for the learned gates it is one more reason to present them as negative results |
+| 5 | Not known who saw the ungated ratios on 9 November or why only one was in the text | No evidence of selective reporting, and none against it. The full table is now in model-method §6.19, and `fit_gate.py --summary` prints the ungated ratio for every configuration so it cannot be left out again |
+| 6 | The claim should be whichever is best supported and academically valued | **Claim adopted: "this pipeline can test attachment accounts of the human pattern, and here is what it shows", not "attachment explains the human pattern".** The evidence supports the first. Its findings are: images alone do not give the pattern (Gate 1); a network trained on the full body only gives it without any gate, as a training-distribution effect; a network trained on every display needs a gate; a continuity gate and a visible-area gate cannot be told apart on the paper's displays; the upper-limb transfer is the open prediction |
+| 7 | The 20 reference pairs were not screened by how the movement looked | Removes one route for selection on the movement signal. The single unblinded acceptance of the final images stays a limitation (F11) |
+| 8 | A full project report, and a paper-style report if it reads well academically | Two documents from one set of results: the project report (everything, including the stimulus pipeline and the development history) and a paper-style methods article built on the claim of answer 6. Outline below |
+
+### Outline for the paper-style report (proposed 11 November 2026)
+
+1. **Question.** Can a visuomotor model driven by images reproduce the display-dependent facilitation of Matamala-Gomez et al. (2025), and what would such a model have to contain? Stated as a test of accounts, not as support for one.
+2. **Human target.** Participant-level reanalysis of the deposit; the one robust effect (C_FDI); discrepancies with the published analysis.
+3. **Stimuli and controls.** Synthetic sources, masks over frozen pixels, matched control pairs; limits.
+4. **Image-only baselines.** Feature change is largest for the detached hand; what this does and does not imply.
+5. **Model.** Frozen encoder, spiking network, probe readout; what was calibrated (full-body facilitation, motor regime) and what was not.
+6. **Results in order of evidential weight.** (a) Upper-limb transfer on held-out sources (P2-UL, S2): the only blind prediction. (b) The two training diets: ungated ratio 0.53 against 1.14; necessity of the gate under each. (c) Continuity gate against visible-area gate, on the paper's displays and on the matched controls. (d) Robustness: encoders, twin, recurrence, time constants and step.
+7. **What is built in.** A table of every criterion: built in, calibrated, previewed, or open.
+8. **Limitations.** Supplied gate; unidentified c; non-physiological readout; synthetic stimuli and single reviewer; pre-specification with dated amendments and GitHub push times, not a registered preregistration.
+9. **Conclusion.** What the pipeline establishes and which human experiment (the matched controls) would separate the accounts.
+
