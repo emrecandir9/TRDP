@@ -274,6 +274,17 @@ Training-source data only; no held-out source or upper-limb display simulated be
 | CREMI copy | At the pushed commit `ddeca21`, `git status` clean; the five frozen inputs (`ratios.csv`, feature manifest, two learned-gate tables, continuity table) have the same SHA-256 on CREMI and the Mac |
 | Freeze | `python model/run_evaluation.py freeze` on CREMI: `config/freeze.json`, 23 files, dated 2026-11-11; the lock opens on the Mac with the same record; a copy with one changed line in `model/network.py` is refused; a second `freeze` is refused. Committed, pushed and tagged `freeze-2026-11-11` |
 
+## Held-out evaluation — 11 November 2026
+
+Run once, after the freeze, with the frozen code (block D of the final-phase plan).
+
+| Check | Result |
+| --- | --- |
+| Simulation | `scripts/cremi_evaluate.sh 3` on `joe`, `vladimir`, `moneo`, `jamis`, `daniel`, `cheonech` (18 workers), 16:49–17:01 CET: 3,220 records, 0 failures, 3.34 GPU-process hours, median 4.3 s per network |
+| Completeness | One record per declared network in every configuration; all 3,220 written at commit `3e689fd` (clean working copy) with model-code and configuration hashes equal to `config/freeze.json` and freeze date 2026-11-11; no record outside the declared configurations; no record re-simulated |
+| Scoring | `run_evaluation.py score` once on `joe`, 31 min 45 s, exit 0. `output/model/evaluation/result.json` SHA-256 `d7430f650beaa277d1089dae91fda353cffa7273b4467e9323bf878e45aecbe4` (2,120,220 bytes); the copy on the Mac has the same hash |
+| Decision rule | `decision`: **met** |
+
 ## Remaining limits
 
 **From the independent review (10 November 2026).** For H2, P1, P3, S1 and S3(b) are built in and the
