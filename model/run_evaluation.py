@@ -182,6 +182,19 @@ def ordered(results, exclude=(), healthy_only=False):
     return sorted(kept, key=lambda r: (r['source'], r['initialisation']))
 
 
+def cell_summary(cells, index_sets, displays, level=.95):
+    """Mean of each of the 12 cells over instances with its hierarchical-bootstrap interval, for the report's
+    human-vs-model figure (descriptive; no criterion uses it). Nested [display][trial type][population]."""
+    cells = np.asarray(cells, float)
+    flat = cells.reshape(len(cells), -1)
+    with np.errstate(invalid='ignore'):
+        mean = np.nanmean(flat, 0) if len(flat) else np.full(flat.shape[1], np.nan)
+    bounds = np.array([cr.interval(column, level) for column in cr.resampled_means(flat, index_sets).T])
+    shape = cells.shape[1:]
+    return dict(order=[list(displays), list(cr.KINDS), list(cr.POPULATIONS)], mean=mean.reshape(shape).tolist(),
+                ci_low=bounds[:, 0].reshape(shape).tolist(), ci_high=bounds[:, 1].reshape(shape).tolist())
+
+
 def score_analysis(h2, h0, h1, analysis, intervals, session='primary', trim=True, samples=cr.BOOTSTRAP['samples']):
     """Every model's criteria under one analysis, with S3 and the necessity of the gate for H2."""
     stack = lambda results, name, s=session: np.array([cells_of(r, s, name, analysis, trim) for r in results])
@@ -202,6 +215,7 @@ def score_analysis(h2, h0, h1, analysis, intervals, session='primary', trim=True
         cells[name] = stack(results, name)
         out['models'][name] = cr.score(cells[name], [r['source'] for r in results], [r['initialisation'] for r in results],
                                        draws(results), intervals)
+        out['models'][name]['cells'] = cell_summary(cells[name], draws(results), SESSIONS[session][0])
     if 'h2' in cells:
         out['necessity'] = cr.necessity(cells['h2'], cells['ungated'], draws(h2))
         out['necessity_cplus'] = cr.necessity(cells['h2_cplus'], cells['ungated'], draws(h2))

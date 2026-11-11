@@ -244,6 +244,18 @@ CREMI; no held-out source or upper-limb display simulated.
 | Verdict | Sound with major revisions; findings and progress in the review |
 | Evaluation driver (built the same day) | 9 tests (lock, runs and labels, open gate = ungated, verdicts, repetitions); rehearsal on four real networks' inner sources reproduces the stored Gate 2 control predictions; 176 tests pass at the end of the day |
 
+## Final phase, block A — 11 November 2026
+
+Training-source data only; no held-out source or upper-limb display simulated.
+
+| Check | Result |
+| --- | --- |
+| Tests | 189 pass on the Mac (one GPU-only test skipped): 13 new for the rehearsal, the report figures and the criterion-status table |
+| Report figures (A1) | Run end to end on a synthetic `result.json` made by the evaluation's own scoring from small untrained networks (all three encoders and the all-context configuration); every figure and table written; figures inspected |
+| Per-cell summaries | `run_evaluation.cell_summary` added for the cell figure; the existing evaluation tests pass unchanged, and no criterion reads it |
+| Criterion status (A2) | `docs/criteria-status.json` covers every model the evaluation scores and every criterion; a test checks that for H2 only P2-UL and S2 are open, as spec §5.2 (10 November) states |
+| Rehearsal (A3) | Started on `joe`, three workers: first network 9.2 s, 1.3 GB GPU memory, 0.27 MB record (H2 OpenCLIP); H0 networks 2.1 s each. Results to follow |
+
 ## Remaining limits
 
 **From the independent review (10 November 2026).** For H2, P1, P3, S1 and S3(b) are built in and the

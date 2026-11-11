@@ -1,0 +1,122 @@
+{
+ "title": "What each criterion can still show, per model, before the held-out evaluation",
+ "written": "2026-11-11",
+ "task": "Final-phase plan A2; review section 8, item 7; spec section 5.2 (amendment of 10 November 2026); model-method sections 6.19, 6.19a, 6.23",
+ "scope": "Primary encoder (OpenCLIP), spiking feedforward networks, the frozen configuration. Every criterion is still computed and reported for every model; this table says only how much the held-out run can add to it. It changes no criterion, setting or decision rule.",
+ "statuses": {
+  "built_in": "Follows from the model's construction (gate values, fitted c, identical input); met or not met for any network that facilitates on the full body",
+  "calibrated": "A development step was tuned against this quantity on training sources (model-method 6.10-6.12)",
+  "previewed": "Not tuned, but already measured on each network's unseen inner source or on its training sources; the held-out run repeats it on new images",
+  "open": "Depends on a display never simulated for this model before the evaluation; a genuine out-of-sample test",
+  "not_scored": "The criterion is not computed for this model (spec 5.2: S3 is H2's criterion)"
+ },
+ "criteria": {
+  "P1": "C_FDI > 0, 95% interval excluding 0",
+  "P2_FB": "Full-body half of P2: delta(FB, FDI) > 0, interval excluding 0",
+  "P2_UL": "Upper-limb half of P2: delta(UL, FDI) > 0, interval excluding 0",
+  "P3": "C_FDI positive in at least 80% of initialisations",
+  "S1": "delta(DH)/mean[delta(FB), delta(UL)] inside the human interval [-0.67, 0.38]",
+  "S2": "delta(UL)/delta(FB) inside the human interval [0.34, 1.78]",
+  "S3a": "H2 exceeds the visible-area model on both matched control pairs",
+  "S3b": "Hand-only input (H0) does not meet P1 and H2's C_FDI exceeds it"
+ },
+ "models": {
+  "h2": {
+   "role": "Primary model: attachment (forearm continuity) gate, c fitted to the human ratio",
+   "P1": {"status": "built_in", "why": "a = 1, 1, 0 for full body, upper limb and detached hand in all 20 sources and c = 0, so delta(DH) = 0; C_FDI > 0 whenever delta(FB) + delta(UL) > 0", "section": "spec 5.2 (10 Nov 2026); model-method 6.19a"},
+   "P2_FB": {"status": "calibrated", "why": "Full-body facilitation on unseen inner sources was the target of the readout and motor-regime development", "section": "model-method 6.10-6.12, 6.19a"},
+   "P2_UL": {"status": "open", "why": "The upper limb has never been simulated", "section": "spec 5.2 (10 Nov 2026)"},
+   "P3": {"status": "built_in", "why": "Follows from delta(DH) = 0 in every initialisation", "section": "spec 5.2 (10 Nov 2026)"},
+   "S1": {"status": "built_in", "why": "delta(DH) = 0 gives ratio 0, inside the interval; c was fitted to this ratio (a fit check, not a prediction)", "section": "spec 5.2; model-method 6.19"},
+   "S2": {"status": "open", "why": "Needs the upper limb; no upper-limb data enter the fit", "section": "spec 5.2 (which tests are predictions)"},
+   "S3a": {"status": "previewed", "why": "H2's pair differences were positive in 20 of 20 inner sources (stub - gap stub +1.42, arm - hand window +0.30); at c = 0 the visible-area gate gives both pair members about 0.03-0.06", "section": "model-method 6.19a; review F3"},
+   "S3b": {"status": "built_in", "why": "H0's context effect is 0 by construction, so it cannot meet P1, and H2's C_FDI exceeds it whenever P1 holds", "section": "spec 5.2 (10 Nov 2026)"}
+  },
+  "h2_cplus": {
+   "role": "Sensitivity analysis outside the decision rule: H2 at c+ (median 0.45)",
+   "P1": {"status": "previewed", "why": "c+ keeps the training-source ratio delta(DH)/delta(FB) inside [-0.67, 0.35], so C_FDI > 0 unless delta(UL) is small", "section": "model-method 6.19a"},
+   "P2_FB": {"status": "calibrated", "why": "The same networks as H2; the gate is 1 on the full body", "section": "model-method 6.10-6.12"},
+   "P2_UL": {"status": "open", "why": "The upper limb has never been simulated", "section": "spec 5.2"},
+   "P3": {"status": "previewed", "why": "Per-network training-source ratios at c+ are known", "section": "model-method 6.19a"},
+   "S1": {"status": "calibrated", "why": "c+ is defined as the largest c keeping the training-source ratio inside the human interval", "section": "spec 5.2 (sensitivity to c)"},
+   "S2": {"status": "open", "why": "Needs the upper limb", "section": "spec 5.2"},
+   "S3a": {"status": "not_scored", "why": "S3 is scored for H2 at its declared c only", "section": "model-method 6.19a"},
+   "S3b": {"status": "not_scored", "why": "S3 is scored for H2 at its declared c only", "section": "model-method 6.19a"}
+  },
+  "ungated": {
+   "role": "Necessity comparison: H2's trained network with g = 1 on every display",
+   "P1": {"status": "previewed", "why": "Training-source ratio delta(DH)/delta(FB) 0.49 (median), so C_FDI > 0 unless delta(UL) is near 0 or negative", "section": "model-method 6.19 (ungated network)"},
+   "P2_FB": {"status": "calibrated", "why": "The same networks as H2; g = 1 on the full body for both", "section": "model-method 6.10-6.12"},
+   "P2_UL": {"status": "open", "why": "The upper limb has never been simulated", "section": "spec 5.2"},
+   "P3": {"status": "previewed", "why": "Per-network training-source ratios are known", "section": "model-method 6.19"},
+   "S1": {"status": "previewed", "why": "The training-source ratio is outside the human interval in 94% of networks (DINOv2: inside in 100%)", "section": "model-method 6.19"},
+   "S2": {"status": "open", "why": "Needs the upper limb", "section": "spec 5.2"},
+   "S3a": {"status": "not_scored", "why": "S3 is H2's criterion", "section": "spec 5.2"},
+   "S3b": {"status": "not_scored", "why": "S3 is H2's criterion", "section": "spec 5.2"}
+  },
+  "area": {
+   "role": "S3(a) low-level model: visible-area gate, c fitted by the same procedure",
+   "P1": {"status": "previewed", "why": "Its fit curve gives the training-source ratio at its fitted c (c = 0 in OpenCLIP networks)", "section": "model-method 6.19"},
+   "P2_FB": {"status": "previewed", "why": "Full-body trials of the training sources were simulated in the fit", "section": "model-method 6.19"},
+   "P2_UL": {"status": "open", "why": "The upper limb has never been simulated", "section": "spec 5.2"},
+   "P3": {"status": "previewed", "why": "Per-network fit curves are known", "section": "model-method 6.19"},
+   "S1": {"status": "previewed", "why": "Its c was fitted to this ratio on training sources", "section": "model-method 6.19"},
+   "S2": {"status": "open", "why": "Needs the upper limb", "section": "spec 5.2"},
+   "S3a": {"status": "not_scored", "why": "The comparison side of H2's S3(a); its control effects were not simulated before the evaluation", "section": "model-method 6.19 (Gate 2 checks)"},
+   "S3b": {"status": "not_scored", "why": "S3 is H2's criterion", "section": "spec 5.2"}
+  },
+  "h2_learned": {
+   "role": "Comparison: learned forearm-prediction gate, c fitted as for H2",
+   "P1": {"status": "previewed", "why": "Its fit curve (cross-fitted estimates) gives the training-source ratio at its fitted c", "section": "model-method 6.19, 7.1"},
+   "P2_FB": {"status": "previewed", "why": "Full-body trials of the training sources were simulated in the fit", "section": "model-method 6.19"},
+   "P2_UL": {"status": "open", "why": "The upper limb has never been simulated", "section": "spec 5.2"},
+   "P3": {"status": "previewed", "why": "Per-network fit curves are known", "section": "model-method 6.19"},
+   "S1": {"status": "previewed", "why": "Its c was fitted to this ratio on training sources", "section": "model-method 6.19"},
+   "S2": {"status": "open", "why": "Needs the upper limb", "section": "spec 5.2"},
+   "S3a": {"status": "not_scored", "why": "S3 is H2's criterion", "section": "spec 5.2"},
+   "S3b": {"status": "not_scored", "why": "S3 is H2's criterion", "section": "spec 5.2"}
+  },
+  "h4": {
+   "role": "Comparison: own-body familiarity gate, c fitted as for H2",
+   "P1": {"status": "previewed", "why": "Its fit curve (cross-fitted estimates) gives the training-source ratio at its fitted c", "section": "model-method 6.19, 7.1"},
+   "P2_FB": {"status": "previewed", "why": "Full-body trials of the training sources were simulated in the fit", "section": "model-method 6.19"},
+   "P2_UL": {"status": "open", "why": "The upper limb has never been simulated", "section": "spec 5.2"},
+   "P3": {"status": "previewed", "why": "Per-network fit curves are known", "section": "model-method 6.19"},
+   "S1": {"status": "previewed", "why": "Its c was fitted to this ratio on training sources", "section": "model-method 6.19"},
+   "S2": {"status": "open", "why": "Needs the upper limb", "section": "spec 5.2"},
+   "S3a": {"status": "not_scored", "why": "S3 is H2's criterion", "section": "spec 5.2"},
+   "S3b": {"status": "not_scored", "why": "S3 is H2's criterion", "section": "spec 5.2"}
+  },
+  "h0": {
+   "role": "Comparison, no human data: hand-only input, identical in every display",
+   "P1": {"status": "built_in", "why": "The input is the same hand-only image in every display, so C_FDI is 0 in expectation and P1 is not met except by chance", "section": "model-method 6.6"},
+   "P2_FB": {"status": "previewed", "why": "Facilitation on the inner source is part of the health check", "section": "model-method 6.5, 6.6"},
+   "P2_UL": {"status": "built_in", "why": "The upper-limb input equals the full-body input, so it repeats P2_FB up to trial noise", "section": "model-method 6.6"},
+   "P3": {"status": "built_in", "why": "C_FDI is 0 in expectation in every initialisation", "section": "model-method 6.6"},
+   "S1": {"status": "built_in", "why": "Equal effects give a ratio near 1, outside the interval", "section": "model-method 6.6"},
+   "S2": {"status": "built_in", "why": "Equal effects give a ratio near 1, inside the interval", "section": "model-method 6.6"},
+   "S3a": {"status": "not_scored", "why": "S3 is H2's criterion", "section": "spec 5.2"},
+   "S3b": {"status": "not_scored", "why": "H0 is the comparison side of H2's S3(b)", "section": "spec 5.2"}
+  },
+  "h1": {
+   "role": "Comparison, no human data: salience gate g = 1 + s/s_bar, no fitted parameter",
+   "P1": {"status": "open", "why": "Neither the upper limb nor the detached hand has been simulated for H1 (Gate 2 ran only the controls and the full-body sweep)", "section": "model-method 6.19 (Gate 2 checks)"},
+   "P2_FB": {"status": "previewed", "why": "Facilitation on the inner source is part of the health check", "section": "model-method 6.5"},
+   "P2_UL": {"status": "open", "why": "The upper limb has never been simulated", "section": "spec 5.2"},
+   "P3": {"status": "open", "why": "Needs the upper limb and the detached hand", "section": "spec 5.2"},
+   "S1": {"status": "open", "why": "Needs the detached hand and the upper limb; a prediction for H1 (no human data)", "section": "spec 5.2 (which tests are predictions)"},
+   "S2": {"status": "open", "why": "Needs the upper limb; a prediction for H1", "section": "spec 5.2 (which tests are predictions)"},
+   "S3a": {"status": "not_scored", "why": "S3 is H2's criterion", "section": "spec 5.2"},
+   "S3b": {"status": "not_scored", "why": "S3 is H2's criterion", "section": "spec 5.2"}
+  }
+ },
+ "configurations": {
+  "note": "Comparison configurations are scored as H2 and as the ungated network (no H0/H1, so no S3); their statuses follow the h2 and ungated rows with these differences.",
+  "h2_openclip_rate": "Non-spiking twin: c = 0 (median), so H2's P1, P3, S1 are built in; its full-body facilitation is previewed, not calibrated; ungated ratio 0.37, inside the human interval in 43% of networks (S1 previewed)",
+  "h2_openclip_snn_rec": "Recurrent variant: as the primary; ungated ratio 0.53",
+  "robustness_variations": "Time constants, step, learning rate, width, updates: as the primary; ungated ratios 0.28-0.64",
+  "h2_openclip_snn_allctx": "All-context training: c = 0, so H2's P1, P3, S1 stay built in; ungated ratio 1.14, outside the human interval in every network (S1 previewed as not met). Its training included upper-limb images of the 18 training sources, so P2_UL and S2 on the held-out source are open but not out of distribution",
+  "dinov2_encoders": "Robustness encoders: only P1 enters the decision rule. H2's c is arbitrary for DINOv2 mean patch (flat curve) and the ungated ratio is already inside the interval (0.00-0.04), so the gate is inert there"
+ },
+ "open_for_h2": ["P2_UL", "S2"]
+}

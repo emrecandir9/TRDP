@@ -35,6 +35,10 @@ with that date; confirm it with the supervisor (decision D1).
 
 ### Block A — Wednesday 11 to Friday 20 November: prepare everything that does not need results
 
+**Progress.** 11 November: A2 done (`docs/criteria-status.json`, `tests/test_criteria_status.py`); A1 done
+(`analysis/report_figures.py`, `tests/test_report_figures.py`); A3 running on `joe` (`scripts/rehearse.py`,
+`scripts/cremi_rehearse.sh`); A4 skeleton drafted (`report/project-report.md`). Tests: 189 pass.
+
 | # | Task | Output | Done when |
 | --- | --- | --- | --- |
 | A1 | Report figures and tables as code: `analysis/report_figures.py` reading `output/model/evaluation/result.json` and the human target | Functions for: human vs model cell plot (12 cells); C_FDI and movement effects per model with intervals; the two training diets side by side; criterion table (met / not met / undetermined, with the built-in / calibrated / previewed / open label); control-display effects; robustness table | Runs end to end on a synthetic `result.json` made by the test fixtures; tests added |

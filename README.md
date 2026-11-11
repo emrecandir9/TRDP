@@ -40,6 +40,7 @@ TRDP/
 │   ├── features.py              # Gate 1 inputs: rendering, low-level statistics, DINOv2/OpenCLIP (GPU)
 │   ├── baselines.py             # Gate 1 baselines: movement signal, decoding, latent-space analyses
 │   ├── baseline_figures.py      # Figures of docs/baselines.md
+│   ├── report_figures.py        # Report figures and tables from the evaluation's result.json
 │   └── handview.py              # Baselines Addendum A: hand-centred views
 ├── model/
 │   ├── trials.py                # Trial simulator: sessions, timing, block orders (paper's procedure)
@@ -67,6 +68,7 @@ TRDP/
 │   ├── silhouette.py            # Paper-matched detached-hand mattes and archive export
 │   ├── segment_arms.py          # SAM-HQ hand and forearm segmentation for the controls
 │   ├── controls.py              # Control stimuli of analysis spec §7.2 (masks, checks, rendering)
+│   ├── rehearse.py              # Rehearsal of the evaluation on inner (training) sources
 │   └── validate_dataset.py      # Checks the downloaded, historically accepted archive
 ├── tests/
 │   ├── test_dataset.py          # CPU regression checks, including failure cases
@@ -83,7 +85,10 @@ TRDP/
 │   ├── test_evaluate.py         # Evaluation simulator
 │   ├── test_criteria.py, test_fit_gate.py, test_gate2.py  # Criteria, fit of c, Gate 2 checks
 │   ├── test_run_evaluation.py   # Evaluation driver and its freeze lock
+│   ├── test_rehearse.py, test_report_figures.py, test_criteria_status.py  # Rehearsal, report figures, status table
 │   └── test_spec.py             # The spec equals its recorded hash
+├── report/
+│   └── project-report.md        # Project report (skeleton; results filled after the evaluation)
 ├── data/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
 │   ├── hand_segmentation.json   # Tracked SAM-HQ provenance, prompts and mask hashes
@@ -121,6 +126,7 @@ TRDP/
 │   ├── decision-audit.md        # What each decision rests on
 │   ├── model-method.md          # Model methods, health checks, fit of c, Gate 2
 │   ├── final-phase-plan.md      # Plan from 11 November 2026 to the hand-in
+│   ├── criteria-status.json     # Per criterion and model: built in, calibrated, previewed or open
 │   ├── next-phase-plan.md       # Priorities and schedule to 18 December 2026
 │   ├── analysis-spec.md         # Endpoints, splits, models and success criteria
 │   ├── baselines.md             # Gate 1 baselines: method fixed before results, then results
@@ -363,6 +369,16 @@ Done on 11 November:
   for the report: the pipeline tests attachment accounts of the human pattern; it does not assert that
   attachment explains it. Two documents are planned from one set of results: the full project report and a
   paper-style methods article (outline in the review).
+- **Final phase started** ([final phase plan](docs/final-phase-plan.md), block A). Criterion-status table as data
+  ([criteria-status.json](docs/criteria-status.json), A2): for every criterion and model, whether the held-out run
+  can still show anything (for H2 only the upper-limb half of P2 and S2 are open). Report figures and tables as code
+  (`analysis/report_figures.py`, A1): human vs model cells, contrasts per model, the two training diets, control
+  displays, criterion, robustness and over-driven tables, tested end to end on a synthetic `result.json`; the
+  scored result now also carries each model's mean cells with intervals (descriptive, no criterion uses them).
+  Rehearsal of the evaluation on every network's inner source started on `joe` (`scripts/rehearse.py`, A3; full
+  body, silhouette and controls only). Project report skeleton drafted (`report/project-report.md`, A4): every
+  section in place, methods and pre-evaluation results written, evaluation sections as stubs naming the
+  `result.json` fields they will quote. 189 tests pass.
 
 Next:
 
