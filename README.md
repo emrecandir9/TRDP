@@ -69,6 +69,7 @@ TRDP/
 │   ├── segment_arms.py          # SAM-HQ hand and forearm segmentation for the controls
 │   ├── controls.py              # Control stimuli of analysis spec §7.2 (masks, checks, rendering)
 │   ├── rehearse.py              # Rehearsal of the evaluation on inner (training) sources
+│   ├── audit_outputs.py         # Completeness audit of all training-source outputs before the freeze
 │   └── validate_dataset.py      # Checks the downloaded, historically accepted archive
 ├── tests/
 │   ├── test_dataset.py          # CPU regression checks, including failure cases
@@ -86,10 +87,12 @@ TRDP/
 │   ├── test_criteria.py, test_fit_gate.py, test_gate2.py  # Criteria, fit of c, Gate 2 checks
 │   ├── test_run_evaluation.py   # Evaluation driver and its freeze lock
 │   ├── test_rehearse.py, test_report_figures.py, test_criteria_status.py  # Rehearsal, report figures, status table
+│   ├── test_audit_outputs.py    # Completeness audit
 │   └── test_spec.py             # The spec equals its recorded hash
 ├── report/
 │   ├── project-report.md        # Project report (skeleton; results filled after the evaluation)
-│   └── paper.md                 # Paper-style report (skeleton; outcome sentences fixed in advance)
+│   ├── paper.md                 # Paper-style report (skeleton; outcome sentences fixed in advance)
+│   └── references.md            # Verified reference list shared by both reports
 ├── data/
 │   ├── frozen_sources.json      # Tracked metadata and hashes for 220 frozen files
 │   ├── hand_segmentation.json   # Tracked SAM-HQ provenance, prompts and mask hashes
@@ -382,6 +385,16 @@ Done on 11 November:
   `result.json` fields they will quote. Paper-style skeleton (`report/paper.md`, A5): methods and limitations
   drafted; abstract and results give, for each possible outcome, the sentence the paper will contain and the
   field it quotes. 189 tests pass.
+- **References verified** ([references.md](report/references.md), A6): the 11 references missing per review answer 40
+  checked against Crossref (all match, DOIs recorded) and added to the 29 verified in the decision audit, with the
+  limits the review set on how some may be cited; related-work paragraph drafted in the paper.
+- **Completeness audit** (`scripts/audit_outputs.py`, B2, run on `joe`): all 3,220 networks have a health report
+  and FDI and ADM readout ranges inside the sweep; all 2,020 H2 networks have a fit of c for every gate under the
+  three analyses (none undefined); the 2,400 sweeps and 1,800 Gate 2 predictions are present. 2,767 networks are
+  healthy on their inner source (campaign 2,016, as recorded).
+- **Ablation table declared** ([model method](docs/model-method.md) §6.24, B1): for each ablation the two
+  configurations and the `result.json` fields compared; final frame vs sequence null by construction. No
+  training, statistic or criterion added.
 
 Next:
 

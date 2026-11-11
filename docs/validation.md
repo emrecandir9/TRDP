@@ -254,6 +254,8 @@ Training-source data only; no held-out source or upper-limb display simulated.
 | Report figures (A1) | Run end to end on a synthetic `result.json` made by the evaluation's own scoring from small untrained networks (all three encoders and the all-context configuration); every figure and table written; figures inspected |
 | Per-cell summaries | `run_evaluation.cell_summary` added for the cell figure; the existing evaluation tests pass unchanged, and no criterion reads it |
 | Criterion status (A2) | `docs/criteria-status.json` covers every model the evaluation scores and every criterion; a test checks that for H2 only P2-UL and S2 are open, as spec §5.2 (10 November) states |
+| References (A6) | The 11 references of review answer 40 looked up in Crossref: title, authors, journal, volume, issue, pages and DOI match in all 11 |
+| Completeness audit (B2) | `scripts/audit_outputs.py` on CREMI: networks 3,220/3,220; readout ranges inside the sweep 3,220; fits of c 2,020/2,020 (4 gates × 3 analyses, 0 undefined); sweeps 2,400/2,400; Gate 2 predictions 1,800/1,800; healthy 2,767 (campaign 2,016, recurrent 180, variations 52–60 per 60, all-context 57, 0.5 ms 18), as recorded. A first run reported no readout ranges because the script read the FDI peak flag from the wrong field; fixed and rerun |
 | Rehearsal (A3) | Started on `joe`, three workers: first network 9.2 s, 1.3 GB GPU memory, 0.27 MB record (H2 OpenCLIP); H0 networks 2.1 s each. Results to follow |
 
 ## Remaining limits

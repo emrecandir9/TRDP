@@ -38,10 +38,25 @@ by images reproduce the display dependence, and what would it have to contain? W
 accounts, not as support for one: a model reproducing the pattern shows that an account is sufficient under
 stated assumptions, and the comparison models show which components are necessary.
 
-*To write: the action-observation and MEP literature (Fadiga et al., 1995; corticospinal modulation without
-muscle activity, Kraskov et al., 2009; Vigneswaran et al., 2013), body-ownership and continuity work (Tieri et
-al., 2015), associative accounts of mirror responses, and computational models of action observation (review
-answer 40; task A6).*
+**Related work (draft; references in [references.md](references.md)).** Watching an action facilitates MEPs in
+the muscles that would perform it (Fadiga et al., 1995), and corticospinal neurons modulate during observation
+without producing muscle activity (Kraskov et al., 2009; Vigneswaran et al., 2013). Computational models of
+the mirror system learn visuomotor mappings for grasp recognition from visual input (Fagg & Arbib, 1998;
+Oztop & Arbib, 2002; review in Oztop, Kawato & Arbib, 2006), but none addresses how the body context of an
+observed hand changes the motor response. Associative accounts hold that such responses arise from learned
+correlations between seeing and doing (Heyes, 2001; Keysers & Perrett, 2004; Catmur et al., 2007; Cook et
+al., 2014); predictive coding offers an alternative in which observation is explained by inferred motor
+causes (Kilner, Friston & Frith, 2007). Our network is an associative model in this sense: it learns to
+detect the movement from images and is never given an MEP target. Body continuity changes the felt ownership
+of a seen hand (Perez-Marcos et al., 2012; Tieri et al., 2015), and ownership has been modelled as Bayesian
+inference over multisensory cues (Samad, Chung & Shams, 2015; review in Kilteni et al., 2015); our gates
+are much simpler, one scalar per display. MEP amplitude reflects many factors besides the excitability of
+the neurons of interest (Bestmann & Krakauer, 2015), and circuit models of TMS are far more detailed than our
+probe current (Esser, Hill & Tononi, 2005); the model's readout is an analogue of excitability only. Finally,
+deep networks used as models of vision can succeed for reasons unlike human vision (Bowers et al., 2023) and
+often exploit shortcuts in their training distribution (Geirhos et al., 2020). This bears directly on our
+findings: the full-body-trained network's weaker response to the detached hand is such a training-
+distribution effect (§6(b)).
 
 ## 2. Human target
 
@@ -209,6 +224,7 @@ between the accounts."
 *Repository, freeze tag `freeze-2026-12-11`, what stays local (stimulus archive, human deposit), and the
 OSF deposit of the human data (Matamala-Gomez et al., 2025).*
 
-## References [stub]
+## References
 
-*Task A6; every entry checked against the publisher's record.*
+The verified list is [references.md](references.md) (task A6); the final list keeps only the entries
+cited in the text, formatted for the target journal.

@@ -438,7 +438,9 @@ audited; the review's findings and how each was handled.*
 *To be completed in block E: environment files, commands from the README, which data stay local and how to
 obtain them, the freeze tag, and the CREMI job scripts (`scripts/cremi_*.sh`).*
 
-## References [stub]
+## References
 
-*Task A6: the references of the spec (§11), the decision audit's 29 verified references, and the missing
-literature named in review answer 40, each checked against the publisher's record.*
+The verified list shared with the paper-style report is [references.md](references.md) (task A6,
+11 November 2026): the decision audit's 29 references, the spec's working paper, and the 11 added after
+review answer 40, each checked against the publisher's record, with the limits on how some may be cited
+(review answer 39). The final list keeps only the entries cited in the text.

@@ -1136,6 +1136,31 @@ Two things follow, both stated before the evaluation:
 The ratio is largely in-sample for the silhouette (18 of 19 fit sources were trained on in that display); the
 evaluation scores this configuration on held-out sources, as the ungated network and as H2.
 
+### 6.24 Ablation table (declared 11 November 2026, before any evaluation)
+
+Final-phase plan B1 (the plan's W7). Each row names the two things compared and the fields of
+`output/model/evaluation/result.json` that the reports set side by side. **No new training, statistic or
+criterion is introduced:** every field below is already computed by `run_evaluation.report` (§6.22). A
+comparison between configurations is read from their separate scores; it is not a paired test. The twin and
+the recurrent networks share the primary's folds and seeds (0–9) but are different trained networks; the
+all-context and robustness networks use seeds 0–2 and the 0.5-ms networks seed 0, so the primary's 200
+instances are not matched to them. A matched-subset comparison (same folds and seeds) is not declared and,
+if made, is labelled exploratory. `A` stands for each analysis (`raw`, `remove`, `maximum`); `c` for a comparison configuration.
+
+| Ablation | Compared | Fields (`result.json`) | Reading |
+| --- | --- | --- | --- |
+| Gate on vs off | H2 vs the ungated network, same networks, sessions and noise | `main.openclip.analyses.A.necessity`; `main.openclip.gate_necessary`; `main.openclip.verdicts.{h2,ungated}` | The declared test of necessity (spec §5.2, 10 November 2026); also per robustness encoder |
+| Full-body vs all-context training | `main.openclip` vs `configurations.snn_allctx` | `….analyses.A.models.{h2,ungated}.{C_FDI,delta_FB,delta_UL,S1_ratio,S2_ratio}`; `….gate_necessary`; `….analyses.A.necessity` | Whether the gate's necessity depends on the training diet (§6.23) |
+| Spiking vs non-spiking twin | `main.openclip` vs `configurations.rate` | `….verdicts.h2`, `….verdicts.ungated`, `….analyses.A.models.h2.{C_FDI,delta_UL,S2_ratio}`, `….gate_necessary` | Whether spiking dynamics matter for the verdicts (§6.14) |
+| Feedforward vs recurrent | `main.openclip` vs `configurations.snn_rec` | as above | Whether recurrence within the visual layer matters (§6.20) |
+| With vs without reference 17 | `main.openclip` vs `without_reference_17.openclip` | `….verdicts`, `….gate_necessary`, `….analyses.A.models.h2.C_FDI` | Whether the source with the clothing issue carries the result (spec §7.1) |
+| Silhouette vs rectangle detached hand | `main.openclip` vs `rectangle.openclip` | `….verdicts`, `….analyses.A.models.h2.{C_FDI,S1_ratio}` | Effect of a visible surface; H2 predicts little of the contrast with the rectangle (a = 0.80; §7) |
+| Robustness settings | `main.openclip` vs `configurations.{snn_tm10, snn_tm40, snn_ts2, snn_ts10, snn_lr3e-4, snn_lr3e-3, snn_nv128, snn_nv512, snn_u6000, snn_dt0.5}` | `….verdicts.h2`, `….gate_necessary`, `….analyses.A.models.h2.{C_FDI,delta_UL,S2_ratio}` | Whether settings without a literature value carry the result (§6.21) |
+| Final frame vs sequence | — | — | **Null by construction** for the feedforward network: its state at the probe depends on the second frame alone (residual < e⁻¹², §6.4), and the evaluation simulates each trial from rest 300 ms before its second frame (§6.18). Not run |
+
+The tables of the reports are produced by `analysis/report_figures.robustness_table` (verdicts, gate
+necessity and C_FDI per scored set) and `effects_table` (contrasts and ratios per model and analysis).
+
 ## 7. H2 context pathway and criterion S3: decided 24 October 2026
 
 The project owner delegated this decision to the assistant on 24 October 2026, asking for the
@@ -1376,3 +1401,4 @@ declared in the spec before the evaluation is opened.
 | 10 Nov 2026, before any 0.5-ms network was trained | Time step 0.5 ms implemented (§6.21): durations and rates expressed in time throughout the trainer, health check, probe and evaluator; 1-ms results bit-identical on stored networks | Declared on 8 November with its implementation pending |
 | 10 Nov 2026, results on training sources (no evaluation) | All-context ablation trained, checked and fitted (§6.23): ungated ratio 1.14 against 0.53, so the primary network's weak detached-hand response is a training-distribution effect; 0.5-ms subset trained, checked and fitted (§6.21): c = 0, health as the primary, readout ranges shift with the step | Recorded before any evaluation; no setting changed |
 | 11 Nov 2026 (reporting only, no evaluation) | `run_evaluation.score_analysis` also writes each model's 12 mean cells with their hierarchical-bootstrap intervals (`cell_summary`), for the report's human-vs-model figure; `analysis/report_figures.py` reads them | Final-phase plan A1. Descriptive: no criterion, verdict or decision reads them; the existing evaluation tests pass unchanged |
+| 11 Nov 2026, before any evaluation | Ablation table declared (§6.24): which configurations and `result.json` fields each ablation compares; final frame vs sequence stated as null by construction | Final-phase plan B1; no training, statistic or criterion added |
