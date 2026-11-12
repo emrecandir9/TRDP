@@ -48,5 +48,9 @@ Specification, methods, results, reviews and approval records.
 | `controls-approval.json` | Human approval of the controls |
 | `480-family-review.pdf` | Local only: the original interactive review of the 480 families |
 
-Earlier slides (`TRDP Study Progress.pptx`, `TRDP Study Short Version.pdf`) predate 9 November 2026
-and the independent review.
+**Presentations** (updated 12 November 2026, after the held-out evaluation)
+
+| File | Contents |
+| --- | --- |
+| `TRDP Study Progress.pptx` | Full deck, 81 slides with speaker notes; section 7 covers Gate 2, the 820 extra networks, the review, the freeze and the result |
+| `TRDP Study Short Version.pdf` | Plain-language short version, 24 pages; pages 17–24 cover Gate 2 to the result and next steps |
